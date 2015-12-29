@@ -315,7 +315,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
 
       if [ "$SQLRESULT" != "" ]
       then
-         echo "voll"
         echo "$SQLRESULT" | awk -F \| '{print "  <rule field=\"title\" operator=\"is\">"$1"</rule>\n    <!--  playCnt = "$2"  noms = "$3"  -->\n"}' \
           >> "$PLAYLISTFILE"
       else
