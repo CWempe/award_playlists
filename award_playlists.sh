@@ -45,6 +45,8 @@ VERBOSE="0"
 DEBUG="0"
 # Force (0/1)
 FORCE="0"
+# TV shows (0/1)
+TV="0"
 # xRel (0/1)
 XREL="0"
 
@@ -53,7 +55,7 @@ echo ""
 echo "####################### "`date`" #######################"
 
 
-while getopts vdfe:y:x opt
+while getopts vdfe:y:tx opt
   do
     case $opt in
       v)      # Verbose
@@ -80,11 +82,14 @@ while getopts vdfe:y:x opt
             echo -e "Argument -y : $OPTARG"
         fi
         ;;
+      t)      # TV shows
+        TV="1"
+        ;;
       x)      # xRel
         XREL="1"
         ;;
       \?)     # Ungueltige Option
-        echo "usage: $0 [-v] [-d] [-f] [-e E] [-y YYYY]"
+        echo "usage: $0 [-v] [-d] [-f] [-e E] [-y YYYY] [-t] [-x]"
         echo "example: $0 -vdf -e G -y 2013"
         echo "          [-v] Verbose-Mode: "
         echo "          [-d] Debug-Mode: No Files removed"
@@ -93,6 +98,7 @@ while getopts vdfe:y:x opt
         echo "                 (A)cademy Awards"
         echo "                 (G)olden Globes"
         echo "          [-y] Year: Specify the year of the Event"
+        echo "          [-t] TV: Create playlist for nominated tv shows (without IMDBid)"
         echo "          [-x] xRel: Create HTML-file with links to xRel.to"
         exit 2
         ;;
@@ -128,7 +134,7 @@ echo "### $EVENT $YEAR"
 FILENAMEPREFIX="nominees_"$EVENTSTRING"_"$YEAR
 
 # Define files and directories
-BINDIR="/home/christoph/skripte/award_playlists"
+BINDIR="/opt/award_playlists"
 DATDIR="$BINDIR/dat"
 TMPDIR="$BINDIR/tmp"
 
@@ -149,8 +155,12 @@ NOMINEEHTML="$TMPDIR/$FILENAMEPREFIX.html"
 IDSFILE="$DATDIR/$FILENAMEPREFIX.ids"
 # filename of playlist
 PLAYLISTFILE="$PLVEVENTDIR/$FILENAMEPREFIX.xsp"
+# filename of playlist for tv shows
+PLAYLISTFILETV="$PLVEVENTDIR/$FILENAMEPREFIX-tv.xsp"
 # title of playlist
 PLAYLISTNAME="$EVENT Awards ($YEAR)"
+# title of playlist for tv shows
+PLAYLISTNAMETV="$EVENT Awards ($YEAR) (TV Shows)"
 # xRel.to-webpage
 XRELFILE="$DATDIR/"$FILENAMEPREFIX"_xrel.html"
 
@@ -159,22 +169,24 @@ if [ "$VERBOSE" -eq 1 ]
   then
     echo -e ""
     echo -e "Variables:"
-    echo -e " DEBUG:       $DEBUG"
-    echo -e " VERBOSE:     $VERBOSE"
-    echo -e " FORCE:       $FORCE"
-    echo -e " XREL:        $XREL"
-    echo -e " YEAR:        $YEAR"
-    echo -e " EVENTID:     $EVENTID"
-    echo -e " EVENTSTRING: $EVENTSTRING"
-    echo -e " EVENT:       $EVENT"
+    echo -e " DEBUG:          $DEBUG"
+    echo -e " VERBOSE:        $VERBOSE"
+    echo -e " FORCE:          $FORCE"
+    echo -e " TV:             $TV"
+    echo -e " XREL:           $XREL"
+    echo -e " YEAR:           $YEAR"
+    echo -e " EVENTID:        $EVENTID"
+    echo -e " EVENTSTRING:    $EVENTSTRING"
+    echo -e " EVENT:          $EVENT"
     echo -e ""
     echo -e "Files:"
-    echo -e " DBFILE:       $DBFILE"
-    echo -e " NOMINEEURL:   $NOMINEEURL"
-    echo -e " NOMINEEHTML:  $NOMINEEHTML"
-    echo -e " IDSFILE:      $IDSFILE"
-    echo -e " PLAYLISTFILE: $PLAYLISTFILE"
-    echo -e " XRELFILE:     $XRELFILE"
+    echo -e " DBFILE:         $DBFILE"
+    echo -e " NOMINEEURL:     $NOMINEEURL"
+    echo -e " NOMINEEHTML:    $NOMINEEHTML"
+    echo -e " IDSFILE:        $IDSFILE"
+    echo -e " PLAYLISTFILE:   $PLAYLISTFILE"
+    echo -e " PLAYLISTFILETV: $PLAYLISTFILETV"
+    echo -e " XRELFILE:       $XRELFILE"
     echo -e ""
 fi
 
@@ -233,8 +245,8 @@ if [ ! -s $IDSFILE -o "$FORCE" -eq 1 ]
 
     # Get IMDB-IDs from nominee-list
     echo -e "Get IMDB-IDs from nominee-list ..."
-#    cat $NOMINEEHTML | sed 's/href.*<img.*>/XXXXX/g' | grep -Ev ".*{.*{.*{.*{.*{.*" | grep -oE "tt[0-9]{7}" | sort | uniq -c | sort -nr > $IDSFILE
-    cat $NOMINEEHTML | perl -0777 -pi -e 's/Television\ Series(\n|.)*?<h2>/XXXXXX/g' | sed 's/href.*<img.*>/XXXXX/g' | grep -Ev ".*{.*{.*{.*{.*{.*" | grep -oE "tt[0-9]{7}" | sort | uniq -c | sort -nr > $IDSFILE
+    cat $NOMINEEHTML | sed 's/href.*<img.*>/XXXXX/g' | grep -Ev ".*{.*{.*{.*{.*{.*" | grep -oE "tt[0-9]{7}.*</a" \
+      | sed 's/\/"\ >/\ /g' | sed 's/<\/a//' | sort | uniq -c | sort -nr > $IDSFILE
 
   else
     # $IDSFILE is present and not empty
@@ -267,12 +279,59 @@ if [ $NOMINEESCOUNT -eq 0 ]
     echo -e "  <name>$PLAYLISTNAME</name>"                                             >> "$PLAYLISTFILE"
     echo -e "  <match>one</match>"                                                     >> "$PLAYLISTFILE"
 
+    if [ $TV -eq 1 ]
+      then
+        ####
+        # Printing header to playlist for tv shows
+        ####
+        echo -e "Printing header to playlist for tv shows..."
+        echo -e "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"           >  "$PLAYLISTFILETV"
+        echo -e "<!-- This Smartplaylist was created by \"$0\" at `date +%F\ %T` -->"      >> "$PLAYLISTFILETV"
+        echo -e "<smartplaylist type=\"tvshows\">"                                         >> "$PLAYLISTFILETV"
+        echo -e "  <name>$PLAYLISTNAMETV</name>"                                           >> "$PLAYLISTFILETV"
+        echo -e "  <match>one</match>"                                                     >> "$PLAYLISTFILETV"
+    fi
+
     if [ $VERBOSE -eq 1 ]
       then
         echo -e "Getting movietitles and printing them to playlist ..."
     fi
-    cat $IDSFILE | awk -v DB="$DBFILE" '{print "sqlite3 "DB" \"SELECT c00, playCount, '\''"$1"'\'' as nominations FROM movieview WHERE c09 IS '\''"$2"'\'' GROUP BY c00\""}' | sh \
-             | awk -F \| '{print "  <rule field=\"title\" operator=\"is\">"$1"</rule>\n    <!--  playCnt = "$2"  noms = "$3"  -->\n"}'    >> "$PLAYLISTFILE"
+
+
+    # Read ID and find title
+    while read LINE
+    do
+      PLAYCOUNT=`echo "$LINE" | awk '{print $1}'`
+      ID=`echo $LINE | awk '{print $2}'`
+      TITLE=`echo $LINE | cut -c 13-`
+      # Search title in Database using IMDBid
+      SQLRESULT=`sqlite3 $DBFILE "SELECT c00, playCount, '"$PLAYCOUNT"' as nominations FROM movieview WHERE c09 IS '"$ID"' GROUP BY c00"`
+
+      if [ $VERBOSE -eq 1 ]
+        then
+          echo -e "LINE: $LINE"
+          echo -e "$PLAYCOUNT, $ID, $TITLE"
+      fi
+
+      if [ "$SQLRESULT" != "" ]
+      then
+         echo "voll"
+        echo "$SQLRESULT" | awk -F \| '{print "  <rule field=\"title\" operator=\"is\">"$1"</rule>\n    <!--  playCnt = "$2"  noms = "$3"  -->\n"}' \
+          >> "$PLAYLISTFILE"
+      else
+        if [ $TV -eq 1 ]
+          then
+             echo "<rule field=\"title\" operator=\"is\">$TITLE</rule>\n    <!-- no entry found  noms = $PLAYCOUNT   -->\n" \
+              >> "$PLAYLISTFILETV"
+        fi
+      fi
+    done < "$IDSFILE"
+
+#    cat $IDSFILE | awk -v DB="$DBFILE" '{print "sqlite3 "DB" \"SELECT c00, playCount, '\''"$1"'\'' as nominations FROM movieview WHERE c09 IS '\''"$2"'\'' GROUP BY c00\""}' | sh \
+#             | awk -F \| '{print "  <rule field=\"title\" operator=\"is\">"$1"</rule>\n    <!--  playCnt = "$2"   noms = "$3"  -->\n"}'    >> "$PLAYLISTFILE"
+
+
+
     
     ####
     # Printing infos and footer to playlist
@@ -292,11 +351,20 @@ if [ $NOMINEESCOUNT -eq 0 ]
     echo -e "  <order direction="descending">rating</order>"    >> "$PLAYLISTFILE"
     echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILE"
     
+    if [ $TV -eq 1 ]
+      then
+        echo -e "  <order direction="descending">rating</order>"    >> "$PLAYLISTFILETV"
+        echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILETV"
+    fi
+
     ####
     # Change owner of file
     ####
     chown $USER:$GROUP "$PLAYLISTFILE"
-
+    if [ $TV -eq 1 ]
+      then
+         chown $USER:$GROUP "$PLAYLISTFILETV"
+    fi
 
     ####
     # Printing Infos to stdout
