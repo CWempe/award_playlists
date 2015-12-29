@@ -1,22 +1,22 @@
 #!/bin/sh
 #################################################################################################################
 #
-# by GodzillyXP
-# 2015-01-17
+# by Christoph Wempe
+# 2015-12-29
 #
-# This script creates a smartplaylist from a list of award-nominees from IMDB.
+# This script creates a smart playlist from a list of award-nominees from IMDB.
 # Sorted by number of nominations (ascending).
 #
-# It parses the IMDB-ID from the webpage, looks them up in your own XBMC-movie-databse
+# It parses the IMDB-ID from the webpage, looks them up in your own Kodi-movie-databse
 # and uses the localized titles of the movies to create the smartplaylist.
-# This is necessary, because some titles wont math in some languages.
+# This is necessary, because some titles won't match in some languages.
 # 
 # Since your databse grows by the time (movies get added) you need to recreate the playlist every now and then.
 # Only movies wich are present in your databse get added to the playlist.
 #
 # Requirements:
-#  - copy the $USERDIR value so the script can find your MyVideoXX.db
-#    see: http://wiki.xbmc.org/index.php?title=XBMC_databases#The_Video_Library
+#  - edit the $USERDIR value so the script can find your MyVideoXX.db
+#    see: http://kodi.wiki/view/XBMC_databases#The_Video_Library
 #  - install "sqlite3"
 #
 #################################################################################################################
