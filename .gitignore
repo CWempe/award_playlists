@@ -1,0 +1,11 @@
+# Exclude custom scripts
+award_playlists_create_specific.sh
+
+# Exclude files within these folders
+dat/**
+log/**
+tmp/**
+
+# Exclude backups
+*.devel
+*.*cw
