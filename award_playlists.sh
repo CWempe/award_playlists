@@ -55,7 +55,7 @@ echo ""
 echo "####################### "`date`" #######################"
 
 
-while getopts vdfe:y:tx opt
+while getopts vdfe:y:t:x opt
   do
     case $opt in
       v)      # Verbose
@@ -83,22 +83,31 @@ while getopts vdfe:y:tx opt
         fi
         ;;
       t)      # TV shows
-        TV="1"
+        if [ "$VERBOSE" -eq 1 ]
+          then
+            echo -e "Argument -t : $OPTARG"
+        fi
+        if [ "$OPTARG" = "yes" -o "$OPTARG" = "no" ]
+        then
+          TV="$OPTARG"
+        else
+          echo "Argument for -t is not 'yes' or 'no'. Use default."
+        fi
         ;;
       x)      # xRel
         XREL="1"
         ;;
       \?)     # Ungueltige Option
-        echo "usage: $0 [-v] [-d] [-f] [-e E] [-y YYYY] [-t] [-x]"
+        echo "usage: $0 [-v] [-d] [-f] [-e E] [-y YYYY] [-t yes|no] [-x]"
         echo "example: $0 -vdf -e G -y 2013"
-        echo "          [-v] Verbose-Mode: "
+        echo "          [-v] Verbose-Mode: Print more output"
         echo "          [-d] Debug-Mode: No Files removed"
         echo "          [-f] Force-Mode: Download new Nominee-List; Overwrite existing ID-File"
         echo "          [-e] Event: Specify the Event"
         echo "                 (A)cademy Awards"
         echo "                 (G)olden Globes"
         echo "          [-y] Year: Specify the year of the Event"
-        echo "          [-t] TV: Create playlist for nominated tv shows (without IMDBid)"
+        echo "          [-t] TV: Overrides the default to create or not create a playlist for nominated tv shows (without IMDBid)"
         echo "          [-x] xRel: Create HTML-file with links to xRel.to"
         exit 2
         ;;
@@ -118,6 +127,10 @@ case $EVENTARG in
     EVENT="Golden Globe Awards"
     EVENTSTRING="golden-globes"
     EVENTID="ev0000292"
+    if [ "$TV" != "no" ]
+    then
+      TV="yes"
+    fi
     ;;
   a|A|o|O|* )
     EVENT="Academy Awards"
@@ -279,7 +292,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
     echo -e "  <name>$PLAYLISTNAME</name>"                                             >> "$PLAYLISTFILE"
     echo -e "  <match>one</match>"                                                     >> "$PLAYLISTFILE"
 
-    if [ $TV -eq 1 ]
+    if [ "$TV" = "yes" ]
       then
         ####
         # Printing header to playlist for tv shows
@@ -307,20 +320,14 @@ if [ $NOMINEESCOUNT -eq 0 ]
       # Search title in Database using IMDBid
       SQLRESULT=`sqlite3 $DBFILE "SELECT c00, playCount, '"$PLAYCOUNT"' as nominations FROM movieview WHERE c09 IS '"$ID"' GROUP BY c00"`
 
-      if [ $VERBOSE -eq 1 ]
-        then
-          echo -e "LINE: $LINE"
-          echo -e "$PLAYCOUNT, $ID, $TITLE"
-      fi
-
       if [ "$SQLRESULT" != "" ]
       then
         echo "$SQLRESULT" | awk -F \| '{print "  <rule field=\"title\" operator=\"is\">"$1"</rule>\n    <!--  playCnt = "$2"  noms = "$3"  -->\n"}' \
           >> "$PLAYLISTFILE"
       else
-        if [ $TV -eq 1 ]
+        if [ "$TV" = "yes" ]
           then
-             echo "<rule field=\"title\" operator=\"is\">$TITLE</rule>\n    <!-- no entry found  noms = $PLAYCOUNT   -->\n" \
+             echo -e "<rule field=\"title\" operator=\"is\">$TITLE</rule>\n    <!-- no entry found  noms = $PLAYCOUNT   -->\n" \
               >> "$PLAYLISTFILETV"
         fi
       fi
@@ -350,7 +357,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
     echo -e "  <order direction="descending">rating</order>"    >> "$PLAYLISTFILE"
     echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILE"
     
-    if [ $TV -eq 1 ]
+    if [ "$TV" = "yes" ]
       then
         echo -e "  <order direction="descending">rating</order>"    >> "$PLAYLISTFILETV"
         echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILETV"
@@ -360,7 +367,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
     # Change owner of file
     ####
     chown $USER:$GROUP "$PLAYLISTFILE"
-    if [ $TV -eq 1 ]
+    if [ "$TV" = "yes" ]
       then
          chown $USER:$GROUP "$PLAYLISTFILETV"
     fi
