@@ -333,11 +333,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
       fi
     done < "$IDSFILE"
 
-#    cat $IDSFILE | awk -v DB="$DBFILE" '{print "sqlite3 "DB" \"SELECT c00, playCount, '\''"$1"'\'' as nominations FROM movieview WHERE c09 IS '\''"$2"'\'' GROUP BY c00\""}' | sh \
-#             | awk -F \| '{print "  <rule field=\"title\" operator=\"is\">"$1"</rule>\n    <!--  playCnt = "$2"   noms = "$3"  -->\n"}'    >> "$PLAYLISTFILE"
-
-
-
     
     ####
     # Printing infos and footer to playlist
