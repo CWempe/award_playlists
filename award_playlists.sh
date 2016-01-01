@@ -305,6 +305,14 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e "  <match>one</match>"                                                     >> "$PLAYLISTFILETV"
     fi
 
+    ####
+    # Create header for HTML-file
+    ####
+    if [ "$XREL" -eq 1 ]
+    then
+      echo -e "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\"/><b>$PLAYLISTNAME</b><br><br></head>\n\n" > $XRELFILE
+    fi
+
     if [ $VERBOSE -eq 1 ]
       then
         echo -e "Getting movietitles and printing them to playlist ..."
@@ -314,23 +322,60 @@ if [ $NOMINEESCOUNT -eq 0 ]
     # Read ID and find title
     while read LINE
     do
-      PLAYCOUNT=`echo "$LINE" | awk '{print $1}'`
+      NOMINATIONS=`echo "$LINE" | awk '{print $1}'`
       ID=`echo $LINE | awk '{print $2}'`
       TITLE=`echo $LINE | cut -c 13-`
       # Search title in Database using IMDBid
-      SQLRESULT=`sqlite3 $DBFILE "SELECT c00, playCount, '"$PLAYCOUNT"' as nominations FROM movieview WHERE c09 IS '"$ID"' GROUP BY c00"`
+      SQLRESULT=`sqlite3 $DBFILE "SELECT c00, playCount, '"$NOMINATIONS"' as nominations FROM movieview WHERE c09 IS '"$ID"' GROUP BY c00"`
+      
 
       if [ "$SQLRESULT" != "" ]
       then
-        echo "$SQLRESULT" | awk -F \| '{print "  <rule field=\"title\" operator=\"is\">"$1"</rule>\n    <!--  playCnt = "$2"  noms = "$3"  -->\n"}' \
+        PLAYCOUNT=`echo "$SQLRESULT" | awk -F \| '{print $2}'`
+        TITLE=`echo "$SQLRESULT" | awk -F \| '{print $1}'`
+        INDATABASE="yes"
+        
+        if [ "$PLAYCOUNT" = "" ]
+        then
+          PLAYCOUNT=0
+        fi
+        echo -e "  <rule field=\"title\" operator=\"is\">$TITLE</rule>\n    <!--  playCnt = $PLAYCOUNT  noms = $NOMINATIONS  -->\n" \
           >> "$PLAYLISTFILE"
+
+
+
+
       else
+        PLAYCOUNT=0
+        INDATABASE="no"
         if [ "$TV" = "yes" ]
           then
              echo -e "<rule field=\"title\" operator=\"is\">$TITLE</rule>\n    <!-- no entry found  noms = $PLAYCOUNT   -->\n" \
               >> "$PLAYLISTFILETV"
         fi
       fi
+
+
+
+        ####
+        # Create HTML-file with links to xRel.to
+        ####
+        if [ "$XREL" -eq 1 ]
+        then
+          echo -e "<a><b>$TITLE</b> ($ID, $PLAYCOUNT, $NOMINATIONS)<br>" >> $XRELFILE
+          echo -e "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">IMDB</a>" >> $XRELFILE
+          echo -e "<a target=\"_blank\" href=\"http://www.xrel.to/search.html?xrel_search_query=$ID\">xRel</a>" >> $XRELFILE
+          echo -e "<a>watched: " >> $XRELFILE
+          if [ $PLAYCOUNT -gt 0 ]
+          then 
+            echo -e "yes</a>" >> $XRELFILE
+          fi
+          echo -e "<a>in DB: $INDATABASE</a><br><br>" >> $XRELFILE
+        fi
+
+
+
+
     done < "$IDSFILE"
 
     
@@ -367,6 +412,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
          chown $USER:$GROUP "$PLAYLISTFILETV"
     fi
 
+
     ####
     # Printing Infos to stdout
     ####
@@ -377,27 +423,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
     echo -e ""
     
     
-    ####
-    # Create HTML-file with links to xRel.to
-    ####
-    if [ "$XREL" -eq 1 ]
-      then
-        echo -e "<b>$PLAYLISTNAME</b><br><br>" > $XRELFILE
-        if [ $VERBOSE -eq 1 ]
-          then
-            echo -e "Create HTML-file with links to xRel.to ..."
-        fi
-    
-        while read LINE; do
-          ID=`echo $LINE | awk '{print $2}'`
-          #echo "sqlite3 \"$DBFILE\" \"SELECT c00 FROM movieview WHERE c09 IS '$ID' GROUP BY c00\""
-          TITLE=`sqlite3 "$DBFILE" "SELECT c00, playCount FROM movieview WHERE c09 IS '$ID' GROUP BY c00" | awk -F \| '{print $1}'`
-          echo "<a>$TITLE ($ID)<br>" >> $XRELFILE
-          echo "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">IMDB</a>" >> $XRELFILE
-          echo "<a target=\"_blank\" href=\"http://www.xrel.to/search.html?xrel_search_query=$ID\">xRel</a><br><br>" >> $XRELFILE
-        done < $IDSFILE
-
-    fi
 
 fi
 
