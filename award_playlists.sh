@@ -327,6 +327,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       TITLE=`echo $LINE | cut -c 13-`
       # Search title in Database using IMDBid
       SQLRESULT=`sqlite3 $DBFILE "SELECT c00, playCount, '"$NOMINATIONS"' as nominations FROM movieview WHERE c09 IS '"$ID"' GROUP BY c00"`
+      TITLESQL=`echo $TITLE | sed 's/&/%/g'`
       
 
       if [ "$SQLRESULT" != "" ]
@@ -334,12 +335,16 @@ if [ $NOMINEESCOUNT -eq 0 ]
         PLAYCOUNT=`echo "$SQLRESULT" | awk -F \| '{print $2}'`
         TITLE=`echo "$SQLRESULT" | awk -F \| '{print $1}'`
         INDATABASE="yes"
+        # replace certain characters in title to match sql syntax
+        TITLESQL=`echo $TITLE | sed 's/&/%/g'`
         
         if [ "$PLAYCOUNT" = "" ]
         then
           PLAYCOUNT=0
         fi
-        echo -e "  <rule field=\"title\" operator=\"is\">$TITLE</rule>\n    <!--  playCnt = $PLAYCOUNT  noms = $NOMINATIONS  -->\n" \
+        
+        # Write in playlist
+        echo -e "  <rule field=\"title\" operator=\"is\">$TITLESQL</rule>\n    <!--  playCnt = $PLAYCOUNT  noms = $NOMINATIONS  -->\n" \
           >> "$PLAYLISTFILE"
 
 
@@ -350,7 +355,8 @@ if [ $NOMINEESCOUNT -eq 0 ]
         INDATABASE="no"
         if [ "$TV" = "yes" ]
           then
-             echo -e "<rule field=\"title\" operator=\"is\">$TITLE</rule>\n    <!-- no entry found  noms = $PLAYCOUNT   -->\n" \
+             # write in tv playlist
+             echo -e "<rule field=\"title\" operator=\"is\">$TITLESQL</rule>\n    <!-- no entry found  noms = $PLAYCOUNT   -->\n" \
               >> "$PLAYLISTFILETV"
         fi
       fi
