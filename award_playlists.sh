@@ -389,7 +389,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
     # Printing infos and footer to playlist
     ####
     MOVIECOUNT=`grep "playCnt" "$PLAYLISTFILE" | wc -l | awk '{print $1}'`
-    WATCHEDCOUNT=`grep -Eo "playCnt = [0-9]+" "$PLAYLISTFILE" | wc -l | awk '{print $1}'`
+    WATCHEDCOUNT=`grep -Eo "playCnt = [1-9]+" "$PLAYLISTFILE" | wc -l | awk '{print $1}'`
 
     if [ $VERBOSE -eq 1 ]
       then
