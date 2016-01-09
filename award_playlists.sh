@@ -375,6 +375,8 @@ if [ $NOMINEESCOUNT -eq 0 ]
           if [ $PLAYCOUNT -gt 0 ]
           then 
             echo -e "yes</a>" >> $XRELFILE
+          else
+            echo -e "no</a>" >> $XRELFILE
           fi
           echo -e "<a>in DB: $INDATABASE</a><br><br>" >> $XRELFILE
         fi
