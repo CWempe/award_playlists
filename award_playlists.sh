@@ -107,7 +107,13 @@ while getopts vdfe:m:y:t:sx opt
         fi
         ;;
       s)      # Stastics
-        STATS="1"
+        if [ "$MAIL" == "" ]
+          then
+            STATS="0"
+          else
+            # stats are needed to send mail
+            STATS="0"
+        fi
         ;;
       x)      # xRel
         XREL="1"
