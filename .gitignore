@@ -2,9 +2,13 @@
 award_playlists_create_specific.sh
 
 # Exclude files within these folders
+conf/**
 dat/**
 log/**
 tmp/**
+
+# except example config
+!conf/*conf.example
 
 # Exclude backups
 *.devel

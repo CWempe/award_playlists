@@ -33,6 +33,7 @@ YEAR=`date +%Y`
 # Event
 EVENT="G"
 
+
 ####
 # file owner
 ####
@@ -47,8 +48,10 @@ DEBUG="0"
 FORCE="0"
 # TV shows (0/1)
 TV="0"
+# Mail address
+MAIL=""
 # Statistics (0/1)
-STATS="0"
+STATS="1"
 # xRel (0/1)
 XREL="0"
 
@@ -57,7 +60,7 @@ echo ""
 echo "####################### "`date`" #######################"
 
 
-while getopts vdfe:y:t:sx opt
+while getopts vdfe:m:y:t:sx opt
   do
     case $opt in
       v)      # Verbose
@@ -75,6 +78,13 @@ while getopts vdfe:y:t:sx opt
         if [ "$VERBOSE" -eq 1 ]
           then
             echo -e "Argument -e : $OPTARG"
+        fi
+        ;;
+      m)      # mail address
+        MAIL="$OPTARG"
+        if [ "$VERBOSE" -eq 1 ]
+          then
+            echo -e "Argument -m : $OPTARG"
         fi
         ;;
       y)      # year
@@ -112,9 +122,10 @@ while getopts vdfe:y:t:sx opt
         echo "                 (A)cademy Awards or (O)scars"
         echo "                 (B)AFTAS"
         echo "                 (G)olden Globes"
+        echo "          [-m] Mail: Specify the mail address to send the statistics to"
         echo "          [-y] Year: Specify the year of the Event"
         echo "          [-t] TV: Overrides the default to create or not create a playlist for nominated tv shows (without IMDBid)"
-        echo "          [-s] Statistics: Create a file with statistics"
+        echo "          [-s] Statistics: do NOT create a file with statistics"
         echo "          [-x] xRel: Create HTML-file with links to xRel.to"
         exit 2
         ;;
@@ -155,8 +166,10 @@ FILENAMEPREFIX="nominees_"$EVENTSTRING"_"$YEAR
 
 # Define files and directories
 BINDIR="/opt/award_playlists"
+CONFDIR="$BINDIR/conf"
 DATDIR="$BINDIR/dat"
 TMPDIR="$BINDIR/tmp"
+SENDMAIL="/usr/sbin/sendmail"
 
 ### Change this paths to your enviroment ###
 # Path to XBMC-directory
@@ -183,8 +196,23 @@ PLAYLISTNAME="$EVENT Awards ($YEAR)"
 PLAYLISTNAMETV="$EVENT Awards ($YEAR) (TV Shows)"
 # Statistics
 STATFILE="$DATDIR/"$FILENAMEPREFIX"_stats.txt"
+STATFILEOLD="$DATDIR/"$FILENAMEPREFIX"_stats.txt.old"
 # xRel.to-webpage
 XRELFILE="$DATDIR/"$FILENAMEPREFIX"_xrel.html"
+
+
+
+# custom config file
+CONFIG="$CONFDIR/custom.conf"
+
+# Check if config file exists
+if [ ! -f "$CONFIG" ]
+  then
+    echo -e "Config file does not exist!\nPlease copy custom.conf.original to custom.conf"
+    exit 1
+fi
+# import custom config
+source "$CONFIG"
 
 
 if [ "$VERBOSE" -eq 1 ]
@@ -195,7 +223,11 @@ if [ "$VERBOSE" -eq 1 ]
     echo -e " VERBOSE:        $VERBOSE"
     echo -e " FORCE:          $FORCE"
     echo -e " TV:             $TV"
+    echo -e " STATS:          $STATS"
     echo -e " XREL:           $XREL"
+    echo -e " FROM:           $FROM"
+    echo -e " MAIL:           $MAIL"
+    echo -e " SUBJECT:        $SUBJECT"
     echo -e " YEAR:           $YEAR"
     echo -e " EVENTID:        $EVENTID"
     echo -e " EVENTSTRING:    $EVENTSTRING"
@@ -245,6 +277,12 @@ if [ ! -d "$PLVEVENTDIR" ]
 fi
 
 
+# creatre backup of statistics file
+if [ -f "$STATFILE" ]
+  then
+    cp "$STATFILE" "$STATFILEOLD"
+fi
+
 
 ####
 # Downloading list of nominees from imdb.com and generate ID-File if not already existing
@@ -280,8 +318,6 @@ fi
 
 # Count nominees
 NOMINEESCOUNT=`wc -l $IDSFILE | awk '{print $1}'`
-
-
 MOVIECOUNT=0
 WATCHEDCOUNT=0
 
@@ -292,7 +328,7 @@ WATCHEDCOUNT=0
 
 if [ $NOMINEESCOUNT -eq 0 ]
   then
-    echo -e "No nominees.\nNothing to do."
+    STATTEXT="No nominees!"
   else
 
     ####
@@ -381,9 +417,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         fi
       fi
 
-
-
-        ####
+      ####
       # Create HTML-file with links to xRel.to
       ####
       if [ "$XREL" -eq 1 ]
@@ -400,8 +434,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
         fi
         echo -e "<a>in DB: $INDATABASE</a><br><br>" >> $XRELFILE
       fi
-
-
 
     done < "$IDSFILE"
 
@@ -426,24 +458,9 @@ if [ $NOMINEESCOUNT -eq 0 ]
 
 
     ####
-    # Printing statistics
+    # Create statistics
     ####
-
-
-    if [ $STATS -eq 1 ]
-    then
-      if [ $VERBOSE -eq 1 ]
-        then
-          echo -e "Printing statistics ..."
-      fi
-      echo -e "$EVENT ($YEAR)"                  >  "$STATFILE"
-      echo -e ""                                >> "$STATFILE"
-      echo -e "Total nominees:  $NOMINEESCOUNT" >> "$STATFILE"
-      echo -e "in your databse: $MOVIECOUNT"    >> "$STATFILE"
-      echo -e "already watched: $WATCHEDCOUNT"  >> "$STATFILE"
-    fi
-
-
+    STATTEXT="Total nominees:  $NOMINEESCOUNT\nin your databse: $MOVIECOUNT\nalready watched: $WATCHEDCOUNT"
 
     ####
     # Change owner of file
@@ -455,17 +472,56 @@ if [ $NOMINEESCOUNT -eq 0 ]
     fi
 
 
-    ####
-    # Printing Infos to stdout
-    ####
-    echo -e ""
-    echo -e "Total nominees:  $NOMINEESCOUNT"
-    echo -e "in your databse: $MOVIECOUNT"
-    echo -e "already watched: $WATCHEDCOUNT"
-    echo -e ""
-    
-    
+fi
 
+
+
+
+
+####
+# Printing Infos to stdout and optionally to stats file
+####
+echo -e ""
+echo -e "$STATTEXT"
+echo -e ""
+
+if [ $STATS -eq 1 ]
+then
+  if [ $VERBOSE -eq 1 ]
+    then
+      echo -e "Printing statistics ..."
+  fi
+  echo -e "$STATTEXT" > "$STATFILE"
+fi
+
+
+
+# check if stats have changed since last run
+
+
+if [ "$MAIL" != "" ]
+  then
+    
+    if [ -f "$STATFILEOLD" ]
+      then
+        STATDIFF=$(diff $STATFILE $STATFILEOLD)
+      else
+        STATDIFF="new"
+    fi
+
+    if [ "$STATDIFF" != "" ]
+      then
+        if [ $VERBOSE -eq 1 ]
+          then
+            echo -e "Stats changed. Sending mails."
+        fi
+        echo -e "From: $FROM\nSubject: $SUBJECT\n\n$STATTEXT" | $SENDMAIL $MAIL
+      else
+        if [ $VERBOSE -eq 1 ]
+          then
+            echo -e "Stats did not change. Not ending mail."
+        fi
+    fi        
 fi
 
 
@@ -473,19 +529,17 @@ fi
 # Deleting temp-files
 ####
 
-
 if [ $DEBUG -ne 1 ]
   then
     echo -e "Deleting temp-files ..."
-    if [ -s $NOMINEEHTML ]
+    if [ -s "$NOMINEEHTML" ]
       then
-        rm $NOMINEEHTML
-      else
-        if [ $VERBOSE -eq 1 ]
-          then
-            echo -e "No file to delete."
-        fi
+        rm "$NOMINEEHTML"
     fi
+    if [ -f "$STATFILEOLD" ]
+      then
+        rm "$STATFILEOLD"
+    fi    
   else
     if [ $VERBOSE -eq 1 ]
       then
