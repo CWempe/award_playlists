@@ -174,6 +174,8 @@ PLAYLISTFILETV="$PLVEVENTDIR/$FILENAMEPREFIX-tv.xsp"
 PLAYLISTNAME="$EVENT Awards ($YEAR)"
 # title of playlist for tv shows
 PLAYLISTNAMETV="$EVENT Awards ($YEAR) (TV Shows)"
+# Statistics
+STATFILE="$DATDIR/"$FILENAMEPREFIX"_stats.txt"
 # xRel.to-webpage
 XRELFILE="$DATDIR/"$FILENAMEPREFIX"_xrel.html"
 
@@ -397,27 +399,36 @@ if [ $NOMINEESCOUNT -eq 0 ]
     done < "$IDSFILE"
 
     
+
     ####
-    # Printing infos and footer to playlist
+    # Printing footer to playlist
     ####
 
-    if [ $VERBOSE -eq 1 ]
-      then
-        echo -e "Printing infos and footer to playlist ..."
-    fi
-    echo -e "    <!--"                                          >> "$PLAYLISTFILE"
-    echo -e "      Total nominees:  $NOMINEESCOUNT"             >> "$PLAYLISTFILE"
-    echo -e "      in your databse: $MOVIECOUNT"                >> "$PLAYLISTFILE"
-    echo -e "      already watched: $WATCHEDCOUNT"              >> "$PLAYLISTFILE"
-    echo -e "    -->"                                           >> "$PLAYLISTFILE"
-    echo -e "  <order direction="descending">rating</order>"    >> "$PLAYLISTFILE"
-    echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILE"
+    echo -e "  <order direction="descending">rating</order>"    >> "$PLAYLISTFILETV"
+    echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILETV"
     
     if [ "$TV" = "yes" ]
       then
         echo -e "  <order direction="descending">rating</order>"    >> "$PLAYLISTFILETV"
         echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILETV"
     fi
+
+
+    ####
+    # Printing statistics
+    ####
+
+    if [ $VERBOSE -eq 1 ]
+      then
+        echo -e "Printing infos and footer to playlist ..."
+    fi
+    echo -e "$EVENT ($YEAR)"                  >  "$STATFILE"
+    echo -e ""                                >> "$STATFILE"
+    echo -e "Total nominees:  $NOMINEESCOUNT" >> "$STATFILE"
+    echo -e "in your databse: $MOVIECOUNT"    >> "$STATFILE"
+    echo -e "already watched: $WATCHEDCOUNT"  >> "$STATFILE"
+
+
 
     ####
     # Change owner of file
