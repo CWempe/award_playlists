@@ -273,6 +273,10 @@ fi
 NOMINEESCOUNT=`wc -l $IDSFILE | awk '{print $1}'`
 
 
+MOVIECOUNT=0
+WATCHEDCOUNT=0
+
+
 ####
 # Generate Playlist
 ####
@@ -337,14 +341,21 @@ if [ $NOMINEESCOUNT -eq 0 ]
         INDATABASE="yes"
         # replace certain characters in title to match sql syntax
         TITLESQL=`echo $TITLE | sed 's/&/%/g'`
+
+        # increment MOVIECOUNT
+        MOVIECOUNT=$((MOVIECOUNT+1))
+
         
         if [ "$PLAYCOUNT" = "" ]
         then
           PLAYCOUNT=0
+        else
+          # increment MOVIECOUNT
+          WATCHEDCOUNT=$((WATCHEDCOUNT+1))
         fi
         
         # Write in playlist
-        echo -e "  <rule field=\"title\" operator=\"is\">$TITLESQL</rule>\n    <!--  playCnt = $PLAYCOUNT  noms = $NOMINATIONS  -->\n" \
+        echo -e "  <rule field=\"title\" operator=\"is\">$TITLESQL</rule>" \
           >> "$PLAYLISTFILE"
 
 
@@ -356,7 +367,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         if [ "$TV" = "yes" ]
           then
              # write in tv playlist
-             echo -e "<rule field=\"title\" operator=\"is\">$TITLESQL</rule>\n    <!-- no entry found  noms = $PLAYCOUNT   -->\n" \
+             echo -e "<rule field=\"title\" operator=\"is\">$TITLESQL</rule>" \
               >> "$PLAYLISTFILETV"
         fi
       fi
@@ -364,23 +375,22 @@ if [ $NOMINEESCOUNT -eq 0 ]
 
 
         ####
-        # Create HTML-file with links to xRel.to
-        ####
-        if [ "$XREL" -eq 1 ]
-        then
-          echo -e "<a><b>$TITLE</b> ($ID, $PLAYCOUNT, $NOMINATIONS)<br>" >> $XRELFILE
-          echo -e "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">IMDB</a>" >> $XRELFILE
-          echo -e "<a target=\"_blank\" href=\"http://www.xrel.to/search.html?xrel_search_query=$ID\">xRel</a>" >> $XRELFILE
-          echo -e "<a>watched: " >> $XRELFILE
-          if [ $PLAYCOUNT -gt 0 ]
-          then 
-            echo -e "yes</a>" >> $XRELFILE
-          else
-            echo -e "no</a>" >> $XRELFILE
-          fi
-          echo -e "<a>in DB: $INDATABASE</a><br><br>" >> $XRELFILE
+      # Create HTML-file with links to xRel.to
+      ####
+      if [ "$XREL" -eq 1 ]
+      then
+        echo -e "<a><b>$TITLE</b> ($ID, $PLAYCOUNT, $NOMINATIONS)<br>" >> $XRELFILE
+        echo -e "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">IMDB</a>" >> $XRELFILE
+        echo -e "<a target=\"_blank\" href=\"http://www.xrel.to/search.html?xrel_search_query=$ID\">xRel</a>" >> $XRELFILE
+        echo -e "<a>watched: " >> $XRELFILE
+        if [ $PLAYCOUNT -gt 0 ]
+        then 
+          echo -e "yes</a>" >> $XRELFILE
+        else
+          echo -e "no</a>" >> $XRELFILE
         fi
-
+        echo -e "<a>in DB: $INDATABASE</a><br><br>" >> $XRELFILE
+      fi
 
 
 
@@ -390,8 +400,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
     ####
     # Printing infos and footer to playlist
     ####
-    MOVIECOUNT=`grep "playCnt" "$PLAYLISTFILE" | wc -l | awk '{print $1}'`
-    WATCHEDCOUNT=`grep -Eo "playCnt = [1-9]+" "$PLAYLISTFILE" | wc -l | awk '{print $1}'`
 
     if [ $VERBOSE -eq 1 ]
       then
