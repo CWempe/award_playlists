@@ -47,6 +47,8 @@ DEBUG="0"
 FORCE="0"
 # TV shows (0/1)
 TV="0"
+# Statistics (0/1)
+STATS="0"
 # xRel (0/1)
 XREL="0"
 
@@ -55,7 +57,7 @@ echo ""
 echo "####################### "`date`" #######################"
 
 
-while getopts vdfe:y:t:x opt
+while getopts vdfe:y:t:sx opt
   do
     case $opt in
       v)      # Verbose
@@ -94,6 +96,9 @@ while getopts vdfe:y:t:x opt
           echo "Argument for -t is not 'yes' or 'no'. Use default."
         fi
         ;;
+      s)      # Stastics
+        STATS="1"
+        ;;
       x)      # xRel
         XREL="1"
         ;;
@@ -104,10 +109,12 @@ while getopts vdfe:y:t:x opt
         echo "          [-d] Debug-Mode: No Files removed"
         echo "          [-f] Force-Mode: Download new Nominee-List; Overwrite existing ID-File"
         echo "          [-e] Event: Specify the Event"
-        echo "                 (A)cademy Awards"
+        echo "                 (A)cademy Awards or (O)scars"
+        echo "                 (B)AFTAS"
         echo "                 (G)olden Globes"
         echo "          [-y] Year: Specify the year of the Event"
         echo "          [-t] TV: Overrides the default to create or not create a playlist for nominated tv shows (without IMDBid)"
+        echo "          [-s] Statistics: Create a file with statistics"
         echo "          [-x] xRel: Create HTML-file with links to xRel.to"
         exit 2
         ;;
@@ -404,6 +411,10 @@ if [ $NOMINEESCOUNT -eq 0 ]
     # Printing footer to playlist
     ####
 
+    if [ $VERBOSE -eq 1 ]
+      then
+        echo -e "Printing footers ..."
+    fi
     echo -e "  <order direction="descending">rating</order>"    >> "$PLAYLISTFILETV"
     echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILETV"
     
@@ -418,15 +429,19 @@ if [ $NOMINEESCOUNT -eq 0 ]
     # Printing statistics
     ####
 
-    if [ $VERBOSE -eq 1 ]
-      then
-        echo -e "Printing infos and footer to playlist ..."
+
+    if [ $STATS -eq 1 ]
+    then
+      if [ $VERBOSE -eq 1 ]
+        then
+          echo -e "Printing statistics ..."
+      fi
+      echo -e "$EVENT ($YEAR)"                  >  "$STATFILE"
+      echo -e ""                                >> "$STATFILE"
+      echo -e "Total nominees:  $NOMINEESCOUNT" >> "$STATFILE"
+      echo -e "in your databse: $MOVIECOUNT"    >> "$STATFILE"
+      echo -e "already watched: $WATCHEDCOUNT"  >> "$STATFILE"
     fi
-    echo -e "$EVENT ($YEAR)"                  >  "$STATFILE"
-    echo -e ""                                >> "$STATFILE"
-    echo -e "Total nominees:  $NOMINEESCOUNT" >> "$STATFILE"
-    echo -e "in your databse: $MOVIECOUNT"    >> "$STATFILE"
-    echo -e "already watched: $WATCHEDCOUNT"  >> "$STATFILE"
 
 
 
