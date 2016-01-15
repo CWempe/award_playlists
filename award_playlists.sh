@@ -146,6 +146,7 @@ case $EVENTARG in
     EVENT="BAFTA"
     EVENTSTRING="bafta"
     EVENTID="ev0000123"
+    TV="no"
     ;;
   g|G )
     EVENT="Golden Globe Awards"
@@ -160,6 +161,7 @@ case $EVENTARG in
     EVENT="Academy Awards"
     EVENTSTRING="oscars"
     EVENTID="ev0000003"
+    TV="no"
     ;;
 esac
 
