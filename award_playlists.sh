@@ -461,8 +461,8 @@ if [ $NOMINEESCOUNT -eq 0 ]
       then
         echo -e "Printing footers ..."
     fi
-    echo -e "  <order direction="descending">rating</order>"    >> "$PLAYLISTFILETV"
-    echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILETV"
+    echo -e "  <order direction="descending">rating</order>"    >> "$PLAYLISTFILE"
+    echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILE"
     
     if [ "$TV" = "yes" ]
       then
