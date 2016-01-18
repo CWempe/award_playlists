@@ -163,6 +163,12 @@ case $EVENTARG in
       TV="yes"
     fi
     ;;
+  i|I )
+    EVENT="Independent Spirit"
+    EVENTSTRING="independant"
+    EVENTID="ev0000349"
+    TV="no"
+    ;;
   a|A|o|O|* )
     EVENT="Academy Awards"
     EVENTSTRING="oscars"
