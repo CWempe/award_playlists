@@ -148,6 +148,12 @@ case $EVENTARG in
     EVENTID="ev0000123"
     TV="no"
     ;;
+  c|C )
+    EVENT="Critics Choice"
+    EVENTSTRING="critics"
+    EVENTID="ev0000133"
+    TV="no"
+    ;;
   g|G )
     EVENT="Golden Globe Awards"
     EVENTSTRING="golden-globes"
