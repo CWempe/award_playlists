@@ -381,7 +381,13 @@ if [ $NOMINEESCOUNT -eq 0 ]
     ####
     if [ "$XREL" -eq 1 ]
     then
-      echo -e "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\"/><b>$PLAYLISTNAME</b><br><br></head>\n\n" > $XRELFILE
+      echo -e "<!DOCTYPE html>\n<html lang=\"en\">" >  $XRELFILE
+      echo -e "<head>"                              >> $XRELFILE
+      echo -e "    <meta charset=\"utf-8\"/>"       >> $XRELFILE
+      echo -e "</head>"                             >> $XRELFILE
+      echo -e "<body>"                              >> $XRELFILE
+      echo -e "    <h1>$PLAYLISTNAME</h1>"          >> $XRELFILE
+      echo -e "    <h2>Movies</h2>"          >> $XRELFILE
     fi
 
     if [ $VERBOSE -eq 1 ]
@@ -420,13 +426,10 @@ if [ $NOMINEESCOUNT -eq 0 ]
           # increment MOVIECOUNT
           WATCHEDCOUNT=$((WATCHEDCOUNT+1))
         fi
-        
+
         # Write in playlist
         echo -e "  <rule field=\"title\" operator=\"is\">$TITLESQL</rule>" \
           >> "$PLAYLISTFILE"
-
-
-
 
       else
         PLAYCOUNT=0
@@ -439,27 +442,29 @@ if [ $NOMINEESCOUNT -eq 0 ]
         fi
       fi
 
+      if [ $PLAYCOUNT -gt 0 ]
+      then 
+        WATCHED="yes"
+      else
+        WATCHED="no"
+      fi
+
       ####
       # Create HTML-file with links to xRel.to
       ####
       if [ "$XREL" -eq 1 ]
       then
-        echo -e "<a><b>$TITLE</b> ($ID, $PLAYCOUNT, $NOMINATIONS)<br>" >> $XRELFILE
-        echo -e "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">IMDB</a>" >> $XRELFILE
-        echo -e "<a target=\"_blank\" href=\"http://www.xrel.to/search.html?xrel_search_query=$ID\">xRel</a>" >> $XRELFILE
-        echo -e "<a>watched: " >> $XRELFILE
-        if [ $PLAYCOUNT -gt 0 ]
-        then 
-          echo -e "yes</a>" >> $XRELFILE
-        else
-          echo -e "no</a>" >> $XRELFILE
-        fi
-        echo -e "<a>in DB: $INDATABASE</a><br><br>" >> $XRELFILE
+        echo -e "    <div class=\"movie\">" >> $XRELFILE
+        echo -e "        <h3><a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></h3>" >> $XRELFILE
+        echo -e "        <p>nominations: $NOMINATIONS</p>"                      >> $XRELFILE
+        echo -e "        <p class=\"xrel\"><a target=\"_blank\" href=\"http://www.xrel.to/search.html?xrel_search_query=$ID\">xRel</a></p>" >> $XRELFILE
+        echo -e "        <p class=\"watched\">watched: <span class=\"$WATCHED\">$WATCHED</span></p>"        >> $XRELFILE
+        echo -e "        <p class=\"databse\">in DB: <span class=\"$INDATABASE\">$INDATABASE</span></p>"    >> $XRELFILE
+        echo -e "    </div>" >> $XRELFILE
       fi
 
     done < "$IDSFILE"
 
-    
 
     ####
     # Printing footer to playlist
@@ -493,11 +498,20 @@ if [ $NOMINEESCOUNT -eq 0 ]
          chown $USER:$GROUP "$PLAYLISTFILETV"
     fi
 
-
+    ####
+    # Create fppter for HTML-file
+    ####
+    if [ "$XREL" -eq 1 ]
+    then
+      echo -e "    <h2>Statistics</h2>"                         >> $XRELFILE
+      echo -e "    <div class=\"statistics\">"                  >> $XRELFILE
+      echo -e "        <p>Total nominees:  $NOMINEESCOUNT</p>"  >> $XRELFILE
+      echo -e "        <p>in your databse: $MOVIECOUNT</p>"     >> $XRELFILE
+      echo -e "        <p>already watched: $WATCHEDCOUNT</p>"   >> $XRELFILE
+      echo -e "    </div>"                                      >> $XRELFILE
+      echo -e "</body>"                                         >> $XRELFILE
+    fi
 fi
-
-
-
 
 
 ####
