@@ -440,13 +440,34 @@ if [ $NOMINEESCOUNT -eq 0 ]
       ####
       if [ "$XREL" -eq 1 ]
       then
-        echo -e "    <div class=\"movie\">" >> $XRELFILE
-        echo -e "        <h3><a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></h3>" >> $XRELFILE
-        echo -e "        <p>nominations: $NOMINATIONS</p>"                      >> $XRELFILE
-        echo -e "        <p class=\"xrel\"><a target=\"_blank\" href=\"http://www.xrel.to/search.html?xrel_search_query=$ID\">xRel</a></p>" >> $XRELFILE
-        echo -e "        <p class=\"watched\">watched: <span class=\"$WATCHED\">$WATCHED</span></p>"        >> $XRELFILE
-        echo -e "        <p class=\"databse\">in DB: <span class=\"$INDATABASE\">$INDATABASE</span></p>"    >> $XRELFILE
-        echo -e "    </div>" >> $XRELFILE
+        echo -e  "    <div class=\"movie\">" >> $XRELFILE
+        echo -e  "        <h3><a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></h3>" >> $XRELFILE
+        echo -e  "        <p>nominations: $NOMINATIONS</p>"                      >> $XRELFILE
+        echo -e  "        <p class=\"xrel\"><a target=\"_blank\" href=\"http://www.xrel.to/search.html?xrel_search_query=$ID\">xRel</a></p>" >> $XRELFILE
+
+        echo -en "        <p class=\"watched\">watched: <span class=\"$WATCHED\">"        >> $XRELFILE
+        if [ "$WATCHED" = "yes" ]
+        then
+          # check mark
+          echo -en "&#10004;"         >> $XRELFILE
+        else
+          # X
+          echo -en "&#10006;"         >> $XRELFILE
+        fi
+        echo -e  "</span></p>"        >> $XRELFILE
+
+        echo -en "        <p class=\"databse\">in DB: <span class=\"$INDATABASE\">"    >> $XRELFILE
+        if [ "$INDATABASE" = "yes" ]
+        then
+          # check mark
+          echo -en "&#10004;"         >> $XRELFILE
+        else
+          # X
+          echo -en "&#10006;"         >> $XRELFILE
+        fi
+        echo -e  " </span></p>"       >> $XRELFILE
+        
+        echo -e  "    </div>"         >> $XRELFILE
       fi
 
     done < "$IDSFILE"

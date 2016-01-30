@@ -32,11 +32,11 @@ p {
 }
 
 .yes {
-    font-weight: bold;
+/*     font-weight: bold;*/
     color: green;
 }
 
 .no {
-    font-weight: bold;
+/*    font-weight: bold;*/
     color: red;
 }
