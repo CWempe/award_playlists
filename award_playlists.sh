@@ -384,9 +384,8 @@ if [ $NOMINEESCOUNT -eq 0 ]
       ID=`echo $LINE | awk '{print $2}'`
       TITLE=`echo $LINE | cut -c 13-`
       # Search title in Database using IMDBid
-      SQLRESULT=`sqlite3 $DBFILE "SELECT c00, playCount, '"$NOMINATIONS"' as nominations FROM movieview WHERE c09 IS '"$ID"' GROUP BY c00"`
+      SQLRESULT=`sqlite3 $DBFILE "SELECT c00, playCount, '"$NOMINATIONS"' as nominations FROM movieview WHERE c09 IS '"$ID"' GROUP BY c00 LIMIT 1"`
       TITLESQL=`echo $TITLE | sed 's/&/%/g'`
-      
 
       if [ "$SQLRESULT" != "" ]
       then
@@ -422,6 +421,12 @@ if [ $NOMINEESCOUNT -eq 0 ]
               >> "$PLAYLISTFILETV"
         fi
       fi
+
+      if [ $VERBOSE -eq 1 ]
+        then
+          echo -e "$TITLE:\n  PLAYCOUNT: $PLAYCOUNT"
+      fi
+
 
       if [ $PLAYCOUNT -gt 0 ]
       then 
