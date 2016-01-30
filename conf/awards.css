@@ -3,32 +3,46 @@ html * {
     font-size: 100%;
 }
 
-
-.movie:nth-child(odd) {
-    background-color: #F0F0F0;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-}
-
 h1 {
-    font-size: 1.2em;
+    font-size: 1.4em;
 }
 
 h2 {
-    font-size: 1.1em;
+    font-size: 1.3em;
 }
 
-h3 {
-    margin-top: 2px;
-    margin-bottom: 0px;
+thead {
+    color: #FFFFFF;
+    background-color: #000000;
+    font-size: 1.2em;
 }
 
-p {
-    margin-top: 0px;
-    margin-bottom: 0px;
-    margin-left: 12px;
-    font-size: 0.9em;
+table tbody tr:nth-child(odd) {
+    background-color: #F0F0F0;
+}
+
+
+/* 
+ * add incrementing numbers in frint of every row
+ */
+
+table {
+  counter-reset: rowNumber;
+}
+
+table tbody tr {
+  counter-increment: rowNumber;
+}
+
+table tbody tr td:first-child::before {
+  content: counter(rowNumber);
+  font-size: 0.8em;
+  text-align: right;
+}
+
+
+.nominations {
+  text-align: right;
 }
 
 .yes {
