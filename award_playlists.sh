@@ -183,47 +183,10 @@ esac
 echo "### $EVENT $YEAR"
 
 
-# Prefix for filenames
-FILENAMEPREFIX="nominees_"$EVENTSTRING"_"$YEAR
-
 # Define files and directories
-BINDIR="/opt/award_playlists"
+BINDIR="$( cd "$(dirname "$0")" ; pwd -P )"
+# " to correct syntax highlichting in mcedit
 CONFDIR="$BINDIR/conf"
-DATDIR="$BINDIR/dat"
-TMPDIR="$BINDIR/tmp"
-SENDMAIL="/usr/sbin/sendmail"
-
-### Change this paths to your enviroment ###
-# Path to XBMC-directory
-USERDIR="/var/lib/vdr/.xbmc/userdata"
-DBDIR="$USERDIR/Database"
-PLVDIR="$USERDIR/playlists/video"
-PLVEVENTDIR="$PLVDIR/$EVENT"
-
-# newest MyVideo-database from XBMC
-DBFILE=`ls -t $DBDIR/MyVideos*.db | head -1`
-# URL to IMDB-Nominee-List
-NOMINEEURL="http://www.imdb.com/event/$EVENTID/$YEAR"
-# temp-file for IMDB-Nominee-List
-NOMINEEHTML="$TMPDIR/$FILENAMEPREFIX.html"
-# temp-file for IMDB-Nominee-List
-IDSFILE="$DATDIR/$FILENAMEPREFIX.ids"
-# filename of playlist
-PLAYLISTFILE="$PLVEVENTDIR/$FILENAMEPREFIX.xsp"
-# filename of playlist for tv shows
-PLAYLISTFILETV="$PLVEVENTDIR/$FILENAMEPREFIX-tv.xsp"
-# title of playlist
-PLAYLISTNAME="$EVENT Awards ($YEAR)"
-# title of playlist for tv shows
-PLAYLISTNAMETV="$EVENT Awards ($YEAR) (TV Shows)"
-# Statistics
-STATFILE="$DATDIR/"$FILENAMEPREFIX"_stats.txt"
-STATFILEOLD="$DATDIR/"$FILENAMEPREFIX"_stats.txt.old"
-# xRel.to-webpage
-XRELFILE="$DATDIR/"$FILENAMEPREFIX"_xrel.html"
-
-
-
 # custom config file
 CONFIG="$CONFDIR/custom.conf"
 
