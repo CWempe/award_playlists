@@ -359,7 +359,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "          <th title=\"Number\">#</th>"                                     >> $XRELFILE
       echo -e "          <th title=\"in Database\">&#x1F4C0;</th>"                        >> $XRELFILE
       echo -e "          <th title=\"watched\">&#x1F453;</th>"                            >> $XRELFILE
-      echo -e "          <th title=\"Realeases-NFO\">&#x1F4C0;</th>"                      >> $XRELFILE
+      echo -e "          <th title=\"Realeases-NFO\">&#x1F4CB;</th>"                      >> $XRELFILE
       echo -e "          <th title=\"amount of nominations\">&#x1F3C6;</th>"              >> $XRELFILE
       echo -e "          <th title=\"Movietitle\">Title</th>"                             >> $XRELFILE
       echo -e "        </tr>"                                                             >> $XRELFILE
@@ -500,7 +500,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
     
     if [ "$TV" = "yes" ]
       then
-        echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILETV"
+        echo -e "</smartplaylist>"                               >> "$PLAYLISTFILETV"
     fi
 
 
@@ -523,15 +523,15 @@ if [ $NOMINEESCOUNT -eq 0 ]
     ####
     if [ "$XREL" -eq 1 ]
     then
-      echo -e "      </tbody>"                                  >> $XRELFILE
-      echo -e "    </table>"                                    >> $XRELFILE
-      echo -e "    <h2>Statistics</h2>"                         >> $XRELFILE
-      echo -e "    <div class=\"statistics\">"                  >> $XRELFILE
-      echo -e "        <p>Total nominees:  $NOMINEESCOUNT</p>"  >> $XRELFILE
-      echo -e "        <p>in your databse: $MOVIECOUNT</p>"     >> $XRELFILE
-      echo -e "        <p>already watched: $WATCHEDCOUNT</p>"   >> $XRELFILE
-      echo -e "    </div>"                                      >> $XRELFILE
-      echo -e "</body>"                                         >> $XRELFILE
+      echo -e  "      </tbody>"                                  >> $XRELFILE
+      echo -e  "    </table>"                                    >> $XRELFILE
+      echo -e  "    <h2>Statistics</h2>"                         >> $XRELFILE
+      echo -e  "    <div class=\"statistics\">"                  >> $XRELFILE
+      echo -en "        Total nominees:  $NOMINEESCOUNT<br>"     >> $XRELFILE
+      echo -en         "in your databse: $MOVIECOUNT<br>"        >> $XRELFILE
+      echo -en         "already watched: $WATCHEDCOUNT<br>"      >> $XRELFILE
+      echo -en "    </div>"                                      >> $XRELFILE
+      echo -e  "</body>"                                         >> $XRELFILE
     fi
 fi
 
