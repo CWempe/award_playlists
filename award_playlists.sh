@@ -478,8 +478,8 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -en  "          <td title=\"Realeases-NFO\" class=\"nfo\">"                                               >> $XRELFILE
         echo -en               "<a target=\"_blank\" href=\"http://www.xrel.to/search.html?xrel_search_query=$ID\">"   >> $XRELFILE
         echo -e                "<img src=\"http://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a></td>"                   >> $XRELFILE
-        echo -e  "          <td title=\"\">$NOMINATIONS</td>"                                                          >> $XRELFILE
-        echo -en "          <td title=\"Movietitle\" class=\"title\">"                                                 >> $XRELFILE
+        echo -e  "          <td title=\"nominations\"    class=\"nominations\">$NOMINATIONS</td>"                      >> $XRELFILE
+        echo -en "          <td title=\"Movietitle\"     class=\"title\">"                                             >> $XRELFILE
         echo -e              "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></td>"            >> $XRELFILE
         echo -e "        </tr>"                                                                                        >> $XRELFILE
 
