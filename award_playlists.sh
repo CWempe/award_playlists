@@ -344,13 +344,31 @@ if [ $NOMINEESCOUNT -eq 0 ]
     ####
     if [ "$XREL" -eq 1 ]
     then
+      # 
       echo -e "<!DOCTYPE html>\n<html lang=\"en\">" >  $XRELFILE
       echo -e "<head>"                              >> $XRELFILE
       echo -e "    <meta charset=\"utf-8\"/>"       >> $XRELFILE
+      echo -e "    <link rel=\"stylesheet\" type=\"text/css\" href=\"$CSSFILE\" />"       >> $XRELFILE
       echo -e "</head>"                             >> $XRELFILE
       echo -e "<body>"                              >> $XRELFILE
       echo -e "    <h1>$PLAYLISTNAME</h1>"          >> $XRELFILE
-      echo -e "    <h2>Movies</h2>"          >> $XRELFILE
+      echo -e "    <h2>Movies</h2>"                 >> $XRELFILE
+      
+      # copy css file is necessary
+      if [ ! -f "$CSSSOURCE" ]
+        then
+            if [ $VERBOSE -eq 1 ]
+              then
+                echo -e "css file does not exist!"
+            fi
+            exit 1
+        else
+            if [ $VERBOSE -eq 1 ]
+              then
+                echo -e "Copy css file to html directory."
+            fi
+            cp "$CSSSOURCE" "$CSSDEST"
+      fi
     fi
 
     if [ $VERBOSE -eq 1 ]
