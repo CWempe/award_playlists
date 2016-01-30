@@ -345,14 +345,26 @@ if [ $NOMINEESCOUNT -eq 0 ]
     if [ "$XREL" -eq 1 ]
     then
       # 
-      echo -e "<!DOCTYPE html>\n<html lang=\"en\">" >  $XRELFILE
-      echo -e "<head>"                              >> $XRELFILE
-      echo -e "    <meta charset=\"utf-8\"/>"       >> $XRELFILE
+      echo -e "<!DOCTYPE html>\n<html lang=\"en\">"                                       >  $XRELFILE
+      echo -e "<head>"                                                                    >> $XRELFILE
+      echo -e "    <meta charset=\"utf-8\"/>"                                             >> $XRELFILE
       echo -e "    <link rel=\"stylesheet\" type=\"text/css\" href=\"$CSSFILE\" />"       >> $XRELFILE
-      echo -e "</head>"                             >> $XRELFILE
-      echo -e "<body>"                              >> $XRELFILE
-      echo -e "    <h1>$PLAYLISTNAME</h1>"          >> $XRELFILE
-      echo -e "    <h2>Movies</h2>"                 >> $XRELFILE
+      echo -e "</head>"                                                                   >> $XRELFILE
+      echo -e "<body>"                                                                    >> $XRELFILE
+      echo -e "    <h1>$PLAYLISTNAME</h1>"                                                >> $XRELFILE
+      echo -e "    <h2>Movies</h2>"                                                       >> $XRELFILE
+      echo -e "    <table>"                                                               >> $XRELFILE
+      echo -e "      <thead>"                                                             >> $XRELFILE
+      echo -e "        <tr>"                                                              >> $XRELFILE
+      echo -e "          <th title=\"Number\">#</th>"                                     >> $XRELFILE
+      echo -e "          <th title=\"in Database\">&#x1F4C0;</th>"                        >> $XRELFILE
+      echo -e "          <th title=\"watched\">&#x1F453;</th>"                            >> $XRELFILE
+      echo -e "          <th title=\"Realeases-NFO\">&#x1F4C0;</th>"                      >> $XRELFILE
+      echo -e "          <th title=\"amount of nominations\">&#x1F3C6;</th>"              >> $XRELFILE
+      echo -e "          <th title=\"Movietitle\">Title</th>"                             >> $XRELFILE
+      echo -e "        </tr>"                                                             >> $XRELFILE
+      echo -e "      </thead>"                                                            >> $XRELFILE
+      echo -e "      <tbody>"                                                             >> $XRELFILE
       
       # copy css file is necessary
       if [ ! -f "$CSSSOURCE" ]
@@ -440,34 +452,37 @@ if [ $NOMINEESCOUNT -eq 0 ]
       ####
       if [ "$XREL" -eq 1 ]
       then
-        echo -e  "    <div class=\"movie\">" >> $XRELFILE
-        echo -e  "        <h3><a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></h3>" >> $XRELFILE
-        echo -e  "        <p>nominations: $NOMINATIONS</p>"                      >> $XRELFILE
-        echo -e  "        <p class=\"xrel\"><a target=\"_blank\" href=\"http://www.xrel.to/search.html?xrel_search_query=$ID\">xRel</a></p>" >> $XRELFILE
 
-        echo -en "        <p class=\"watched\">watched: <span class=\"$WATCHED\">"        >> $XRELFILE
-        if [ "$WATCHED" = "yes" ]
-        then
-          # check mark
-          echo -en "&#10004;"         >> $XRELFILE
-        else
-          # X
-          echo -en "&#10006;"         >> $XRELFILE
-        fi
-        echo -e  "</span></p>"        >> $XRELFILE
-
-        echo -en "        <p class=\"databse\">in DB: <span class=\"$INDATABASE\">"    >> $XRELFILE
+        echo -e  "        <tr>"                                                                                        >> $XRELFILE
+        echo -e  "          <td title=\"number\"        class=\"number\"></td>"                                         >> $XRELFILE
+        echo -en "          <td title=\"in Database?\"  class=\"db $INDATABASE\">"                                      >> $XRELFILE
         if [ "$INDATABASE" = "yes" ]
         then
           # check mark
-          echo -en "&#10004;"         >> $XRELFILE
+          echo -en "&#10004;"   >> $XRELFILE
         else
           # X
-          echo -en "&#10006;"         >> $XRELFILE
+          echo -en "&#10006;"   >> $XRELFILE
         fi
-        echo -e  " </span></p>"       >> $XRELFILE
-        
-        echo -e  "    </div>"         >> $XRELFILE
+        echo -e         " </td>"                                                                                       >> $XRELFILE
+        echo -en "          <td title=\"watched?\"      class=\"watched $WATCHED\">"                                    >> $XRELFILE
+        if [ "$WATCHED" = "yes" ]
+        then
+          # check mark
+          echo -en "&#10004;"   >> $XRELFILE
+        else
+          # X
+          echo -en "&#10006;"   >> $XRELFILE
+        fi
+        echo -e          "</td>"                                                                                       >> $XRELFILE
+        echo -en  "          <td title=\"Realeases-NFO\" class=\"nfo\">"                                               >> $XRELFILE
+        echo -en               "<a target=\"_blank\" href=\"http://www.xrel.to/search.html?xrel_search_query=$ID\">"   >> $XRELFILE
+        echo -e                "<img src=\"http://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a></td>"                   >> $XRELFILE
+        echo -e  "          <td title=\"\">$NOMINATIONS</td>"                                                          >> $XRELFILE
+        echo -en "          <td title=\"Movietitle\" class=\"title\">"                                                 >> $XRELFILE
+        echo -e              "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></td>"            >> $XRELFILE
+        echo -e "        </tr>"                                                                                        >> $XRELFILE
+
       fi
 
     done < "$IDSFILE"
@@ -504,10 +519,12 @@ if [ $NOMINEESCOUNT -eq 0 ]
     fi
 
     ####
-    # Create fppter for HTML-file
+    # Create footer for HTML-file
     ####
     if [ "$XREL" -eq 1 ]
     then
+      echo -e "      </tbody>"                                  >> $XRELFILE
+      echo -e "    </table>"                                    >> $XRELFILE
       echo -e "    <h2>Statistics</h2>"                         >> $XRELFILE
       echo -e "    <div class=\"statistics\">"                  >> $XRELFILE
       echo -e "        <p>Total nominees:  $NOMINEESCOUNT</p>"  >> $XRELFILE
