@@ -8,7 +8,7 @@ log/**
 tmp/**
 
 # except example config
-!conf/*conf.example
+!conf/custom.conf.original
 
 # Exclude backups
 *.devel

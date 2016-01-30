@@ -1,0 +1,48 @@
+#!/bin/bash
+# Define your custom values
+
+# Prefix for filenames
+FILENAMEPREFIX="nominees_"$EVENTSTRING"_"$YEAR
+
+# Define files and directories
+DATDIR="$BINDIR/dat"
+TMPDIR="$BINDIR/tmp"
+SENDMAIL="/usr/sbin/sendmail"
+
+### Change this paths to your enviroment ###
+# Path to XBMC-directory
+USERDIR="/var/lib/vdr/.xbmc/userdata"
+DBDIR="$USERDIR/Database"
+PLVDIR="$USERDIR/playlists/video"
+PLVEVENTDIR="$PLVDIR/$EVENT"
+# patch to web server root or similar directory
+HTMLDIR="/var/www"
+
+# newest MyVideo-database from XBMC
+DBFILE=`ls -t $DBDIR/MyVideos*.db | head -1`
+# URL to IMDB-Nominee-List
+NOMINEEURL="http://www.imdb.com/event/$EVENTID/$YEAR"
+# temp-file for IMDB-Nominee-List
+NOMINEEHTML="$TMPDIR/$FILENAMEPREFIX.html"
+# temp-file for IMDB-Nominee-List
+IDSFILE="$DATDIR/$FILENAMEPREFIX.ids"
+# filename of playlist
+PLAYLISTFILE="$PLVEVENTDIR/$FILENAMEPREFIX.xsp"
+# filename of playlist for tv shows
+PLAYLISTFILETV="$PLVEVENTDIR/$FILENAMEPREFIX-tv.xsp"
+# title of playlist
+PLAYLISTNAME="$EVENT Awards ($YEAR)"
+# title of playlist for tv shows
+PLAYLISTNAMETV="$EVENT Awards ($YEAR) (TV Shows)"
+# Statistics
+STATFILE="$DATDIR/"$FILENAMEPREFIX"_stats.txt"
+STATFILEOLD="$DATDIR/"$FILENAMEPREFIX"_stats.txt.old"
+# xRel.to-webpage
+XRELFILE="$HTMLDIR/"$FILENAMEPREFIX"_xrel.html"
+
+
+# Mail
+FROMNAME="Award Playlists"
+FROMMAIL="award_playlists@example.com"
+FROM="\"$FROMNAME\" <$FROMMAIL>"
+SUBJECT="[award_playlist] $EVENT ($YEAR)"
