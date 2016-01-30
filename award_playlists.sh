@@ -357,9 +357,9 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "      <thead>"                                                             >> $XRELFILE
       echo -e "        <tr>"                                                              >> $XRELFILE
       echo -e "          <th title=\"Number\">#</th>"                                     >> $XRELFILE
-      echo -e "          <th title=\"in Database\">&#x1F4C0;</th>"                        >> $XRELFILE
+      echo -e "          <th title=\"in Database\">&#x1F4E5;</th>"                        >> $XRELFILE
       echo -e "          <th title=\"watched\">&#x1F453;</th>"                            >> $XRELFILE
-      echo -e "          <th title=\"Realeases-NFO\">&#x1F4CB;</th>"                      >> $XRELFILE
+      echo -e "          <th title=\"Realeases-NFO\">&#x1F4DC;</th>"                      >> $XRELFILE
       echo -e "          <th title=\"amount of nominations\">&#x1F3C6;</th>"              >> $XRELFILE
       echo -e "          <th title=\"Movietitle\">Title</th>"                             >> $XRELFILE
       echo -e "        </tr>"                                                             >> $XRELFILE
