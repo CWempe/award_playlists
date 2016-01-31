@@ -130,6 +130,7 @@ while getopts vdfe:m:y:t:sx opt
         echo "                 (C)ritics Choice Awards"
         echo "                 (G)olden Globes Awards"
         echo "                 (I)ndependent Spirit Awards"
+        echo "                 (SAG) Screen Actors Guild Awards"
         echo "          [-m] Mail: Specify the mail address to send the statistics to"
         echo "          [-y] Year: Specify the year of the Event"
         echo "          [-t] TV: Overrides the default to create or not create a playlist for nominated tv shows (without IMDBid)"
@@ -170,6 +171,12 @@ case $EVENTARG in
     EVENTSTRING="independant"
     EVENTID="ev0000349"
     TV="no"
+    ;;
+  sag|SAG )
+    EVENT="SAG Awards"
+    EVENTSTRING="sag"
+    EVENTID="ev0000598"
+    TV="yes"
     ;;
   a|A|o|O|* )
     EVENT="Academy Awards"
