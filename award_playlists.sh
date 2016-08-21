@@ -2,7 +2,7 @@
 #################################################################################################################
 #
 # by Christoph Wempe
-# 2015-12-29
+# 2016-08-21
 #
 # This script creates a smart playlist from a list of award-nominees from IMDB.
 # Sorted by number of nominations (ascending).
@@ -128,6 +128,7 @@ while getopts vdfe:m:y:t:sx opt
         echo "                 (A)cademy Awards or (O)scars"
         echo "                 (B)AFTAS"
         echo "                 (C)ritics Choice Awards"
+        echo "                 Primetime (E)mmy Awards"
         echo "                 (G)olden Globes Awards"
         echo "                 (I)ndependent Spirit Awards"
         echo "                 (SAG) Screen Actors Guild Awards"
