@@ -158,6 +158,15 @@ case $EVENTARG in
     EVENTID="ev0000133"
     TV="no"
     ;;
+  e|E )
+    EVENT="Emmy Awards"
+    EVENTSTRING="emmy"
+    EVENTID="ev0000223"
+    if [ "$TV" != "no" ]
+    then
+      TV="yes"
+    fi
+    ;;
   g|G )
     EVENT="Golden Globe Awards"
     EVENTSTRING="golden-globes"
