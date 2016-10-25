@@ -50,3 +50,7 @@ FROMNAME="Award Playlists"
 FROMMAIL="award_playlists@example.com"
 FROM="\"$FROMNAME\" <$FROMMAIL>"
 SUBJECT="[award_playlist] $EVENT ($YEAR)"
+
+# file owner
+USER="kodi"
+GROUP="kodi"
