@@ -243,6 +243,8 @@ if [ "$VERBOSE" -eq 1 ]
     echo -e " EVENT:          $EVENT"
     echo -e ""
     echo -e "Files:"
+    echo -e " BINDIR:         $BINDIR"
+    echo -e " CONFIG":        $CONFIG""
     echo -e " DBFILE:         $DBFILE"
     echo -e " NOMINEEURL:     $NOMINEEURL"
     echo -e " NOMINEEHTML:    $NOMINEEHTML"
