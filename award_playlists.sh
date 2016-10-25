@@ -37,8 +37,8 @@ EVENT="G"
 ####
 # file owner
 ####
-USER="vdr"
-GROUP="audio"
+USER="kodi"
+GROUP="video"
 
 # VERBOSE (0/1)
 VERBOSE="0"
