@@ -44,6 +44,9 @@ CSSSOURCE="$CONFDIR/$CSSFILE"
 CSSDEST="$HTMLDIR/$CSSFILE"
 XRELFILE="$HTMLDIR/"$FILENAMEPREFIX".html"
 
+# Timeout in ms to prevent "Database is locked" error
+DBTIMEOUT=2000
+
 
 # Mail
 FROMNAME="Award Playlists"
