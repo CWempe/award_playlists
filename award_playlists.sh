@@ -417,7 +417,11 @@ if [ $NOMINEESCOUNT -eq 0 ]
       ID=`echo $LINE | awk '{print $2}'`
       TITLE=`echo $LINE | cut -c 13-`
       # Search title in Database using IMDBid
-      SQLRESULT=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, playCount, '"$NOMINATIONS"' as nominations FROM movie_view WHERE uniqueid_value IS '"$ID"' AND uniqueid_type IS 'imdb' GROUP BY c00 LIMIT 1"`
+      SQLRESULT=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, playCount, '"$NOMINATIONS"' as nominations FROM movie_view WHERE uniqueid_value IS '"$ID"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1"`
+      if [ $VERBOSE -eq 1 ]
+        then
+          echo "sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
+      fi
       TITLESQL=`echo $TITLE | sed 's/&/%/g'`
 
       if [ "$SQLRESULT" != "" ]
