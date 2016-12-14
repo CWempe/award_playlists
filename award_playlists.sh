@@ -436,7 +436,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         then
           PLAYCOUNT=0
         else
-          # increment MOVIECOUNT
+          # increment WATCHEDCOUNT
           WATCHEDCOUNT=$((WATCHEDCOUNT+1))
         fi
 
