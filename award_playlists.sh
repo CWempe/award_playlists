@@ -378,8 +378,9 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "      <thead>"                                                             >> $XRELFILE
       echo -e "        <tr>"                                                              >> $XRELFILE
       echo -e "          <th title=\"Number\">#</th>"                                     >> $XRELFILE
-      echo -e "          <th title=\"in Database\">&#x1F4E5;</th>"                        >> $XRELFILE
+      echo -e "          <th title=\"in Database\">&#x1F5B4;</th>"                        >> $XRELFILE
       echo -e "          <th title=\"watched\">&#x1F453;</th>"                            >> $XRELFILE
+      echo -e "          <th title=\"Download\">&#x1F4E5;</th>"                           >> $XRELFILE
       echo -e "          <th title=\"Realeases-NFO\">&#x1F4DC;</th>"                      >> $XRELFILE
       echo -e "          <th title=\"amount of nominations\">&#x1F3C6;</th>"              >> $XRELFILE
       echo -e "          <th title=\"Movietitle\">Title</th>"                             >> $XRELFILE
@@ -416,6 +417,14 @@ if [ $NOMINEESCOUNT -eq 0 ]
       NOMINATIONS=`echo "$LINE" | awk '{print $1}'`
       ID=`echo $LINE | awk '{print $2}'`
       TITLE=`echo $LINE | cut -c 13-`
+      TITLESEARCH=`echo "$TITLE" | sed -r "s/(\ |,|')/%20/g"`
+      if [ "$EVENTSTRING" = "golden-globes" -o "$EVENTSTRING" = "oscars" -o "$EVENTSTRING" = "bafta" -o "$EVENTSTRING" = "independant" -o "$EVENTSTRING" = "sag" ]
+      then
+        RELEASEYEAR=`expr $YEAR - 1`
+      else
+        RELEASEYEAR="$YEAR"
+      fi
+
       # Search title in Database using IMDBid
       SQLRESULT=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, playCount, '"$NOMINATIONS"' as nominations FROM movie_view WHERE uniqueid_value IS '"$ID"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1"`
       if [ $VERBOSE -eq 1 ]
@@ -478,7 +487,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       if [ "$XREL" -eq 1 ]
       then
 
-        echo -e  "        <tr>"                                                                                        >> $XRELFILE
+        echo -e  "        <tr>"                                                                                         >> $XRELFILE
         echo -e  "          <td title=\"number\"        class=\"number\"></td>"                                         >> $XRELFILE
         echo -en "          <td title=\"in Database?\"  class=\"db $INDATABASE\">"                                      >> $XRELFILE
         if [ "$INDATABASE" = "yes" ]
@@ -490,7 +499,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
           echo -en "&#10006;"   >> $XRELFILE
         fi
         echo -e         " </td>"                                                                                       >> $XRELFILE
-        echo -en "          <td title=\"watched?\"      class=\"watched $WATCHED\">"                                    >> $XRELFILE
+        echo -en "          <td title=\"watched?\"      class=\"watched $WATCHED\">"                                   >> $XRELFILE
         if [ "$WATCHED" = "yes" ]
         then
           # check mark
@@ -500,11 +509,19 @@ if [ $NOMINEESCOUNT -eq 0 ]
           echo -en "&#10006;"   >> $XRELFILE
         fi
         echo -e          "</td>"                                                                                       >> $XRELFILE
+
+        echo -en  "          <td title=\"Torrent\" class=\"torrent\">"                                                 >> $XRELFILE
+        echo -en               "<a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"     >> $XRELFILE
+        echo -e                "<img src=\"https://thepiratebay.org/favicon.ico\" alt=\"The Pirate Bay\"/></a>"   >> $XRELFILE
+        echo -en               "<a target=\"_blank\" href=\"https://extra.to/search/?new=1&search=$TITLESEARCH%20$RELEASEYEAR&s_cat=4\">"     >> $XRELFILE
+        echo -e                "<img src=\"https://extra.to/favicon.ico\" alt=\"ExtraTorrent\"/></a></td>"             >> $XRELFILE
+
         echo -en  "          <td title=\"Realeases-NFO\" class=\"nfo\">"                                               >> $XRELFILE
-        echo -en               "<a target=\"_blank\" href=\"http://www.xrel.to/search.html?xrel_search_query=$ID\">"   >> $XRELFILE
+        echo -en               "<a target=\"_blank\" href=\"https://www.xrel.to/search.html?xrel_search_query=$ID\">"  >> $XRELFILE
         echo -e                "<img src=\"http://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a></td>"                   >> $XRELFILE
-        echo -e  "          <td title=\"nominations\"   class=\"nominations\">$NOMINATIONS</td>"                      >> $XRELFILE
-        echo -en "          <td title=\"Movietitle\"    class=\"title\">"                                             >> $XRELFILE
+
+        echo -e  "          <td title=\"nominations\"   class=\"nominations\">$NOMINATIONS</td>"                       >> $XRELFILE
+        echo -en "          <td title=\"Movietitle\"    class=\"title\">"                                              >> $XRELFILE
         echo -e              "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></td>"            >> $XRELFILE
         echo -e "        </tr>"                                                                                        >> $XRELFILE
 
