@@ -246,6 +246,8 @@ if [ "$VERBOSE" -eq 1 ]
     echo -e " PLAYLISTFILE:   $PLAYLISTFILE"
     echo -e " PLAYLISTFILETV: $PLAYLISTFILETV"
     echo -e " XRELFILE:       $XRELFILE"
+    echo -e " JSSOURCE:       $JSSOURCE"
+    echo -e " JSDEST:         $JSDEST"
     echo -e ""
 fi
 
@@ -370,11 +372,12 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "  <head>"                                                                  >> $XRELFILE
       echo -e "    <meta charset=\"utf-8\"/>"                                             >> $XRELFILE
       echo -e "    <link rel=\"stylesheet\" type=\"text/css\" href=\"$CSSFILE\" />"       >> $XRELFILE
+      echo -e "    <script src=\"sorttable.js\"></script>"                                >> $XRELFILE
       echo -e "  </head>"                                                                 >> $XRELFILE
       echo -e "  <body>"                                                                  >> $XRELFILE
       echo -e "    <h1>$PLAYLISTNAME</h1>"                                                >> $XRELFILE
       echo -e "    <h2>Movies</h2>"                                                       >> $XRELFILE
-      echo -e "    <table>"                                                               >> $XRELFILE
+      echo -e "    <table class=\"sortable\">"                                            >> $XRELFILE
       echo -e "      <thead>"                                                             >> $XRELFILE
       echo -e "        <tr>"                                                              >> $XRELFILE
       echo -e "          <th title=\"Number\">#</th>"                                     >> $XRELFILE
@@ -402,6 +405,17 @@ if [ $NOMINEESCOUNT -eq 0 ]
                 echo -e "Copy css file to html directory."
             fi
             cp "$CSSSOURCE" "$CSSDEST"
+      fi
+
+      # copy sorttable.js file is necessary
+      if [ ! -f "$JSDEST" ]
+        then
+            if [ $VERBOSE -eq 1 ]
+              then
+                echo -e "sorttable.js file does not exist yet. Downloading..."
+                echo "wget \"$JSSOURCE\" -o \"$JSDEST\""
+            fi
+            wget "$JSSOURCE" -O "$JSDEST"
       fi
     fi
 

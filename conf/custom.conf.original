@@ -42,6 +42,9 @@ STATFILEOLD="$DATDIR/"$FILENAMEPREFIX"_stats.txt.old"
 CSSFILE="awards.css"
 CSSSOURCE="$CONFDIR/$CSSFILE"
 CSSDEST="$HTMLDIR/$CSSFILE"
+JSFILE="sorttable.js"
+JSSOURCE="http://www.kryogenix.org/code/browser/sorttable/sorttable.js"
+JSDEST="$HTMLDIR/$JSFILE"
 XRELFILE="$HTMLDIR/"$FILENAMEPREFIX".html"
 
 # Timeout in ms to prevent "Database is locked" error
