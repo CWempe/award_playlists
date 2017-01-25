@@ -371,6 +371,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "<html lang=\"en\">"                                                        >> $XRELFILE
       echo -e "  <head>"                                                                  >> $XRELFILE
       echo -e "    <meta charset=\"utf-8\"/>"                                             >> $XRELFILE
+      echo -e "    <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"http://www.oscars.org/favicon.ico\" />"       >> $XRELFILE
       echo -e "    <link rel=\"stylesheet\" type=\"text/css\" href=\"$CSSFILE\" />"       >> $XRELFILE
       echo -e "    <script src=\"sorttable.js\"></script>"                                >> $XRELFILE
       echo -e "  </head>"                                                                 >> $XRELFILE
