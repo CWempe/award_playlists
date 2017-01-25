@@ -389,8 +389,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "          <th title=\"Number\">#</th>"                                     >> $XRELFILE
       echo -e "          <th title=\"in Database\">&#x1F5B4;</th>"                        >> $XRELFILE
       echo -e "          <th title=\"watched\">&#x1F453;</th>"                            >> $XRELFILE
-      echo -e "          <th title=\"Download\">&#x1F4E5;</th>"                           >> $XRELFILE
-      echo -e "          <th title=\"Realeases-NFO\">&#x1F4DC;</th>"                      >> $XRELFILE
+      echo -e "          <th title=\"Links\">&#x1f50d;</th>"                           >> $XRELFILE
       echo -e "          <th title=\"amount of nominations\">&#x1F3C6;</th>"              >> $XRELFILE
       echo -e "          <th title=\"Movietitle\">Title</th>"                             >> $XRELFILE
       echo -e "        </tr>"                                                             >> $XRELFILE
@@ -528,22 +527,23 @@ if [ $NOMINEESCOUNT -eq 0 ]
           # X
           echo -en "&#10006;"   >> $XRELFILE
         fi
-        echo -e          "</td>"                                                                                       >> $XRELFILE
+        echo -e          "</td>"                                                                                                          >> $XRELFILE
 
-        echo -en  "          <td title=\"Torrent\" class=\"torrent\">"                                                 >> $XRELFILE
-        echo -en               "<a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"     >> $XRELFILE
-        echo -e                "<img src=\"https://thepiratebay.org/favicon.ico\" alt=\"The Pirate Bay\"/></a>"   >> $XRELFILE
-        echo -en               "<a target=\"_blank\" href=\"https://extra.to/search/?new=1&search=$TITLESEARCH%20$RELEASEYEAR&s_cat=4\">"     >> $XRELFILE
-        echo -e                "<img src=\"https://extra.to/favicon.ico\" alt=\"ExtraTorrent\"/></a></td>"             >> $XRELFILE
+        echo -e  "          <td title=\"Links\" class=\"links\">"                                                                         >> $XRELFILE
+        echo -e  "             <a target=\"_blank\" href=\"https://www.xrel.to/search.html?xrel_search_query=$ID\">"                      >> $XRELFILE
+        echo -e  "               <img src=\"http://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a>     "                                     >> $XRELFILE
+        echo -e  "             <a target=\"_blank\" href=\"https://www.themoviedb.org/search?query=$TITLESEARCH\">"                       >> $XRELFILE
+        echo -e  "               <img src=\"https://www.themoviedb.org/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"                >> $XRELFILE
+        echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"       >> $XRELFILE
+        echo -e  "               <img src=\"https://thepiratebay.org/favicon.ico\" alt=\"The Pirate Bay\"/></a>"                          >> $XRELFILE
+        echo -e  "             <a target=\"_blank\" href=\"https://extra.to/search/?new=1&search=$TITLESEARCH%20$RELEASEYEAR&s_cat=4\">"  >> $XRELFILE
+        echo -e  "               <img src=\"https://extra.to/favicon.ico\" alt=\"ExtraTorrent\"/></a>"                                    >> $XRELFILE
+        echo -e  "             </td>"                                                                                                     >> $XRELFILE
 
-        echo -en  "          <td title=\"Realeases-NFO\" class=\"nfo\">"                                               >> $XRELFILE
-        echo -en               "<a target=\"_blank\" href=\"https://www.xrel.to/search.html?xrel_search_query=$ID\">"  >> $XRELFILE
-        echo -e                "<img src=\"http://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a></td>"                   >> $XRELFILE
-
-        echo -e  "          <td title=\"nominations\"   class=\"nominations\">$NOMINATIONS</td>"                       >> $XRELFILE
-        echo -en "          <td title=\"Movietitle\"    class=\"title\">"                                              >> $XRELFILE
-        echo -e              "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></td>"            >> $XRELFILE
-        echo -e "        </tr>"                                                                                        >> $XRELFILE
+        echo -e  "          <td title=\"nominations\" class=\"nominations\">$NOMINATIONS</td>"                                            >> $XRELFILE
+        echo -en "          <td title=\"Movietitle\" class=\"title\">"                                                                    >> $XRELFILE
+        echo -e              "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></td>"                               >> $XRELFILE
+        echo -e "        </tr>"                                                                                                           >> $XRELFILE
 
       fi
 
