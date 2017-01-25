@@ -347,6 +347,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
     echo -e "<smartplaylist type=\"movies\">"                                          >> "$PLAYLISTFILE"
     echo -e "  <name>$PLAYLISTNAME</name>"                                             >> "$PLAYLISTFILE"
     echo -e "  <match>one</match>"                                                     >> "$PLAYLISTFILE"
+    echo -e "  <rule field=\"title\" operator=\"is\">"                                 >> "$PLAYLISTFILE"
 
     if [ "$TV" = "yes" ]
       then
@@ -359,6 +360,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e "<smartplaylist type=\"tvshows\">"                                         >> "$PLAYLISTFILETV"
         echo -e "  <name>$PLAYLISTNAMETV</name>"                                           >> "$PLAYLISTFILETV"
         echo -e "  <match>one</match>"                                                     >> "$PLAYLISTFILETV"
+        echo -e "  <rule field=\"title\" operator=\"is\">"                                 >> "$PLAYLISTFILETV"
     fi
 
     ####
@@ -469,7 +471,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         fi
 
         # Write in playlist
-        echo -e "  <rule field=\"title\" operator=\"is\">$TITLESQL</rule>" \
+        echo -e "    <value>$TITLESQL</value>" \
           >> "$PLAYLISTFILE"
 
       else
@@ -478,7 +480,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         if [ "$TV" = "yes" ]
           then
              # write in tv playlist
-             echo -e "<rule field=\"title\" operator=\"is\">$TITLESQL</rule>" \
+             echo -e "    <value>$TITLESQL</value>" \
               >> "$PLAYLISTFILETV"
         fi
       fi
@@ -553,10 +555,12 @@ if [ $NOMINEESCOUNT -eq 0 ]
       then
         echo -e "Printing footers ..."
     fi
+    echo -e "  </rule>"                                         >> "$PLAYLISTFILE"
     echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILE"
     
     if [ "$TV" = "yes" ]
       then
+        echo -e "  </rule>"                                      >> "$PLAYLISTFILETV"
         echo -e "</smartplaylist>"                               >> "$PLAYLISTFILETV"
     fi
 
