@@ -83,6 +83,7 @@ while getopts vdfe:m:y:t:sx opt
         ;;
       y)      # year
         YEAR="$OPTARG"
+        OLDESTYEAR=`expr $YEAR - 3`
         if [ "$VERBOSE" -eq 1 ]
           then
             echo -e "Argument -y : $OPTARG"
@@ -232,6 +233,7 @@ if [ "$VERBOSE" -eq 1 ]
     echo -e " MAIL:           $MAIL"
     echo -e " SUBJECT:        $SUBJECT"
     echo -e " YEAR:           $YEAR"
+    echo -e " OLDESTYEAR:     $OLDESTYEAR"
     echo -e " EVENTID:        $EVENTID"
     echo -e " EVENTSTRING:    $EVENTSTRING"
     echo -e " EVENT:          $EVENT"
@@ -346,7 +348,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
     echo -e "<!-- This Smartplaylist was created by \"$0\" at `date +%F\ %T` -->"      >> "$PLAYLISTFILE"
     echo -e "<smartplaylist type=\"movies\">"                                          >> "$PLAYLISTFILE"
     echo -e "  <name>$PLAYLISTNAME</name>"                                             >> "$PLAYLISTFILE"
-    echo -e "  <match>one</match>"                                                     >> "$PLAYLISTFILE"
+    echo -e "  <match>all</match>"                                                     >> "$PLAYLISTFILE"
     echo -e "  <rule field=\"title\" operator=\"is\">"                                 >> "$PLAYLISTFILE"
 
     if [ "$TV" = "yes" ]
@@ -359,7 +361,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e "<!-- This Smartplaylist was created by \"$0\" at `date +%F\ %T` -->"      >> "$PLAYLISTFILETV"
         echo -e "<smartplaylist type=\"tvshows\">"                                         >> "$PLAYLISTFILETV"
         echo -e "  <name>$PLAYLISTNAMETV</name>"                                           >> "$PLAYLISTFILETV"
-        echo -e "  <match>one</match>"                                                     >> "$PLAYLISTFILETV"
+        echo -e "  <match>all</match>"                                                     >> "$PLAYLISTFILETV"
         echo -e "  <rule field=\"title\" operator=\"is\">"                                 >> "$PLAYLISTFILETV"
     fi
 
@@ -380,6 +382,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "  <body>"                                                                  >> $XRELFILE
       echo -e "    <h1>$PLAYLISTNAME</h1>"                                                >> $XRELFILE
       echo -e "    <h2>Movies</h2>"                                                       >> $XRELFILE
+      echo -e "    <p><a target=\"_blank\" href=\"$NOMINEEURL\">IMDB's Awards Central</a></p>"  >> $XRELFILE
       echo -e "    <table class=\"sortable\">"                                            >> $XRELFILE
       echo -e "      <thead>"                                                             >> $XRELFILE
       echo -e "        <tr>"                                                              >> $XRELFILE
@@ -555,8 +558,9 @@ if [ $NOMINEESCOUNT -eq 0 ]
       then
         echo -e "Printing footers ..."
     fi
-    echo -e "  </rule>"                                         >> "$PLAYLISTFILE"
-    echo -e "</smartplaylist>"                                  >> "$PLAYLISTFILE"
+    echo -e "  </rule>"                                                            >> "$PLAYLISTFILE"
+    echo -e "  <rule field=\"year\" operator=\"greaterthan\">$OLDESTYEAR</rule>"   >> "$PLAYLISTFILE"
+    echo -e "</smartplaylist>"                                                     >> "$PLAYLISTFILE"
     
     if [ "$TV" = "yes" ]
       then
