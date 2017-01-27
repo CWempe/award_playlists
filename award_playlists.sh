@@ -437,6 +437,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       ID=`echo $LINE | awk '{print $2}'`
       TITLE=`echo $LINE | cut -c 13-`
       TITLESEARCH=`echo "$TITLE" | sed -r "s/(\ |,|')/%20/g"`
+      TITLESEARCHG=`echo "$TITLE" | sed -r "s/(\ |,|')/+/g"`
       if [ "$EVENTSTRING" = "golden-globes" -o "$EVENTSTRING" = "oscars" -o "$EVENTSTRING" = "bafta" -o "$EVENTSTRING" = "independant" -o "$EVENTSTRING" = "sag" ]
       then
         RELEASEYEAR=`expr $YEAR - 1`
@@ -540,6 +541,8 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e  "               <img src=\"https://thepiratebay.org/favicon.ico\" alt=\"The Pirate Bay\"/></a>"                          >> $XRELFILE
         echo -e  "             <a target=\"_blank\" href=\"https://extra.to/search/?new=1&search=$TITLESEARCH%20$RELEASEYEAR&s_cat=4\">"  >> $XRELFILE
         echo -e  "               <img src=\"https://extra.to/favicon.ico\" alt=\"ExtraTorrent\"/></a>"                                    >> $XRELFILE
+        echo -e  "             <a target=\"_blank\" href=\"https://www.google.de/search?safe=off&site=webhp&source=hp&q=$TITLESEARCHG\">" >> $XRELFILE
+        echo -e  "               <img src=\"https://www.google.com/favicon.ico\" alt=\"Google\" height=16/></a>"                          >> $XRELFILE
         echo -e  "             </td>"                                                                                                     >> $XRELFILE
         echo -e  "          <td title=\"nominations\" class=\"nominations\">$NOMINATIONS</td>"                                            >> $XRELFILE
         echo -en "          <td title=\"Movietitle\" class=\"title\">"                                                                    >> $XRELFILE
