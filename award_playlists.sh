@@ -531,18 +531,28 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e          "</td>"                                                                                                          >> $XRELFILE
 
         echo -e  "          <td title=\"Links\" class=\"links\">"                                                                         >> $XRELFILE
+
         echo -e  "             <a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">"                                             >> $XRELFILE
         echo -e  "               <img src=\"http://www.imdb.com/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"                       >> $XRELFILE
+
         echo -e  "             <a target=\"_blank\" href=\"https://www.themoviedb.org/search?query=$TITLESEARCH\">"                       >> $XRELFILE
         echo -e  "               <img src=\"https://www.themoviedb.org/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"                >> $XRELFILE
+
         echo -e  "             <a target=\"_blank\" href=\"https://www.xrel.to/search.html?xrel_search_query=$ID\">"                      >> $XRELFILE
         echo -e  "               <img src=\"http://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a>     "                                     >> $XRELFILE
+
         echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"       >> $XRELFILE
         echo -e  "               <img src=\"https://thepiratebay.org/favicon.ico\" alt=\"The Pirate Bay\"/></a>"                          >> $XRELFILE
+
         echo -e  "             <a target=\"_blank\" href=\"https://extra.to/search/?new=1&search=$TITLESEARCH%20$RELEASEYEAR&s_cat=4\">"  >> $XRELFILE
         echo -e  "               <img src=\"https://extra.to/favicon.ico\" alt=\"ExtraTorrent\"/></a>"                                    >> $XRELFILE
+
+        echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?search=$TITLESEARCH%20$RELEASEYEAR&order=seeders&by=DESC\">" >> $XRELFILE
+        echo -e  "               <img src=\"https://rarbg.to/favicon.ico\" alt=\"RARBG\"/></a>"                                           >> $XRELFILE
+
         echo -e  "             <a target=\"_blank\" href=\"https://www.google.de/search?safe=off&site=webhp&source=hp&q=$TITLESEARCHG\">" >> $XRELFILE
         echo -e  "               <img src=\"https://www.google.com/favicon.ico\" alt=\"Google\" height=16/></a>"                          >> $XRELFILE
+
         echo -e  "             </td>"                                                                                                     >> $XRELFILE
         echo -e  "          <td title=\"nominations\" class=\"nominations\">$NOMINATIONS</td>"                                            >> $XRELFILE
         echo -en "          <td title=\"Movietitle\" class=\"title\">"                                                                    >> $XRELFILE
