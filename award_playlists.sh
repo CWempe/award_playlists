@@ -641,9 +641,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"       >> $XRELFILE
         echo -e  "               <img src=\"https://thepiratebay.org/favicon.ico\" alt=\"The Pirate Bay\"/></a>"                          >> $XRELFILE
 
-        echo -e  "             <a target=\"_blank\" href=\"https://extra.to/search/?new=1&search=$TITLESEARCH%20$RELEASEYEAR&s_cat=4\">"  >> $XRELFILE
-        echo -e  "               <img src=\"https://extra.to/favicon.ico\" alt=\"ExtraTorrent\"/></a>"                                    >> $XRELFILE
-
         echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?search=$TITLESEARCH%20$RELEASEYEAR&order=seeders&by=DESC\">" >> $XRELFILE
         echo -e  "               <img src=\"https://rarbg.to/favicon.ico\" alt=\"RARBG\"/></a>"                                           >> $XRELFILE
 
