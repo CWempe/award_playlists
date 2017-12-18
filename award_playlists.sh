@@ -593,7 +593,12 @@ if [ $NOMINEESCOUNT -eq 0 ]
 
       if [ $PLAYCOUNT -gt 0 ]
       then 
-        WATCHED="yes"
+        if [ $PLAYCOUNT -eq $TOTALCOUNT -a $ISSERIES -eq 1 ]
+        then
+          WATCHED="yes"
+        else
+          WATCHED="partly"
+        fi
       else
         WATCHED="no"
       fi
@@ -617,14 +622,20 @@ if [ $NOMINEESCOUNT -eq 0 ]
         fi
         echo -e         " </td>"                                                                                       >> $XRELFILE
         echo -en "          <td title=\"watched?\"      class=\"watched $WATCHED\">"                                   >> $XRELFILE
-        if [ "$WATCHED" = "yes" ]
-        then
-          # check mark
-          echo -en "&#10004;"   >> $XRELFILE
-        else
-          # X
-          echo -en "&#10006;"   >> $XRELFILE
-        fi
+        case "$WATCHED" in
+          yes)
+            # check mark
+            echo -en "&#10004;"   >> $XRELFILE
+            ;;
+          partly)
+            # O
+            echo -en "&#9685;"   >> $XRELFILE
+            ;;
+          *)
+            # X
+            echo -en "&#10006;"   >> $XRELFILE
+        esac
+
         echo -e          "</td>"                                                                                                          >> $XRELFILE
 
         echo -e  "          <td title=\"Links\" class=\"links\">"                                                                         >> $XRELFILE
