@@ -502,6 +502,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         PLAYCOUNT=`echo "$SQLRESULT" | awk -F \| '{print $2}'`
         TITLE=`echo "$SQLRESULT" | awk -F \| '{print $1}'`
         INDATABASE="yes"
+        ISSERIES=0
         # replace certain characters in title to match sql syntax
         TITLESQL=`echo $TITLE | sed 's/&/%/g'`
 
@@ -591,16 +592,24 @@ if [ $NOMINEESCOUNT -eq 0 ]
       fi
 
 
-      if [ $PLAYCOUNT -gt 0 ]
+      # check it is a th show
+      if [ $PLAYCOUNT -eq 0 ]
       then 
-        if [ $PLAYCOUNT -eq $TOTALCOUNT -a $ISSERIES -eq 1 ]
-        then
-          WATCHED="yes"
-        else
-          WATCHED="partly"
-        fi
-      else
         WATCHED="no"
+      else
+        if [ $ISSERIES -eq 1 ]
+        then
+          # have all episodes been watched
+          if [ $PLAYCOUNT -eq $TOTALCOUNT ]
+          then
+            WATCHED="yes"
+          else
+            WATCHED="partly"
+          fi
+        else
+          # it is a movie
+          WATCHED="yes"
+        fi
       fi
 
       ####
