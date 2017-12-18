@@ -484,7 +484,8 @@ if [ $NOMINEESCOUNT -eq 0 ]
       SQLRESULT=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, playCount, '"$NOMINATIONS"' as nominations FROM movie_view WHERE uniqueid_value IS '"$ID"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1"`
       if [ $VERBOSE -eq 1 ]
         then
-          echo "sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
+          echo ""
+          echo "  SQL movie: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
       fi
       TITLESQL=`echo $TITLE | sed 's/&/%/g'`
 
@@ -499,7 +500,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         # increment MOVIECOUNT
         MOVIECOUNT=$((MOVIECOUNT+1))
 
-        
+
         if [ "$PLAYCOUNT" = "" ]
         then
           PLAYCOUNT=0
@@ -513,14 +514,61 @@ if [ $NOMINEESCOUNT -eq 0 ]
           >> "$PLAYLISTFILE"
 
       else
-        PLAYCOUNT=0
-        INDATABASE="no"
-        if [ "$TV" = "yes" ]
+
+          # check if the nominee is a series
+          ISSERIES=$(cat "$NOMINEEJSON" \
+                        | jq --arg ID $ID ".nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[]
+                                             | objects | select((.primaryNominees[]? | .const == \"$ID\") or (.secondaryNominees[]? | .const == \"$ID\")) 
+                                             | .categoryName" \
+                        | grep -c "Series" )
+          # ' fix syntax hightlighting in mcedit
+
+          if [ $VERBOSE -eq 1 ]
+            then
+              echo -e "$TITLE:\n  ISSERIES: $ISSERIES"
+          fi
+
+          # Search series in Database using Title
+          SQLRESULT2=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, totalCount, watchedCount, '"$NOMINATIONS"' as nominations FROM tvshow_view WHERE c00 IS '$TITLE' GROUP BY c00 LIMIT 1"`
+          if [ $VERBOSE -eq 1 ]
+            then
+              echo "  SQL series: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \"SELECT c00, totalCount, watchedCount, '\"$NOMINATIONS\"' as nominations FROM tvshow_view WHERE c00 IS '\"$TITLE\"' GROUP BY c00 LIMIT 1\""
+          fi
+          TITLESQL2=`echo $TITLE | sed 's/&/%/g'`
+
+          if [ "$SQLRESULT2" != "" ]
           then
-             # write in tv playlist
-             echo -e "    <value>$TITLESQL</value>" \
-              >> "$PLAYLISTFILETV"
-        fi
+            PLAYCOUNT=`echo "$SQLRESULT2" | awk -F \| '{print $2}'`
+            TITLE=`echo "$SQLRESULT2" | awk -F \| '{print $1}'`
+            INDATABASE="yes"
+            # replace certain characters in title to match sql syntax
+            TITLESQL=`echo $TITLE | sed 's/&/%/g'`
+
+            # increment MOVIECOUNT
+            MOVIECOUNT=$((MOVIECOUNT+1))
+
+
+            if [ "$PLAYCOUNT" = "" ]
+            then
+              PLAYCOUNT=0
+            else
+              # increment WATCHEDCOUNT
+              WATCHEDCOUNT=$((WATCHEDCOUNT+1))
+            fi
+
+
+          else
+            PLAYCOUNT=0
+            INDATABASE="no"
+            if [ "$TV" = "yes" ]
+              then
+                 # write in tv playlist
+                 echo -e "    <value>$TITLESQL</value>" \
+                  >> "$PLAYLISTFILETV"
+            fi
+
+          fi
+
       fi
 
       if [ $VERBOSE -eq 1 ]
@@ -692,7 +740,7 @@ if [ "$MAIL" != "" ]
       else
         if [ $VERBOSE -eq 1 ]
           then
-            echo -e "Stats did not change. Not ending mail."
+            echo -e "Stats did not change. Not sending mail."
         fi
     fi        
 fi
