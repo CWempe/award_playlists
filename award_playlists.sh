@@ -244,6 +244,7 @@ if [ "$VERBOSE" -eq 1 ]
     echo -e " DBFILE:         $DBFILE"
     echo -e " NOMINEEURL:     $NOMINEEURL"
     echo -e " NOMINEEHTML:    $NOMINEEHTML"
+    echo -e " NOMINEEJSON:    $NOMINEEJSON"
     echo -e " IDSFILE:        $IDSFILE"
     echo -e " PLAYLISTFILE:   $PLAYLISTFILE"
     echo -e " PLAYLISTFILETV: $PLAYLISTFILETV"
@@ -297,10 +298,10 @@ fi
 # Downloading list of nominees from imdb.com and generate ID-File if not already existing
 ####
 
-# check if $IDSFILE exists (and is not empty)
-if [ ! -s $IDSFILE -o "$FORCE" -eq 1 ]
+# check if $NOMINEEJSON exists (and is not empty)
+if [ ! -s $NOMINEEJSON -o "$FORCE" -eq 1 ]
   then
-    # $IDSFILE does not exist or is empty or force-mode is enabled
+    # $NOMINEEJSON does not exist or is empty or force-mode is enabled
 
     # check if $NOMINEEHTML does not exist or force-mode is enabled
     if [ ! -s $NOMINEEHTML -o "$FORCE" -eq 1 ]
@@ -310,12 +311,46 @@ if [ ! -s $IDSFILE -o "$FORCE" -eq 1 ]
         wget $NOMINEEURL -O $NOMINEEHTML -q
       else
         echo -e "Using existing \$NOMINEEHTML."
-      fi
+    fi
+
+    # Get JSON from HTML-file
+    cat $NOMINEEHTML \
+      | grep "IMDbReactWidgets.NomineesWidget.push" \
+      | sed "s/IMDbReactWidgets.NomineesWidget.push(.'center-3-react',//" \
+      | sed "s/.);$//" \
+      | jq . \
+      > $NOMINEEJSON
+
+  else
+    # $NOMINEEJSON is present and not empty
+    if [ "$VERBOSE" -eq 1 ]
+      then
+        echo -e "Use existing JSON-File."
+    fi
+fi
+
+
+
+# check if $IDSFILE exists (and is not empty)
+if [ ! -s $IDSFILE -o "$FORCE" -eq 1 ]
+  then
+    # $IDSFILE does not exist or is empty or force-mode is enabled
+
+    if [ ! -s $NOMINEEJSON ]
+      then
+        echo -e "JSON-file does not exist or is empty!"
+        exit 1
+    fi
 
     # Get IMDB-IDs from nominee-list
-    echo -e "Get IMDB-IDs from nominee-list ..."
-    cat $NOMINEEHTML | sed 's/href.*<img.*>/XXXXX/g' | grep -Ev ".*{.*{.*{.*{.*{.*" | grep -oE "tt[0-9]{7}.*</a" \
-      | sed 's/\/"\ >/\ /g' | sed 's/<\/a//' | sort | uniq -c | sort -nr > $IDSFILE
+
+    cat $NOMINEEJSON \
+      | jq '.nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[] | if (.primaryNominees[].const | startswith("tt") ) then .primaryNominees[] | [.const, .name] else .secondaryNominees[] | [.const, .name] end | @tsv' \
+      | awk '{print "echo  "$0}' | sh \
+      | sort \
+      | uniq -c\
+      | sort -nr \
+      > $IDSFILE
 
   else
     # $IDSFILE is present and not empty
