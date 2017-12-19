@@ -524,13 +524,14 @@ if [ $NOMINEESCOUNT -eq 0 ]
 
       else
 
-          # check if the nominee is a series
-          ISSERIES=$(cat "$NOMINEEJSON" \
+          # get categories for nominations
+          readarray CATEGORIES < <(cat "$NOMINEEJSON" \
                         | jq --arg ID $ID ".nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[]
                                              | objects | select((.primaryNominees[]? | .const == \"$ID\") or (.secondaryNominees[]? | .const == \"$ID\")) 
-                                             | .categoryName" \
-                        | grep -c "Series" )
-          # ' fix syntax hightlighting in mcedit
+                                             | .categoryName | @sh" )
+
+          # check if the nominee is a series
+          ISSERIES=$(echo ${CATEGORIES[@]}  | grep -c "Series" )
 
           if [ $VERBOSE -eq 1 ]
             then
