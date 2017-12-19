@@ -596,6 +596,12 @@ if [ $NOMINEESCOUNT -eq 0 ]
       if [ $PLAYCOUNT -eq 0 ]
       then 
         WATCHED="no"
+        if [ $ISSERIES -gt 0 ]
+        then
+          WATCHEDNOTE="not watched ($PLAYCOUNT/$TOTALCOUNT)"
+        else
+          WATCHEDNOTE="not watched"
+        fi
       else
         if [ $ISSERIES -gt 0 ]
         then
@@ -603,12 +609,15 @@ if [ $NOMINEESCOUNT -eq 0 ]
           if [ $PLAYCOUNT -eq $TOTALCOUNT ]
           then
             WATCHED="yes"
+            WATCHEDNOTE="watched ($PLAYCOUNT/$TOTALCOUNT)"
           else
             WATCHED="partly"
+            WATCHEDNOTE="watched ($PLAYCOUNT/$TOTALCOUNT)"
           fi
         else
           # it is a movie
           WATCHED="yes"
+          WATCHEDNOTE="watched"
         fi
       fi
 
@@ -630,7 +639,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
           echo -en "&#10006;"   >> $XRELFILE
         fi
         echo -e         " </td>"                                                                                       >> $XRELFILE
-        echo -en "          <td title=\"watched?\"      class=\"watched $WATCHED\">"                                   >> $XRELFILE
+        echo -en "          <td title=\"$WATCHEDNOTE\"      class=\"watched $WATCHED\">"                               >> $XRELFILE
         case "$WATCHED" in
           yes)
             # check mark
