@@ -597,7 +597,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       then 
         WATCHED="no"
       else
-        if [ $ISSERIES -eq 1 ]
+        if [ $ISSERIES -gt 0 ]
         then
           # have all episodes been watched
           if [ $PLAYCOUNT -eq $TOTALCOUNT ]
