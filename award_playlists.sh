@@ -489,6 +489,17 @@ if [ $NOMINEESCOUNT -eq 0 ]
         RELEASEYEAR="$YEAR"
       fi
 
+      # get categories for nominations
+      readarray CATEGORIES < <(cat "$NOMINEEJSON" \
+                    | jq --arg ID $ID ".nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[]
+                                         | objects | select((.primaryNominees[]? | .const == \"$ID\") or (.secondaryNominees[]? | .const == \"$ID\")) 
+                                         | .categoryName | @sh" )
+
+      if [ $VERBOSE -eq 1 ]
+        then
+          echo "CATEGORIES: "${CATEGORIES[@]}
+      fi
+
       # Search title in Database using IMDBid
       SQLRESULT=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, playCount, '"$NOMINATIONS"' as nominations FROM movie_view WHERE uniqueid_value IS '"$ID"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1"`
       if [ $VERBOSE -eq 1 ]
@@ -523,12 +534,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
           >> "$PLAYLISTFILE"
 
       else
-
-          # get categories for nominations
-          readarray CATEGORIES < <(cat "$NOMINEEJSON" \
-                        | jq --arg ID $ID ".nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[]
-                                             | objects | select((.primaryNominees[]? | .const == \"$ID\") or (.secondaryNominees[]? | .const == \"$ID\")) 
-                                             | .categoryName | @sh" )
 
           # check if the nominee is a series
           ISSERIES=$(echo ${CATEGORIES[@]}  | grep -c "Series" )
