@@ -683,7 +683,14 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e  "               <img src=\"https://www.google.com/favicon.ico\" alt=\"Google\" height=16/></a>"                          >> $XRELFILE
 
         echo -e  "             </td>"                                                                                                     >> $XRELFILE
-        echo -e  "          <td title=\"nominations\" class=\"nominations\">$NOMINATIONS</td>"                                            >> $XRELFILE
+        echo -e  "          <td title=\"nominated in:"                                                                                    >> $XRELFILE
+
+        for cat in "${CATEGORIES[@]}"
+        do
+          echo "      "$cat | sed 's/"//g'                                                                                                >> $XRELFILE
+        done
+
+        echo -e  " \"class=\"nominations\">$NOMINATIONS</td>"                                                                             >> $XRELFILE
         echo -en "          <td title=\"Movietitle\" class=\"title\">"                                                                    >> $XRELFILE
         echo -e              "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></td>"                               >> $XRELFILE
         echo -e "        </tr>"                                                                                                           >> $XRELFILE
