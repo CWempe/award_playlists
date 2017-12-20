@@ -424,8 +424,9 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "          <th title=\"Number\">#</th>"                                     >> $XRELFILE
       echo -e "          <th title=\"in Database\">&#x1F5B4;</th>"                        >> $XRELFILE
       echo -e "          <th title=\"watched\">&#x1F453;</th>"                            >> $XRELFILE
-      echo -e "          <th title=\"Links\">&#x1f50d;</th>"                           >> $XRELFILE
+      echo -e "          <th title=\"Links\">&#x1f50d;</th>"                              >> $XRELFILE
       echo -e "          <th title=\"amount of nominations\">&#x1F3C6;</th>"              >> $XRELFILE
+      echo -e "          <th title=\"media type\">&#127917;</th>"                         >> $XRELFILE
       echo -e "          <th title=\"Movietitle\">Title</th>"                             >> $XRELFILE
       echo -e "        </tr>"                                                             >> $XRELFILE
       echo -e "      </thead>"                                                            >> $XRELFILE
@@ -691,6 +692,23 @@ if [ $NOMINEESCOUNT -eq 0 ]
         done
 
         echo -e  " \"class=\"nominations\">$NOMINATIONS</td>"                                                                             >> $XRELFILE
+        echo -e  "          <td title=\"media type\" class=\"media_type\">"                                                               >> $XRELFILE
+        if [ "$EVENTSTRING" = "golden-globes" ]
+        then
+          if [ $ISSERIES -gt 0 ]
+          then
+            # tv icon
+            echo -en "<a title=\"Series or movie made for TV\">&#128250;"   >> $XRELFILE
+          else
+            # movie camera icon
+#            echo -en "<a title=\"Movie\">&#127909;"   >> $XRELFILE
+            # clapper board icon
+            echo -en "<a title=\"Movie\">&#127916;"   >> $XRELFILE
+            # film frames icon
+#            echo -en "<a title=\"Movie\">&#127902;"   >> $XRELFILE
+          fi
+        fi
+        echo -en            "</a></td>"   >> $XRELFILE
         echo -en "          <td title=\"Movietitle\" class=\"title\">"                                                                    >> $XRELFILE
         echo -e              "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></td>"                               >> $XRELFILE
         echo -e "        </tr>"                                                                                                           >> $XRELFILE
