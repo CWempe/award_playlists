@@ -507,16 +507,16 @@ if [ $NOMINEESCOUNT -eq 0 ]
         then
           echo -e "  SQL movie: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
       fi
-      TITLESQL=`echo $TITLE | sed 's/&/%/g'`
+      # replace certain characters in title to match sql syntax
+      TITLESQL=`echo $TITLE | sed "s/\(&\|'\|:\)/%/g"`
 
       if [ "$SQLRESULT" != "" ]
       then
         PLAYCOUNT=`echo "$SQLRESULT" | awk -F \| '{print $2}'`
         TITLE=`echo "$SQLRESULT" | awk -F \| '{print $1}'`
+        TITLESQL=`echo $TITLE | sed "s/\(&\|'\|:\)/%/g"`
         INDATABASE="yes"
         ISSERIES=0
-        # replace certain characters in title to match sql syntax
-        TITLESQL=`echo $TITLE | sed 's/&/%/g'`
 
         # increment MOVIECOUNT
         MOVIECOUNT=$((MOVIECOUNT+1))
@@ -542,24 +542,22 @@ if [ $NOMINEESCOUNT -eq 0 ]
           if [ $VERBOSE -eq 1 ]
             then
               echo "  ISSERIES: $ISSERIES"
+              echo "  TITLESQL: $TITLESQL"
           fi
 
           # Search series in Database using Title
-          SQLRESULT2=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, totalCount, watchedCount, '"$NOMINATIONS"' as nominations FROM tvshow_view WHERE c00 IS '$TITLE' GROUP BY c00 LIMIT 1"`
+          SQLRESULT2=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, totalCount, watchedCount, '"$NOMINATIONS"' as nominations FROM tvshow_view WHERE c00 IS '$TITLESQL' GROUP BY c00 LIMIT 1"`
           if [ $VERBOSE -eq 1 ]
             then
-              echo -e "  SQL series: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, totalCount, watchedCount, '\"$NOMINATIONS\"' as nominations FROM tvshow_view WHERE c00 IS '\"$TITLE\"' GROUP BY c00 LIMIT 1\""
+              echo -e "  SQL series: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, totalCount, watchedCount, '\"$NOMINATIONS\"' as nominations FROM tvshow_view WHERE c00 IS '\"$TITLESQL\"' GROUP BY c00 LIMIT 1\""
           fi
-          TITLESQL2=`echo $TITLE | sed 's/&/%/g'`
 
           if [ "$SQLRESULT2" != "" ]
           then
             TOTALCOUNT=`echo "$SQLRESULT2" | awk -F \| '{print $2}'`
             PLAYCOUNT=`echo "$SQLRESULT2" | awk -F \| '{print $3}'`
-            TITLE=`echo "$SQLRESULT2" | awk -F \| '{print $1}'`
             INDATABASE="yes"
             # replace certain characters in title to match sql syntax
-            TITLESQL=`echo $TITLE | sed 's/&/%/g'`
 
             # increment MOVIECOUNT
             MOVIECOUNT=$((MOVIECOUNT+1))
