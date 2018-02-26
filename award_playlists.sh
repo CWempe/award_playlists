@@ -126,6 +126,7 @@ while getopts vdfe:m:y:t:sx opt
         echo "                 Primetime (E)mmy Awards"
         echo "                 (G)olden Globes Awards"
         echo "                 (I)ndependent Spirit Awards"
+        echo "                 (R)azzie Awards"
         echo "                 (SAG) Screen Actors Guild Awards"
         echo "                 (SUN) Sundance Film Festival"
         echo "          [-m] Mail: Specify the mail address to send the statistics to"
@@ -176,6 +177,12 @@ case $EVENTARG in
     EVENT="Independent Spirit"
     EVENTSTRING="independant"
     EVENTID="ev0000349"
+    TV="no"
+    ;;
+  r|R )
+    EVENT="Razzie Awards"
+    EVENTSTRING="razzies"
+    EVENTID="ev0000558"
     TV="no"
     ;;
   sag|SAG )
