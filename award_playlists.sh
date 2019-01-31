@@ -517,6 +517,17 @@ if [ $NOMINEESCOUNT -eq 0 ]
       # replace certain characters in title to match sql syntax
       TITLESQL=`echo $TITLE | sed "s/\(&\|'\|:\)/%/g"`
 
+          # check if the nominee is a series
+          ISSERIES=$(echo ${CATEGORIES[@]}  | grep -c "Series" )
+          ISSHORT=$(echo ${CATEGORIES[@]}  | grep -c "Short" )
+
+          if [ $VERBOSE -eq 1 ]
+            then
+              echo "  ISSERIES: $ISSERIES"
+              echo "  ISSHORT:  $ISSHORT"
+              echo "  TITLESQL: $TITLESQL"
+          fi
+
       if [ "$SQLRESULT" != "" ]
       then
         PLAYCOUNT=`echo "$SQLRESULT" | awk -F \| '{print $2}'`
@@ -524,6 +535,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         TITLESQL=`echo $TITLE | sed "s/\(&\|'\|:\)/%/g"`
         INDATABASE="yes"
         ISSERIES=0
+        #ISSHORT=0
 
         # increment MOVIECOUNT
         MOVIECOUNT=$((MOVIECOUNT+1))
@@ -542,15 +554,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
           >> "$PLAYLISTFILE"
 
       else
-
-          # check if the nominee is a series
-          ISSERIES=$(echo ${CATEGORIES[@]}  | grep -c "Series" )
-
-          if [ $VERBOSE -eq 1 ]
-            then
-              echo "  ISSERIES: $ISSERIES"
-              echo "  TITLESQL: $TITLESQL"
-          fi
 
           # Search series in Database using Title
           SQLRESULT2=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, totalCount, watchedCount, '"$NOMINATIONS"' as nominations FROM tvshow_view WHERE c00 IS '$TITLESQL' GROUP BY c00 LIMIT 1"`
@@ -698,6 +701,15 @@ if [ $NOMINEESCOUNT -eq 0 ]
 
         echo -e  " \"class=\"nominations\">$NOMINATIONS</td>"                                                                             >> $XRELFILE
         echo -e  "          <td title=\"media type\" class=\"media_type\">"                                                               >> $XRELFILE
+
+        if [ $VERBOSE -eq 1 ]
+          then
+            echo -e "  EVENTSTRING: $EVENTSTRING"
+            echo -e "  ISSERIES:    $ISSERIES"
+            echo -e "  ISSHORT:     $ISSHORT"
+        fi
+
+
         if [ "$EVENTSTRING" = "golden-globes" ]
         then
           if [ $ISSERIES -gt 0 ]
@@ -705,14 +717,23 @@ if [ $NOMINEESCOUNT -eq 0 ]
             # tv icon
             echo -en "<a title=\"Series or movie made for TV\">&#128250;"   >> $XRELFILE
           else
-            # movie camera icon
-#            echo -en "<a title=\"Movie\">&#127909;"   >> $XRELFILE
             # clapper board icon
             echo -en "<a title=\"Movie\">&#127916;"   >> $XRELFILE
-            # film frames icon
-#            echo -en "<a title=\"Movie\">&#127902;"   >> $XRELFILE
           fi
         fi
+
+        if [ "$EVENTSTRING" = "oscars" ]
+        then
+          if [ $ISSHORT -gt 0 ]
+          then
+            # tv icon
+            echo -en "<a title=\"Short\">&#128250;"   >> $XRELFILE
+          else
+            # clapper board icon
+            echo -en "<a title=\"Movie\">&#127916;"   >> $XRELFILE
+          fi
+        fi
+
         echo -en            "</a></td>"   >> $XRELFILE
         echo -en "          <td title=\"Movietitle\" class=\"title\">"                                                                    >> $XRELFILE
         echo -e              "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></td>"                               >> $XRELFILE
