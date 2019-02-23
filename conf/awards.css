@@ -50,6 +50,11 @@ table tbody tr td:first-child::before {
     color: green;
 }
 
+.partly {
+/*     font-weight: bold;*/
+    color: Chocolate;
+}
+
 .no {
 /*    font-weight: bold;*/
     color: red;

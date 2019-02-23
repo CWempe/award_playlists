@@ -126,6 +126,7 @@ while getopts vdfe:m:y:t:sx opt
         echo "                 Primetime (E)mmy Awards"
         echo "                 (G)olden Globes Awards"
         echo "                 (I)ndependent Spirit Awards"
+        echo "                 (R)azzie Awards"
         echo "                 (SAG) Screen Actors Guild Awards"
         echo "                 (SUN) Sundance Film Festival"
         echo "          [-m] Mail: Specify the mail address to send the statistics to"
@@ -176,6 +177,12 @@ case $EVENTARG in
     EVENT="Independent Spirit"
     EVENTSTRING="independant"
     EVENTID="ev0000349"
+    TV="no"
+    ;;
+  r|R )
+    EVENT="Razzie Awards"
+    EVENTSTRING="razzies"
+    EVENTID="ev0000558"
     TV="no"
     ;;
   sag|SAG )
@@ -244,6 +251,7 @@ if [ "$VERBOSE" -eq 1 ]
     echo -e " DBFILE:         $DBFILE"
     echo -e " NOMINEEURL:     $NOMINEEURL"
     echo -e " NOMINEEHTML:    $NOMINEEHTML"
+    echo -e " NOMINEEJSON:    $NOMINEEJSON"
     echo -e " IDSFILE:        $IDSFILE"
     echo -e " PLAYLISTFILE:   $PLAYLISTFILE"
     echo -e " PLAYLISTFILETV: $PLAYLISTFILETV"
@@ -297,10 +305,10 @@ fi
 # Downloading list of nominees from imdb.com and generate ID-File if not already existing
 ####
 
-# check if $IDSFILE exists (and is not empty)
-if [ ! -s $IDSFILE -o "$FORCE" -eq 1 ]
+# check if $NOMINEEJSON exists (and is not empty)
+if [ ! -s $NOMINEEJSON -o "$FORCE" -eq 1 ]
   then
-    # $IDSFILE does not exist or is empty or force-mode is enabled
+    # $NOMINEEJSON does not exist or is empty or force-mode is enabled
 
     # check if $NOMINEEHTML does not exist or force-mode is enabled
     if [ ! -s $NOMINEEHTML -o "$FORCE" -eq 1 ]
@@ -310,12 +318,46 @@ if [ ! -s $IDSFILE -o "$FORCE" -eq 1 ]
         wget $NOMINEEURL -O $NOMINEEHTML -q
       else
         echo -e "Using existing \$NOMINEEHTML."
-      fi
+    fi
+
+    # Get JSON from HTML-file
+    cat $NOMINEEHTML \
+      | grep "IMDbReactWidgets.NomineesWidget.push" \
+      | sed "s/IMDbReactWidgets.NomineesWidget.push(.'center-3-react',//" \
+      | sed "s/.);$//" \
+      | jq . \
+      > $NOMINEEJSON
+
+  else
+    # $NOMINEEJSON is present and not empty
+    if [ "$VERBOSE" -eq 1 ]
+      then
+        echo -e "Use existing JSON-File."
+    fi
+fi
+
+
+
+# check if $IDSFILE exists (and is not empty)
+if [ ! -s $IDSFILE -o "$FORCE" -eq 1 ]
+  then
+    # $IDSFILE does not exist or is empty or force-mode is enabled
+
+    if [ ! -s $NOMINEEJSON ]
+      then
+        echo -e "JSON-file does not exist or is empty!"
+        exit 1
+    fi
 
     # Get IMDB-IDs from nominee-list
-    echo -e "Get IMDB-IDs from nominee-list ..."
-    cat $NOMINEEHTML | sed 's/href.*<img.*>/XXXXX/g' | grep -Ev ".*{.*{.*{.*{.*{.*" | grep -oE "tt[0-9]{7}.*</a" \
-      | sed 's/\/"\ >/\ /g' | sed 's/<\/a//' | sort | uniq -c | sort -nr > $IDSFILE
+
+    cat $NOMINEEJSON \
+      | jq '.nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[] | if (.primaryNominees[].const | startswith("tt") ) then .primaryNominees[] | [.const, .name] else .secondaryNominees[] | [.const, .name] end | @tsv' \
+      | awk '{print "echo  "$0}' | sh \
+      | sort \
+      | uniq -c\
+      | sort -nr \
+      > $IDSFILE
 
   else
     # $IDSFILE is present and not empty
@@ -389,8 +431,9 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "          <th title=\"Number\">#</th>"                                     >> $XRELFILE
       echo -e "          <th title=\"in Database\">&#x1F5B4;</th>"                        >> $XRELFILE
       echo -e "          <th title=\"watched\">&#x1F453;</th>"                            >> $XRELFILE
-      echo -e "          <th title=\"Links\">&#x1f50d;</th>"                           >> $XRELFILE
+      echo -e "          <th title=\"Links\">&#x1f50d;</th>"                              >> $XRELFILE
       echo -e "          <th title=\"amount of nominations\">&#x1F3C6;</th>"              >> $XRELFILE
+      echo -e "          <th title=\"media type\">&#127917;</th>"                         >> $XRELFILE
       echo -e "          <th title=\"Movietitle\">Title</th>"                             >> $XRELFILE
       echo -e "        </tr>"                                                             >> $XRELFILE
       echo -e "      </thead>"                                                            >> $XRELFILE
@@ -438,6 +481,15 @@ if [ $NOMINEESCOUNT -eq 0 ]
       TITLE=`echo $LINE | cut -c 13-`
       TITLESEARCH=`echo "$TITLE" | sed -r "s/(\ |,|')/%20/g"`
       TITLESEARCHG=`echo "$TITLE" | sed -r "s/(\ |,|')/+/g"`
+
+
+      if [ $VERBOSE -eq 1 ]
+        then
+          echo ""
+          echo "$TITLE:"
+      fi
+
+
       if [ "$EVENTSTRING" = "golden-globes" -o "$EVENTSTRING" = "oscars" -o "$EVENTSTRING" = "bafta" -o "$EVENTSTRING" = "independant" -o "$EVENTSTRING" = "sag" ]
       then
         RELEASEYEAR=`expr $YEAR - 1`
@@ -445,26 +497,50 @@ if [ $NOMINEESCOUNT -eq 0 ]
         RELEASEYEAR="$YEAR"
       fi
 
+      # get categories for nominations
+      readarray CATEGORIES < <(cat "$NOMINEEJSON" \
+                    | jq --arg ID $ID ".nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[]
+                                         | objects | select((.primaryNominees[]? | .const == \"$ID\") or (.secondaryNominees[]? | .const == \"$ID\")) 
+                                         | .categoryName | @sh" )
+
+      if [ $VERBOSE -eq 1 ]
+        then
+          echo "CATEGORIES: "${CATEGORIES[@]}
+      fi
+
       # Search title in Database using IMDBid
       SQLRESULT=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, playCount, '"$NOMINATIONS"' as nominations FROM movie_view WHERE uniqueid_value IS '"$ID"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1"`
       if [ $VERBOSE -eq 1 ]
         then
-          echo "sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
+          echo -e "  SQL movie: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
       fi
-      TITLESQL=`echo $TITLE | sed 's/&/%/g'`
+      # replace certain characters in title to match sql syntax
+      TITLESQL=`echo $TITLE | sed "s/\(&\|'\|:\)/%/g"`
+
+          # check if the nominee is a series
+          ISSERIES=$(echo ${CATEGORIES[@]}  | grep -c "Series" )
+          ISSHORT=$(echo ${CATEGORIES[@]}  | grep -c "Short" )
+
+          if [ $VERBOSE -eq 1 ]
+            then
+              echo "  ISSERIES: $ISSERIES"
+              echo "  ISSHORT:  $ISSHORT"
+              echo "  TITLESQL: $TITLESQL"
+          fi
 
       if [ "$SQLRESULT" != "" ]
       then
         PLAYCOUNT=`echo "$SQLRESULT" | awk -F \| '{print $2}'`
         TITLE=`echo "$SQLRESULT" | awk -F \| '{print $1}'`
+        TITLESQL=`echo $TITLE | sed "s/\(&\|'\|:\)/%/g"`
         INDATABASE="yes"
-        # replace certain characters in title to match sql syntax
-        TITLESQL=`echo $TITLE | sed 's/&/%/g'`
+        ISSERIES=0
+        #ISSHORT=0
 
         # increment MOVIECOUNT
         MOVIECOUNT=$((MOVIECOUNT+1))
 
-        
+
         if [ "$PLAYCOUNT" = "" ]
         then
           PLAYCOUNT=0
@@ -478,27 +554,86 @@ if [ $NOMINEESCOUNT -eq 0 ]
           >> "$PLAYLISTFILE"
 
       else
-        PLAYCOUNT=0
-        INDATABASE="no"
-        if [ "$TV" = "yes" ]
+
+          # Search series in Database using Title
+          SQLRESULT2=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, totalCount, watchedCount, '"$NOMINATIONS"' as nominations FROM tvshow_view WHERE c00 IS '$TITLESQL' GROUP BY c00 LIMIT 1"`
+          if [ $VERBOSE -eq 1 ]
+            then
+              echo -e "  SQL series: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, totalCount, watchedCount, '\"$NOMINATIONS\"' as nominations FROM tvshow_view WHERE c00 IS '\"$TITLESQL\"' GROUP BY c00 LIMIT 1\""
+          fi
+
+          if [ "$SQLRESULT2" != "" ]
           then
-             # write in tv playlist
-             echo -e "    <value>$TITLESQL</value>" \
-              >> "$PLAYLISTFILETV"
-        fi
+            TOTALCOUNT=`echo "$SQLRESULT2" | awk -F \| '{print $2}'`
+            PLAYCOUNT=`echo "$SQLRESULT2" | awk -F \| '{print $3}'`
+            INDATABASE="yes"
+            # replace certain characters in title to match sql syntax
+
+            # increment MOVIECOUNT
+            MOVIECOUNT=$((MOVIECOUNT+1))
+
+            if [ $VERBOSE -eq 1 ]
+              then
+                echo -e "  TOTALCOUNT: $TOTALCOUNT"
+            fi
+
+
+            if [ "$PLAYCOUNT" = "" ]
+            then
+              PLAYCOUNT=0
+            else
+              # increment WATCHEDCOUNT
+              WATCHEDCOUNT=$((WATCHEDCOUNT+1))
+            fi
+
+
+          else
+            PLAYCOUNT=0
+            INDATABASE="no"
+            if [ "$TV" = "yes" ]
+              then
+                 # write in tv playlist
+                 echo -e "    <value>$TITLESQL</value>" \
+                  >> "$PLAYLISTFILETV"
+            fi
+
+          fi
+
       fi
 
       if [ $VERBOSE -eq 1 ]
         then
-          echo -e "$TITLE:\n  PLAYCOUNT: $PLAYCOUNT"
+          echo -e "  PLAYCOUNT: $PLAYCOUNT"
       fi
 
 
-      if [ $PLAYCOUNT -gt 0 ]
+      # check it is a th show
+      if [ $PLAYCOUNT -eq 0 ]
       then 
-        WATCHED="yes"
-      else
         WATCHED="no"
+        if [ $ISSERIES -gt 0 ]
+        then
+          WATCHEDNOTE="not watched ($PLAYCOUNT/$TOTALCOUNT)"
+        else
+          WATCHEDNOTE="not watched"
+        fi
+      else
+        if [ $ISSERIES -gt 0 ]
+        then
+          # have all episodes been watched
+          if [ $PLAYCOUNT -eq $TOTALCOUNT ]
+          then
+            WATCHED="yes"
+            WATCHEDNOTE="watched ($PLAYCOUNT/$TOTALCOUNT)"
+          else
+            WATCHED="partly"
+            WATCHEDNOTE="watched ($PLAYCOUNT/$TOTALCOUNT)"
+          fi
+        else
+          # it is a movie
+          WATCHED="yes"
+          WATCHEDNOTE="watched"
+        fi
       fi
 
       ####
@@ -519,15 +654,21 @@ if [ $NOMINEESCOUNT -eq 0 ]
           echo -en "&#10006;"   >> $XRELFILE
         fi
         echo -e         " </td>"                                                                                       >> $XRELFILE
-        echo -en "          <td title=\"watched?\"      class=\"watched $WATCHED\">"                                   >> $XRELFILE
-        if [ "$WATCHED" = "yes" ]
-        then
-          # check mark
-          echo -en "&#10004;"   >> $XRELFILE
-        else
-          # X
-          echo -en "&#10006;"   >> $XRELFILE
-        fi
+        echo -en "          <td title=\"$WATCHEDNOTE\"      class=\"watched $WATCHED\">"                               >> $XRELFILE
+        case "$WATCHED" in
+          yes)
+            # check mark
+            echo -en "&#10004;"   >> $XRELFILE
+            ;;
+          partly)
+            # O
+            echo -en "&#9685;"   >> $XRELFILE
+            ;;
+          *)
+            # X
+            echo -en "&#10006;"   >> $XRELFILE
+        esac
+
         echo -e          "</td>"                                                                                                          >> $XRELFILE
 
         echo -e  "          <td title=\"Links\" class=\"links\">"                                                                         >> $XRELFILE
@@ -544,9 +685,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"       >> $XRELFILE
         echo -e  "               <img src=\"https://thepiratebay.org/favicon.ico\" alt=\"The Pirate Bay\"/></a>"                          >> $XRELFILE
 
-        echo -e  "             <a target=\"_blank\" href=\"https://extra.to/search/?new=1&search=$TITLESEARCH%20$RELEASEYEAR&s_cat=4\">"  >> $XRELFILE
-        echo -e  "               <img src=\"https://extra.to/favicon.ico\" alt=\"ExtraTorrent\"/></a>"                                    >> $XRELFILE
-
         echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?search=$TITLESEARCH%20$RELEASEYEAR&order=seeders&by=DESC\">" >> $XRELFILE
         echo -e  "               <img src=\"https://rarbg.to/favicon.ico\" alt=\"RARBG\"/></a>"                                           >> $XRELFILE
 
@@ -554,7 +692,49 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e  "               <img src=\"https://www.google.com/favicon.ico\" alt=\"Google\" height=16/></a>"                          >> $XRELFILE
 
         echo -e  "             </td>"                                                                                                     >> $XRELFILE
-        echo -e  "          <td title=\"nominations\" class=\"nominations\">$NOMINATIONS</td>"                                            >> $XRELFILE
+        echo -e  "          <td title=\"nominated in:"                                                                                    >> $XRELFILE
+
+        for cat in "${CATEGORIES[@]}"
+        do
+          echo "      "$cat | sed 's/"//g'                                                                                                >> $XRELFILE
+        done
+
+        echo -e  " \"class=\"nominations\">$NOMINATIONS</td>"                                                                             >> $XRELFILE
+        echo -e  "          <td title=\"media type\" class=\"media_type\">"                                                               >> $XRELFILE
+
+        if [ $VERBOSE -eq 1 ]
+          then
+            echo -e "  EVENTSTRING: $EVENTSTRING"
+            echo -e "  ISSERIES:    $ISSERIES"
+            echo -e "  ISSHORT:     $ISSHORT"
+        fi
+
+
+        if [ "$EVENTSTRING" = "golden-globes" ]
+        then
+          if [ $ISSERIES -gt 0 ]
+          then
+            # tv icon
+            echo -en "<a title=\"Series or movie made for TV\">&#128250;"   >> $XRELFILE
+          else
+            # clapper board icon
+            echo -en "<a title=\"Movie\">&#127916;"   >> $XRELFILE
+          fi
+        fi
+
+        if [ "$EVENTSTRING" = "oscars" ]
+        then
+          if [ $ISSHORT -gt 0 ]
+          then
+            # tv icon
+            echo -en "<a title=\"Short\">&#128250;"   >> $XRELFILE
+          else
+            # clapper board icon
+            echo -en "<a title=\"Movie\">&#127916;"   >> $XRELFILE
+          fi
+        fi
+
+        echo -en            "</a></td>"   >> $XRELFILE
         echo -en "          <td title=\"Movietitle\" class=\"title\">"                                                                    >> $XRELFILE
         echo -e              "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></td>"                               >> $XRELFILE
         echo -e "        </tr>"                                                                                                           >> $XRELFILE
@@ -657,7 +837,7 @@ if [ "$MAIL" != "" ]
       else
         if [ $VERBOSE -eq 1 ]
           then
-            echo -e "Stats did not change. Not ending mail."
+            echo -e "Stats did not change. Not sending mail."
         fi
     fi        
 fi
