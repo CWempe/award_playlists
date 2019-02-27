@@ -716,10 +716,10 @@ if [ $NOMINEESCOUNT -eq 0 ]
           if [ $ISSERIES -gt 0 ]
           then
             # tv icon
-            echo -en "<a title=\"Series or movie made for TV\">&#128250;"   >> $XRELFILE
+            echo -en "<a title=\"Series or movie made for TV\"><i class=\"fas fa-tv fa-sm\"></i>"   >> $XRELFILE
           else
-            # clapper board icon
-            echo -en "<a title=\"Movie\">&#127916;"   >> $XRELFILE
+            # film icon
+            echo -en "<a title=\"Movie\"><i class=\"fas fa-film\"></i>"   >> $XRELFILE
           fi
         fi
 
@@ -728,10 +728,10 @@ if [ $NOMINEESCOUNT -eq 0 ]
           if [ $ISSHORT -gt 0 ]
           then
             # tv icon
-            echo -en "<a title=\"Short\">&#128250;"   >> $XRELFILE
+            echo -en "<a title=\"Short\"><i class=\"fas fa-video fa-xs\"></i>"   >> $XRELFILE
           else
             # clapper board icon
-            echo -en "<a title=\"Movie\">&#127916;"   >> $XRELFILE
+            echo -en "<a title=\"Movie\"><i class=\"fas fa-film\"></i>"   >> $XRELFILE
           fi
         fi
 
