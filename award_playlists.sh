@@ -430,11 +430,11 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "      <thead>"                                                             >> $XRELFILE
       echo -e "        <tr>"                                                              >> $XRELFILE
       echo -e "          <th title=\"Number\">#</th>"                                     >> $XRELFILE
-      echo -e "          <th title=\"in Database\">&#x1F5B4;</th>"                        >> $XRELFILE
-      echo -e "          <th title=\"watched\">&#x1F453;</th>"                            >> $XRELFILE
-      echo -e "          <th title=\"Links\">&#x1f50d;</th>"                              >> $XRELFILE
-      echo -e "          <th title=\"amount of nominations\">&#x1F3C6;</th>"              >> $XRELFILE
-      echo -e "          <th title=\"media type\">&#127917;</th>"                         >> $XRELFILE
+      echo -e "          <th title=\"in Database\"><i class=\"fas fa-hdd fa-xs\"></i></th>"              >> $XRELFILE
+      echo -e "          <th title=\"watched\"><i class=\"fas fa-eye fa-xs\"></i></th>"                  >> $XRELFILE
+      echo -e "          <th title=\"Links\"><i class=\"fas fa-search fa-xs\"></i></th>"                 >> $XRELFILE
+      echo -e "          <th title=\"amount of nominations\"><i class=\"fas fa-trophy fa-xs\"></i></th>" >> $XRELFILE
+      echo -e "          <th title=\"media type\"><i class=\"fas fa-tags fa-xs\"></i></th>"              >> $XRELFILE
       echo -e "          <th title=\"Movietitle\">Title</th>"                             >> $XRELFILE
       echo -e "        </tr>"                                                             >> $XRELFILE
       echo -e "      </thead>"                                                            >> $XRELFILE
