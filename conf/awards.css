@@ -45,6 +45,10 @@ table tbody tr td:first-child::before {
   text-align: right;
 }
 
+.media_type {
+  text-align: center;
+}
+
 .yes {
   color: green;
   text-align: center;
@@ -59,3 +63,4 @@ table tbody tr td:first-child::before {
   color: red;
   text-align: center;
 }
+
