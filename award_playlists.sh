@@ -717,44 +717,34 @@ if [ $NOMINEESCOUNT -eq 0 ]
         fi
 
 
-        if [ "$EVENTSTRING" = "golden-globes" ]
+        if [ $ISSHORT -gt 0 ]
         then
-          if [ $ISSERIES -gt 0 ]
-          then
-            # tv icon
-            echo -en "<a title=\"Series or movie made for TV\"><i class=\"fas fa-tv fa-sm\"></i>"   >> $XRELFILE
-          else
-            # film icon
-            echo -en "<a title=\"Movie\"><i class=\"fas fa-film\"></i>"   >> $XRELFILE
-          fi
+          # tv icon
+          echo -e "<a title=\"Short\" class=\"short\">"   >> $XRELFILE
+        else
+          # film icon
+          echo -e "<a title=\"Movie\">"   >> $XRELFILE
         fi
 
-        if [ "$EVENTSTRING" = "oscars" ]
+        if [ $ISDOCU -gt 0 ]
         then
-          if [ $ISSHORT -gt 0 ]
+          # video icon
+          echo -en "<i class=\"fas fa-video fa-sm\"></i>"   >> $XRELFILE
+        else
+          if [ $ISANIME -gt 0 ]
           then
-            # tv icon
-            echo -e "<a title=\"Short\" class=\"short\">"   >> $XRELFILE
+            # paint-brush icon
+            echo -en "<i class=\"fas fa-paint-brush fa-sm\"></i>"   >> $XRELFILE
           else
-            # film icon
-            echo -e "<a title=\"Movie\">"   >> $XRELFILE
-          fi
-
-          if [ $ISDOCU -gt 0 ]
-          then
-            # video icon
-            echo -en "<i class=\"fas fa-video fa-sm\"></i>"   >> $XRELFILE
-          else
-            if [ $ISANIME -gt 0 ]
+            if [ $ISSERIES -gt 0 ]
             then
-              # paint-brush icon
-              echo -en "<i class=\"fas fa-paint-brush fa-sm\"></i>"   >> $XRELFILE
+              # tv icon
+              echo -en "<a title=\"Series or movie made for TV\"><i class=\"fas fa-tv fa-sm\"></i>"   >> $XRELFILE
             else
               # film icon
               echo -en "<i class=\"fas fa-film\"></i>"   >> $XRELFILE
             fi
           fi
-
         fi
 
         echo -en            "</a></td>"   >> $XRELFILE
