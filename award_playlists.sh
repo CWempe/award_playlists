@@ -649,25 +649,25 @@ if [ $NOMINEESCOUNT -eq 0 ]
         if [ "$INDATABASE" = "yes" ]
         then
           # check mark
-          echo -en "&#10004;"   >> $XRELFILE
+          echo -en "<i class=\"fas fa-check fa-sm\"></i>"   >> $XRELFILE
         else
           # X
-          echo -en "&#10006;"   >> $XRELFILE
+          echo -en "<i class=\"fas fa-times fa-sm\"></i>"   >> $XRELFILE
         fi
         echo -e         " </td>"                                                                                       >> $XRELFILE
         echo -en "          <td title=\"$WATCHEDNOTE\"      class=\"watched $WATCHED\">"                               >> $XRELFILE
         case "$WATCHED" in
           yes)
             # check mark
-            echo -en "&#10004;"   >> $XRELFILE
+            echo -en "<i class=\"fas fa-check fa-sm\"></i>"   >> $XRELFILE
             ;;
           partly)
             # O
-            echo -en "&#9685;"   >> $XRELFILE
+            echo -en "<i class=\"fas fa-chart-pie fa-sm\"></i>"   >> $XRELFILE
             ;;
           *)
             # X
-            echo -en "&#10006;"   >> $XRELFILE
+            echo -en "<i class=\"fas fa-times fa-sm\"></i>"   >> $XRELFILE
         esac
 
         echo -e          "</td>"                                                                                                          >> $XRELFILE
