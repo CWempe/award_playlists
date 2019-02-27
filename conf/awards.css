@@ -46,16 +46,16 @@ table tbody tr td:first-child::before {
 }
 
 .yes {
-/*     font-weight: bold;*/
-    color: green;
+  color: green;
+  text-align: center;
 }
 
 .partly {
-/*     font-weight: bold;*/
-    color: Chocolate;
+  color: Chocolate;
+  text-align: center;
 }
 
 .no {
-/*    font-weight: bold;*/
-    color: red;
+  color: red;
+  text-align: center;
 }
