@@ -519,15 +519,17 @@ if [ $NOMINEESCOUNT -eq 0 ]
       TITLESQL=`echo $TITLE | sed "s/\(&\|'\|:\)/%/g"`
 
           # check if the nominee is a series
-          ISSERIES=$(echo ${CATEGORIES[@]}  | grep -c "Series" )
+          ISSERIES=$(echo ${CATEGORIES[@]} | grep -c "Series" )
           ISSHORT=$(echo ${CATEGORIES[@]}  | grep -c "Short" )
-          ISDOCU=$(echo ${CATEGORIES[@]}  | grep -c "Documentary" )
+          ISDOCU=$(echo ${CATEGORIES[@]}   | grep -c "Documentary" )
+          ISANIME=$(echo ${CATEGORIES[@]}  | grep -c "Animated" )
 
           if [ $VERBOSE -eq 1 ]
             then
               echo "  ISSERIES: $ISSERIES"
               echo "  ISSHORT:  $ISSHORT"
               echo "  ISDOCU:   $ISDOCU"
+              echo "  ISANIME:  $ISANIME"
               echo "  TITLESQL: $TITLESQL"
           fi
 
@@ -711,6 +713,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
             echo -e "  ISSERIES:    $ISSERIES"
             echo -e "  ISSHORT:     $ISSHORT"
             echo -e "  ISDOCU:      $ISDOCU"
+            echo -e "  ISANIME:     $ISANIME"
         fi
 
 
@@ -739,11 +742,17 @@ if [ $NOMINEESCOUNT -eq 0 ]
 
           if [ $ISDOCU -gt 0 ]
           then
-            # tv icon
-            echo -en "<i class=\"fas fa-tv fa-sm\"></i>"   >> $XRELFILE
+            # video icon
+            echo -en "<i class=\"fas fa-video fa-sm\"></i>"   >> $XRELFILE
           else
-            # film icon
-            echo -en "<i class=\"fas fa-film\"></i>"   >> $XRELFILE
+            if [ $ISANIME -gt 0 ]
+            then
+              # paint-brush icon
+              echo -en "<i class=\"fas fa-paint-brush fa-sm\"></i>"   >> $XRELFILE
+            else
+              # film icon
+              echo -en "<i class=\"fas fa-film\"></i>"   >> $XRELFILE
+            fi
           fi
 
         fi
