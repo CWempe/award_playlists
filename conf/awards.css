@@ -50,7 +50,7 @@ table tbody tr td:first-child::before {
 }
 
 .short {
-  color: grey;
+  color: teal;
 }
 
 .yes {
