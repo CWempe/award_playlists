@@ -521,11 +521,13 @@ if [ $NOMINEESCOUNT -eq 0 ]
           # check if the nominee is a series
           ISSERIES=$(echo ${CATEGORIES[@]}  | grep -c "Series" )
           ISSHORT=$(echo ${CATEGORIES[@]}  | grep -c "Short" )
+          ISDOCU=$(echo ${CATEGORIES[@]}  | grep -c "Documentary" )
 
           if [ $VERBOSE -eq 1 ]
             then
               echo "  ISSERIES: $ISSERIES"
               echo "  ISSHORT:  $ISSHORT"
+              echo "  ISDOCU:   $ISDOCU"
               echo "  TITLESQL: $TITLESQL"
           fi
 
@@ -708,6 +710,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
             echo -e "  EVENTSTRING: $EVENTSTRING"
             echo -e "  ISSERIES:    $ISSERIES"
             echo -e "  ISSHORT:     $ISSHORT"
+            echo -e "  ISDOCU:      $ISDOCU"
         fi
 
 
@@ -728,11 +731,21 @@ if [ $NOMINEESCOUNT -eq 0 ]
           if [ $ISSHORT -gt 0 ]
           then
             # tv icon
-            echo -en "<a title=\"Short\"><i class=\"fas fa-video fa-xs\"></i>"   >> $XRELFILE
+            echo -e "<a title=\"Short\" class=\"short\">"   >> $XRELFILE
           else
-            # clapper board icon
-            echo -en "<a title=\"Movie\"><i class=\"fas fa-film\"></i>"   >> $XRELFILE
+            # film icon
+            echo -e "<a title=\"Movie\">"   >> $XRELFILE
           fi
+
+          if [ $ISDOCU -gt 0 ]
+          then
+            # tv icon
+            echo -en "<i class=\"fas fa-tv fa-sm\"></i>"   >> $XRELFILE
+          else
+            # film icon
+            echo -en "<i class=\"fas fa-film\"></i>"   >> $XRELFILE
+          fi
+
         fi
 
         echo -en            "</a></td>"   >> $XRELFILE

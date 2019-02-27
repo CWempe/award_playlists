@@ -49,6 +49,10 @@ table tbody tr td:first-child::before {
   text-align: center;
 }
 
+.short {
+  color: grey;
+}
+
 .yes {
   color: green;
   text-align: center;
