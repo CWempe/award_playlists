@@ -657,29 +657,29 @@ if [ $NOMINEESCOUNT -eq 0 ]
 
         echo -e  "        <tr>"                                                                                         >> $XRELFILE
         echo -e  "          <td title=\"number\"        class=\"number\"></td>"                                         >> $XRELFILE
-        echo -en "          <td title=\"in Database?\"  class=\"db $INDATABASE\">"                                      >> $XRELFILE
+        echo -en "          <td title=\"in Database?\"  class=\"db $INDATABASE\" "                                      >> $XRELFILE
         if [ "$INDATABASE" = "yes" ]
         then
           # check mark
-          echo -en "<i class=\"fas fa-check fa-sm\"></i>"   >> $XRELFILE
+          echo -en "sorttable_customkey=\"1\"><i class=\"fas fa-check fa-sm\"></i>"         >> $XRELFILE
         else
           # X
-          echo -en "<i class=\"fas fa-times fa-sm\"></i>"   >> $XRELFILE
+          echo -en "sorttable_customkey=\"2\"><i class=\"fas fa-times fa-sm\"></i>"         >> $XRELFILE
         fi
         echo -e         " </td>"                                                                                       >> $XRELFILE
-        echo -en "          <td title=\"$WATCHEDNOTE\"      class=\"watched $WATCHED\">"                               >> $XRELFILE
+        echo -en "          <td title=\"$WATCHEDNOTE\" class=\"watched $WATCHED\" "         >> $XRELFILE
         case "$WATCHED" in
           yes)
             # check mark
-            echo -en "<i class=\"fas fa-check fa-sm\"></i>"   >> $XRELFILE
+            echo -en "sorttable_customkey=\"1\"><i class=\"fas fa-check fa-sm\"></i>"       >> $XRELFILE
             ;;
           partly)
             # O
-            echo -en "<i class=\"fas fa-chart-pie fa-sm\"></i>"   >> $XRELFILE
+            echo -en "sorttable_customkey=\"2\"><i class=\"fas fa-chart-pie fa-sm\"></i>"   >> $XRELFILE
             ;;
           *)
             # X
-            echo -en "<i class=\"fas fa-times fa-sm\"></i>"   >> $XRELFILE
+            echo -en "sorttable_customkey=\"3\"><i class=\"fas fa-times fa-sm\"></i>"       >> $XRELFILE
         esac
 
         echo -e          "</td>"                                                                                                          >> $XRELFILE
