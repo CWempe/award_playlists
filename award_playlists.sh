@@ -434,15 +434,15 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "    <h1>$PLAYLISTNAME</h1>"                                                >> $XRELFILE
       echo -e "    <h2>Movies</h2>"                                                       >> $XRELFILE
       echo -e "    <p><a target=\"_blank\" href=\"$NOMINEEURL\">IMDB's Awards Central</a></p>"  >> $XRELFILE
-      echo -e "    <table class=\"sortable nominations\">"                      >> $XRELFILE
-      echo -e "      <thead>"                                                             >> $XRELFILE
-      echo -e "        <tr>"                                                              >> $XRELFILE
-      echo -e "          <th title=\"Number\">#</th>"                                     >> $XRELFILE
-      echo -e "          <th title=\"in Database\"><i class=\"fas fa-hdd fa-xs\"></i></th>"              >> $XRELFILE
-      echo -e "          <th title=\"watched\"><i class=\"fas fa-eye fa-xs\"></i></th>"                  >> $XRELFILE
-      echo -e "          <th title=\"Links\"><i class=\"fas fa-search fa-xs\"></i></th>"                 >> $XRELFILE
-      echo -e "          <th title=\"amount of nominations\"><i class=\"fas fa-trophy fa-xs\"></i></th>" >> $XRELFILE
-      echo -e "          <th title=\"media type\"><i class=\"fas fa-tags fa-xs\"></i></th>"              >> $XRELFILE
+      echo -e "    <table class=\"sortable nominations\">"                                      >> $XRELFILE
+      echo -e "      <thead>"                                                                   >> $XRELFILE
+      echo -e "        <tr>"                                                                    >> $XRELFILE
+      echo -e "          <th title=\"Number\" class=\"sorttable_nosort\">#</th>"                                     >> $XRELFILE
+      echo -e "          <th title=\"in Database\"><i class=\"fas fa-hdd fa-xs\"></i></th>"                          >> $XRELFILE
+      echo -e "          <th title=\"watched\"><i class=\"fas fa-eye fa-xs\"></i></th>"                              >> $XRELFILE
+      echo -e "          <th title=\"Links\" class=\"sorttable_nosort\"><i class=\"fas fa-search fa-xs\"></i></th>"  >> $XRELFILE
+      echo -e "          <th title=\"amount of nominations\"><i class=\"fas fa-trophy fa-xs\"></i></th>"             >> $XRELFILE
+      echo -e "          <th title=\"media type\"><i class=\"fas fa-tags fa-xs\"></i></th>"                          >> $XRELFILE
       echo -e "          <th title=\"Movietitle\">Title</th>"                             >> $XRELFILE
       echo -e "        </tr>"                                                             >> $XRELFILE
       echo -e "      </thead>"                                                            >> $XRELFILE
