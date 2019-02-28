@@ -30,9 +30,9 @@
 
 # Year
 YEAR=`date +%Y`
+DATETIME=$(date '+%F %R')
 # Event
 EVENT="G"
-
 
 # VERBOSE (0/1)
 VERBOSE="0"
@@ -51,7 +51,7 @@ XREL="0"
 
 
 echo ""
-echo "####################### "`date`" #######################"
+echo "####################### $DATETIME #######################"
 
 
 while getopts vdfe:m:y:t:sx opt
@@ -799,9 +799,11 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e  "    </table>"                                    >> $XRELFILE
       echo -e  "    <h2>Statistics</h2>"                         >> $XRELFILE
       echo -e  "    <div class=\"statistics\">"                  >> $XRELFILE
-      echo -en "        Total nominees:  $NOMINEESCOUNT<br>"     >> $XRELFILE
-      echo -en         "in your databse: $MOVIECOUNT<br>"        >> $XRELFILE
-      echo -e          "already watched: $WATCHEDCOUNT<br>"      >> $XRELFILE
+      echo -e  "        Total nominees:  $NOMINEESCOUNT<br>"     >> $XRELFILE
+      echo -e  "        already watched: $WATCHEDCOUNT<br><br>"  >> $XRELFILE
+      echo -e  "    </div>"                                      >> $XRELFILE
+      echo -e  "    <div class=\"meta\">"                        >> $XRELFILE
+      echo -e  "        Data updated: $DATETIME<br>"             >> $XRELFILE
       echo -e  "    </div>"                                      >> $XRELFILE
       echo -e  "  </body>"                                       >> $XRELFILE
       echo -e  "</html>"                                         >> $XRELFILE
