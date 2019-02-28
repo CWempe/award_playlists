@@ -17,6 +17,12 @@ thead {
     font-size: 1.2em;
 }
 
+tfoot {
+    color: #FFFFFF;
+    background-color: #696969;
+    font-size: .9em;
+}
+
 table.nominations tbody tr:nth-child(odd) {
     background-color: #F0F0F0;
 }
