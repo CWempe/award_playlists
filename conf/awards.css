@@ -57,8 +57,10 @@ table.nominations tbody tr td:first-child::before {
   text-align: center;
 }
 
-.Short {
-  color: teal;
+.Short::after {
+  display: inline-block;
+  content: "\f017";
+  font-size: .5em;
 }
 
 .yes {
