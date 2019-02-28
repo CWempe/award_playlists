@@ -41,6 +41,10 @@ table tbody tr td:first-child::before {
 }
 
 
+.meta {
+  font-size: .8em;
+}
+
 .nominations {
   text-align: right;
 }
