@@ -434,7 +434,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "    <h1>$PLAYLISTNAME</h1>"                                                >> $XRELFILE
       echo -e "    <h2>Movies</h2>"                                                       >> $XRELFILE
       echo -e "    <p><a target=\"_blank\" href=\"$NOMINEEURL\">IMDB's Awards Central</a></p>"  >> $XRELFILE
-      echo -e "    <table class=\"sortable\">"                                            >> $XRELFILE
+      echo -e "    <table class=\"sortable nominations\">"                      >> $XRELFILE
       echo -e "      <thead>"                                                             >> $XRELFILE
       echo -e "        <tr>"                                                              >> $XRELFILE
       echo -e "          <th title=\"Number\">#</th>"                                     >> $XRELFILE
@@ -712,7 +712,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
           echo "      "$cat | sed 's/"//g'                                                                                                >> $XRELFILE
         done
 
-        echo -e  " \"class=\"nominations\">$NOMINATIONS</td>"                                                                             >> $XRELFILE
+        echo -e  " \"class=\"nomcount\">$NOMINATIONS</td>"                                                                             >> $XRELFILE
         echo -e  "          <td title=\"media type\" class=\"media_type\">"                                                               >> $XRELFILE
 
         if [ $VERBOSE -eq 1 ]

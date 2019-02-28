@@ -17,7 +17,7 @@ thead {
     font-size: 1.2em;
 }
 
-table tbody tr:nth-child(odd) {
+table.nominations tbody tr:nth-child(odd) {
     background-color: #F0F0F0;
 }
 
@@ -26,15 +26,15 @@ table tbody tr:nth-child(odd) {
  * add incrementing numbers in frint of every row
  */
 
-table {
+table.nominations {
   counter-reset: rowNumber;
 }
 
-table tbody tr {
+table.nominations tbody tr {
   counter-increment: rowNumber;
 }
 
-table tbody tr td:first-child::before {
+table.nominations tbody tr td:first-child::before {
   content: counter(rowNumber);
   font-size: 0.8em;
   text-align: right;
@@ -45,7 +45,11 @@ table tbody tr td:first-child::before {
   font-size: .8em;
 }
 
-.nominations {
+.timestamp {
+  padding-left: 2em;
+}
+
+.nomcount {
   text-align: right;
 }
 
