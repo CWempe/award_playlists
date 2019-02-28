@@ -803,19 +803,22 @@ if [ $NOMINEESCOUNT -eq 0 ]
     ####
     if [ "$XREL" -eq 1 ]
     then
-      echo -e  "      </tbody>"                                                 >> $XRELFILE
-      echo -e  "    </table>"                                                   >> $XRELFILE
-      echo -e  "    <h2>Statistics</h2>"                                        >> $XRELFILE
-      echo -e  "    <div class=\"statistics\">"                                 >> $XRELFILE
-      echo -e  "        Total nominees:  $NOMINEESCOUNT<br>"                    >> $XRELFILE
-      echo -e  "        already watched: $WATCHEDCOUNT<br><br>"                 >> $XRELFILE
-      echo -e  "    </div>"                                                     >> $XRELFILE
-      echo -e  "    <div class=\"meta\">"                                       >> $XRELFILE
-      echo -e  "        <i class=\"fas fa-sync-alt\"></i> $DATETIME<br>"        >> $XRELFILE
-      echo -e  "        <i class=\"fas fa-code-branch\"></i> ${GITCOMMIT}<br>"  >> $XRELFILE
-      echo -e  "    </div>"                                                     >> $XRELFILE
-      echo -e  "  </body>"                                                      >> $XRELFILE
-      echo -e  "</html>"                                                        >> $XRELFILE
+      echo -e  "      </tbody>"                                             >> $XRELFILE
+      echo -e  "    </table>"                                               >> $XRELFILE
+      echo -e  "    <h2>Statistics</h2>"                                    >> $XRELFILE
+      echo -e  "    <div class=\"statistics\">"                             >> $XRELFILE
+      echo -e  "        Total nominees:  $NOMINEESCOUNT<br>"                >> $XRELFILE
+      echo -e  "        in your databse: $MOVIECOUNT<br>"                   >> $XRELFILE
+      echo -e  "        already watched: $WATCHEDCOUNT<br><br>"             >> $XRELFILE
+      echo -e  "    </div>"                                                 >> $XRELFILE
+      echo -e  "      <table class=\"meta\">"                               >> $XRELFILE
+      echo -e  "        <tr><td><i class=\"fas fa-sync-alt\"></td>"         >> $XRELFILE
+      echo -e  "            <td></i>$DATETIME</td></tr>"                    >> $XRELFILE
+      echo -e  "        <tr><td><i class=\"fas fa-code-branch\"></i></td>"  >> $XRELFILE
+      echo -e  "            <td>${GITCOMMIT}</td></tr>"                     >> $XRELFILE
+      echo -e  "     <table>"                                               >> $XRELFILE
+      echo -e  "  </body>"                                                  >> $XRELFILE
+      echo -e  "</html>"                                                    >> $XRELFILE
     fi
 fi
 
