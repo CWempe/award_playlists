@@ -728,29 +728,31 @@ if [ $NOMINEESCOUNT -eq 0 ]
         if [ $ISSHORT -gt 0 ]
         then
           # tv icon
-          echo -e "<a title=\"Short\" class=\"short\">"   >> $XRELFILE
+          MOVIELENGHT="Short"
+#          echo -e "<a title=\"Short\" class=\"short\">"   >> $XRELFILE
         else
           # film icon
-          echo -e "<a title=\"Movie\">"   >> $XRELFILE
+          MOVIELENGHT="Movie"
+#          echo -e "<a title=\"Movie\">"   >> $XRELFILE
         fi
 
         if [ $ISDOCU -gt 0 ]
         then
           # video icon
-          echo -en "<i class=\"fas fa-video fa-sm\"></i>"   >> $XRELFILE
+          echo -en "<i title=\"Documentary ${MOVIELENGHT}\" class=\"${MOVIELENGHT} fas fa-video fa-sm\"></i>"   >> $XRELFILE
         else
           if [ $ISANIME -gt 0 ]
           then
             # paint-brush icon
-            echo -en "<i class=\"fas fa-paint-brush fa-sm\"></i>"   >> $XRELFILE
+            echo -en "<i title=\"Animated ${MOVIELENGHT}\" class=\"${MOVIELENGHT} fas fa-paint-brush fa-sm\"></i>"   >> $XRELFILE
           else
             if [ $ISSERIES -gt 0 ]
             then
               # tv icon
-              echo -en "<a title=\"Series or movie made for TV\"><i class=\"fas fa-tv fa-sm\"></i>"   >> $XRELFILE
+              echo -en "<a title=\"Limited Series or movie made for TV\"><i class=\"${MOVIELENGHT} fas fa-tv fa-sm\"></i>"   >> $XRELFILE
             else
               # film icon
-              echo -en "<i class=\"fas fa-film\"></i>"   >> $XRELFILE
+              echo -en "<i title=\"${MOVIELENGHT}\" class=\"${MOVIELENGHT} fas fa-film\"></i>"   >> $XRELFILE
             fi
           fi
         fi

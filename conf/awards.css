@@ -57,7 +57,7 @@ table.nominations tbody tr td:first-child::before {
   text-align: center;
 }
 
-.short {
+.Short {
   color: teal;
 }
 
