@@ -713,7 +713,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         done
 
         echo -e  " \"class=\"nomcount\">$NOMINATIONS</td>"                                                                             >> $XRELFILE
-        echo -e  "          <td title=\"media type\" class=\"media_type\">"                                                               >> $XRELFILE
+        echo -e  "          <td title=\"media type\" class=\"media_type\" "                                                               >> $XRELFILE
 
         if [ $VERBOSE -eq 1 ]
           then
@@ -729,30 +729,28 @@ if [ $NOMINEESCOUNT -eq 0 ]
         then
           # tv icon
           MOVIELENGHT="Short"
-#          echo -e "<a title=\"Short\" class=\"short\">"   >> $XRELFILE
         else
           # film icon
           MOVIELENGHT="Movie"
-#          echo -e "<a title=\"Movie\">"   >> $XRELFILE
         fi
 
         if [ $ISDOCU -gt 0 ]
         then
           # video icon
-          echo -en "<i title=\"Documentary ${MOVIELENGHT}\" class=\"${MOVIELENGHT} fas fa-video fa-sm\"></i>"   >> $XRELFILE
+          echo -en " sorttable_customkey=\"${MOVIELENGHT}_4\"><i title=\"Documentary ${MOVIELENGHT}\" class=\"${MOVIELENGHT} fas fa-video fa-sm\"></i>"   >> $XRELFILE
         else
           if [ $ISANIME -gt 0 ]
           then
             # paint-brush icon
-            echo -en "<i title=\"Animated ${MOVIELENGHT}\" class=\"${MOVIELENGHT} fas fa-paint-brush fa-sm\"></i>"   >> $XRELFILE
+            echo -en " sorttable_customkey=\"${MOVIELENGHT}_2\"><i title=\"Animated ${MOVIELENGHT}\" class=\"${MOVIELENGHT} fas fa-paint-brush fa-sm\"></i>"   >> $XRELFILE
           else
             if [ $ISSERIES -gt 0 ]
             then
               # tv icon
-              echo -en "<a title=\"Limited Series or movie made for TV\"><i class=\"${MOVIELENGHT} fas fa-tv fa-sm\"></i>"   >> $XRELFILE
+              echo -en " sorttable_customkey=\"${MOVIELENGHT}_3\"><i title=\"Limited Series or movie made for TV\" class=\"${MOVIELENGHT} fas fa-tv fa-sm\"></i>"   >> $XRELFILE
             else
               # film icon
-              echo -en "<i title=\"${MOVIELENGHT}\" class=\"${MOVIELENGHT} fas fa-film\"></i>"   >> $XRELFILE
+              echo -en " sorttable_customkey=\"${MOVIELENGHT}_1\"><i title=\"${MOVIELENGHT}\" class=\"${MOVIELENGHT} fas fa-film\"></i>"   >> $XRELFILE
             fi
           fi
         fi
