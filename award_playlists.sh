@@ -225,6 +225,13 @@ fi
 # import custom config
 source "$CONFIG"
 
+# change dir to $BINDIR for git to work
+cd $BINDIR
+
+# Git commit
+GITCOMMIT=$(git log --date=format:'%F %R' --pretty=format:'%cd (Commit: %h)' -n 1)
+#' fix wrong syntax highlighting in mcedit
+
 
 if [ "$VERBOSE" -eq 1 ]
   then
@@ -244,6 +251,7 @@ if [ "$VERBOSE" -eq 1 ]
     echo -e " EVENTID:        $EVENTID"
     echo -e " EVENTSTRING:    $EVENTSTRING"
     echo -e " EVENT:          $EVENT"
+    echo -e " GITCOMMIT:      $GITCOMMIT"
     echo -e ""
     echo -e "Files:"
     echo -e " BINDIR:         $BINDIR"
@@ -804,6 +812,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e  "    </div>"                                      >> $XRELFILE
       echo -e  "    <div class=\"meta\">"                        >> $XRELFILE
       echo -e  "        Data updated: $DATETIME<br>"             >> $XRELFILE
+      echo -e  "        Script-Version: ${GITCOMMIT}<br>"        >> $XRELFILE
       echo -e  "    </div>"                                      >> $XRELFILE
       echo -e  "  </body>"                                       >> $XRELFILE
       echo -e  "</html>"                                         >> $XRELFILE
