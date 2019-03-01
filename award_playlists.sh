@@ -527,11 +527,21 @@ if [ $NOMINEESCOUNT -eq 0 ]
       # replace certain characters in title to match sql syntax
       TITLESQL=`echo $TITLE | sed "s/\(&\|'\|:\)/%/g"`
 
-          # check if the nominee is a series
+          # check categories
           ISSERIES=$(echo ${CATEGORIES[@]} | grep -c "Series" )
           ISSHORT=$(echo ${CATEGORIES[@]}  | grep -c "Short" )
           ISDOCU=$(echo ${CATEGORIES[@]}   | grep -c "Documentary" )
           ISANIME=$(echo ${CATEGORIES[@]}  | grep -c "Animated" )
+
+          BESTMOVIE=$(echo ${CATEGORIES[@]}    | grep -v "Foreign"  | grep -v "Animated" | grep -c -e "Best Motion Picture" -e "Worst Picture" -e "Best Television")
+          BESTFOREIGN=$(echo ${CATEGORIES[@]}  | grep -c "Foreign" )
+          BESTANIME=$(echo ${CATEGORIES[@]}    | grep -c "Animated" )
+          BESTACTOR=$(echo ${CATEGORIES[@]}    | grep -c -e "Actress" -e "Actor" )
+          BESTSONG=$(echo ${CATEGORIES[@]}     | grep -c -e "Song" )
+          BESTDIR=$(echo ${CATEGORIES[@]}      | grep -c -e "Director" -e "Directing" )
+          BESTPLAY=$(echo ${CATEGORIES[@]}     | grep -c -e "Screenplay" )
+          BESTCAM=$(echo ${CATEGORIES[@]}      | grep -c -e "Cinematography" )
+          BESTEDIT=$(echo ${CATEGORIES[@]}     | grep -v "Sound Editing" | grep -c -e "Editing" )
 
           if [ $VERBOSE -eq 1 ]
             then
@@ -712,14 +722,65 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e  "               <img src=\"https://www.google.com/favicon.ico\" alt=\"Google\" height=16/></a>"                          >> $XRELFILE
 
         echo -e  "             </td>"                                                                                                     >> $XRELFILE
-        echo -e  "          <td title=\"nominated in:"                                                                                    >> $XRELFILE
+        echo -e  "          <td nowrap title=\"nominated in:"                                                                                    >> $XRELFILE
 
-        for cat in "${CATEGORIES[@]}"
+        for cat in "${CATEGORIES[@]}>"
         do
           echo "      "$cat | sed 's/"//g'                                                                                                >> $XRELFILE
         done
+        echo -en "<span class=\"nomsymbol\">"                                                                                             >> $XRELFILE
 
-        echo -e  " \"class=\"nomcount\">$NOMINATIONS</td>"                                                                             >> $XRELFILE
+        if [ $BESTMOVIE -gt 0 ]
+        then
+          echo -e  "<i class=\"fas fa-star fa-xs\"></i>"                                                                                  >> $XRELFILE
+        else
+          if [ $BESTANIME -gt 0 ]
+          then
+            echo -e  "<i class=\"fas fa-paint-brush fa-xs\"></i>"                                                                         >> $XRELFILE
+          else
+            if [ $BESTFOREIGN -gt 0 ]
+            then
+              echo -e  "<i class=\"fas fa-closed-captioning fa-sm\"></i>"                                                                 >> $XRELFILE
+            else
+              if [ $BESTACTOR -gt 0 ]
+              then
+                echo -e  "<i class=\"fas fa-user fa-sm\"></i>"                                                                            >> $XRELFILE
+              else
+                if [ $BESTDIR -gt 0 ]
+                then
+                  echo -e  "<i class=\"fas fa-bullhorn fa-sm\"></i>"                                                                      >> $XRELFILE
+                else
+                  if [ $BESTPLAY -gt 0 ]
+                  then
+                    echo -e  "<i class=\"fas fa-book fa-sm\"></i>"                                                                        >> $XRELFILE
+                  else
+                    if [ $BESTSONG -gt 0 ]
+                    then
+                      echo -e  "<i class=\"fas fa-music fa-sm\"></i>"                                                                     >> $XRELFILE
+                    else
+                      if [ $BESTCAM -gt 0 ]
+                      then
+                        echo -e  "<i class=\"fas fa-video fa-sm\"></i>"                                                                        >> $XRELFILE
+                      else
+                        if [ $BESTEDIT -gt 0 ]
+                        then
+                          echo -e  "<i class=\"fas fa-cut fa-sm\"></i>"                                                                     >> $XRELFILE
+                        fi
+                      fi
+                    fi
+                  fi
+                fi
+              fi
+            fi
+          fi
+        fi
+
+
+
+        echo -e  "</span>"                                                                                                                >> $XRELFILE
+        echo -e  "<span class=\"nomcount\">${NOMINATIONS}</span>"                                                                         >> $XRELFILE
+        echo -e  "</td>"                                                                                                                  >> $XRELFILE
+
         echo -e  "          <td title=\"media type\" class=\"media_type\" "                                                               >> $XRELFILE
 
         if [ $VERBOSE -eq 1 ]
