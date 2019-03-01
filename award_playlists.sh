@@ -705,6 +705,9 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.zone/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"    >> $XRELFILE
         echo -e  "               <img src=\"https://www.limetorrents.zone/favicon.ico\" alt=\"LimeTorrents\"/></a>"                       >> $XRELFILE
 
+        echo -e  "             <a target=\"_blank\" href=\"http://extratorrent.host/search/?search=${TITLESEARCH}%20${RELEASEYEAR}&srt=seeds&order=desc\">"    >> $XRELFILE
+        echo -e  "               <img src=\"https://extratorrent.host/images/favicon.ico\" alt=\"Extratorrent\"/></a>"                       >> $XRELFILE
+
         echo -e  "             <a target=\"_blank\" href=\"https://www.google.de/search?safe=off&site=webhp&source=hp&q=$TITLESEARCHG\">" >> $XRELFILE
         echo -e  "               <img src=\"https://www.google.com/favicon.ico\" alt=\"Google\" height=16/></a>"                          >> $XRELFILE
 
