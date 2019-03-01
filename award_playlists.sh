@@ -425,6 +425,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "<html lang=\"en\">"                                                        >> $XRELFILE
       echo -e "  <head>"                                                                  >> $XRELFILE
       echo -e "    <meta charset=\"utf-8\"/>"                                             >> $XRELFILE
+      echo -e "    <title>$EVENT $YEAR</title>"                                           >> $XRELFILE
       echo -e "    <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"http://www.oscars.org/favicon.ico\" />"       >> $XRELFILE
       echo -e "    <link rel=\"stylesheet\" type=\"text/css\" href=\"$CSSFILE\" />"       >> $XRELFILE
       echo -e "    <link rel=\"stylesheet\" href=\"https://use.fontawesome.com/releases/v5.7.2/css/all.css\" integrity=\"sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr\" crossorigin=\"anonymous\" />"  >> $XRELFILE
