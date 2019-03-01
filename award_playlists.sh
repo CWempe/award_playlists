@@ -687,14 +687,14 @@ if [ $NOMINEESCOUNT -eq 0 ]
 
         echo -e  "          <td title=\"Links\" class=\"links\">"                                                                         >> $XRELFILE
 
-        echo -e  "             <a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">"                                             >> $XRELFILE
-        echo -e  "               <img src=\"http://www.imdb.com/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"                       >> $XRELFILE
+        echo -e  "             <a target=\"_blank\" href=\"https://www.imdb.com/title/$ID/\">"                                             >> $XRELFILE
+        echo -e  "               <img src=\"https://www.imdb.com/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"                       >> $XRELFILE
 
         echo -e  "             <a target=\"_blank\" href=\"https://www.themoviedb.org/search?query=$TITLESEARCH\">"                       >> $XRELFILE
         echo -e  "               <img src=\"https://www.themoviedb.org/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"                >> $XRELFILE
 
         echo -e  "             <a target=\"_blank\" href=\"https://www.xrel.to/search.html?xrel_search_query=$ID\">"                      >> $XRELFILE
-        echo -e  "               <img src=\"http://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a>     "                                     >> $XRELFILE
+        echo -e  "               <img src=\"https://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a>     "                                     >> $XRELFILE
 
         echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"       >> $XRELFILE
         echo -e  "               <img src=\"https://thepiratebay.org/favicon.ico\" alt=\"The Pirate Bay\"/></a>"                          >> $XRELFILE
