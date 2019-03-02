@@ -808,7 +808,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         fi
 
         echo -e  " title=\"nominated in:"                                                                                                 >> $XRELFILE
-        for cat in "${CATEGORIES[@]}>"
+        for cat in "${CATEGORIES[@]}"
         do
           echo "      "$cat | sed 's/"//g'                                                                                                >> $XRELFILE
         done
