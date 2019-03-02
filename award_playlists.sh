@@ -443,7 +443,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "          <th title=\"watched\"><i class=\"fas fa-eye fa-xs\"></i></th>"                              >> $XRELFILE
       echo -e "          <th title=\"Links\" class=\"sorttable_nosort\"><i class=\"fas fa-search fa-xs\"></i></th>"  >> $XRELFILE
       echo -e "          <th title=\"amount of nominations\"><i class=\"fas fa-trophy fa-xs\"></i></th>"             >> $XRELFILE
-      echo -e "          <th title=\"importance of nominations\"><i class=\"fas fa-trophy fa-xs\"></i></th>"         >> $XRELFILE
+      echo -e "          <th title=\"most important nomination\"><i class=\"fas fa-star fa-xs\"></i></th>"           >> $XRELFILE
       echo -e "          <th title=\"media type\"><i class=\"fas fa-tags fa-xs\"></i></th>"                          >> $XRELFILE
       echo -e "          <th title=\"Movietitle\">Title</th>"                             >> $XRELFILE
       echo -e "        </tr>"                                                             >> $XRELFILE
