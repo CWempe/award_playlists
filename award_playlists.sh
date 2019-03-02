@@ -703,7 +703,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
             ;;
           partly)
             # O
-            echo -en "sorttable_customkey=\"2\"><i class=\"fas fa-chart-pie fa-sm\"></i>"   >> $XRELFILE
+            echo -en "sorttable_customkey=\"2\"><i class=\"fas fa-percent fa-sm\"></i>"   >> $XRELFILE
             ;;
           *)
             # X
