@@ -535,13 +535,21 @@ if [ $NOMINEESCOUNT -eq 0 ]
           ISDOCU=$(echo ${CATEGORIES[@]}   | grep -c "Documentary" )
           ISANIME=$(echo ${CATEGORIES[@]}  | grep -c "Animated" )
 
-          BESTMOVIE=$(echo ${CATEGORIES[@]}    | grep -c -e "Best Motion Picture of the Year" -e "Best Motion Picture - Comedy" -e "Best Motion Picture - Musical" -e "Worst Picture" -e "Best Television")
+          BESTMOVIE=$(echo ${CATEGORIES[@]}    | grep -c -e "Best Motion Picture of the Year" \
+                                                         -e "Best Motion Picture - Comedy" \
+                                                         -e "Best Motion Picture - Musical" \
+                                                         -e "Outstanding Drama Series" \
+                                                         -e "Outstanding Comedy Series" \
+                                                         -e "Outstanding Limited Series" \
+                                                         -e "Outstanding Television Movie" \
+                                                         -e "Worst Picture" \
+                                                         -e "Best Television")
           BESTFOREIGN=$(echo ${CATEGORIES[@]}  | grep -c "Foreign" )
           BESTANIME=$(echo ${CATEGORIES[@]}    | grep -c "Animated" )
           BESTACTOR=$(echo ${CATEGORIES[@]}    | grep -c -e "Actress" -e "Actor" )
           BESTSONG=$(echo ${CATEGORIES[@]}     | grep -c -e "Song" )
           BESTDIR=$(echo ${CATEGORIES[@]}      | grep -c -e "Director" -e "Directing" )
-          BESTPLAY=$(echo ${CATEGORIES[@]}     | grep -c -e "Screenplay" )
+          BESTPLAY=$(echo ${CATEGORIES[@]}     | grep -c -e "Screenplay" -e "Writing" )
           BESTCAM=$(echo ${CATEGORIES[@]}      | grep -c -e "Cinematography" )
           BESTEDIT=$(echo ${CATEGORIES[@]}     | grep -v "Sound Editing" | grep -c -e "Editing" )
 
