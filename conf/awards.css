@@ -67,12 +67,6 @@ table.nominations tbody tr td:first-child::before {
   text-align: center;
 }
 
-.Short::after {
-  display: inline-block;
-  content: "\f017";
-  font-size: .5em;
-}
-
 .yes {
   color: green;
   text-align: center;

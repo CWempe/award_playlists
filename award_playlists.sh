@@ -665,12 +665,15 @@ if [ $NOMINEESCOUNT -eq 0 ]
       if [ $ISSHORT -gt 0 ]
       then
         MOVIELENGHT="Short"
+        LENGHTSYMBOL="fas fa-tv fa-xs"
       else
         if [ $ISTV -gt 0 ]
         then
           MOVIELENGHT="TV"
+          LENGHTSYMBOL="fas fa-tv fa-xs"
         else
           MOVIELENGHT="Movie"
+          LENGHTSYMBOL="fas fa-film fa-sm"
         fi
       fi
 
@@ -711,26 +714,26 @@ if [ $NOMINEESCOUNT -eq 0 ]
 
         echo -e  "          <td title=\"Links\" class=\"links\">"                                                                         >> $XRELFILE
 
-        echo -e  "             <a target=\"_blank\" href=\"https://www.imdb.com/title/$ID/\">"                                             >> $XRELFILE
-        echo -e  "               <img src=\"https://www.imdb.com/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"                       >> $XRELFILE
+        echo -e  "             <a target=\"_blank\" href=\"https://www.imdb.com/title/$ID/\">"                                            >> $XRELFILE
+        echo -e  "               <img src=\"https://www.imdb.com/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"                      >> $XRELFILE
 
         echo -e  "             <a target=\"_blank\" href=\"https://www.themoviedb.org/search?query=$TITLESEARCH\">"                       >> $XRELFILE
         echo -e  "               <img src=\"https://www.themoviedb.org/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"                >> $XRELFILE
 
         echo -e  "             <a target=\"_blank\" href=\"https://www.xrel.to/search.html?xrel_search_query=$ID\">"                      >> $XRELFILE
-        echo -e  "               <img src=\"https://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a>     "                                     >> $XRELFILE
+        echo -e  "               <img src=\"https://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a>     "                                    >> $XRELFILE
 
         echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"       >> $XRELFILE
         echo -e  "               <img src=\"https://thepiratebay.org/favicon.ico\" alt=\"The Pirate Bay\"/></a>"                          >> $XRELFILE
 
-        echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?search=$TITLESEARCH%20$RELEASEYEAR&order=seeders&by=DESC\">" >> $XRELFILE
+        echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?search=$TITLESEARCH%20$RELEASEYEAR&order=seeders&by=DESC\">"        >> $XRELFILE
         echo -e  "               <img src=\"https://rarbg.to/favicon.ico\" alt=\"RARBG\"/></a>"                                           >> $XRELFILE
 
-        echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.zone/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"    >> $XRELFILE
-        echo -e  "               <img src=\"https://www.limetorrents.zone/favicon.ico\" alt=\"LimeTorrents\"/></a>"                       >> $XRELFILE
+        echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.zone/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"               >> $XRELFILE
+        echo -e  "               <img src=\"https://www.limetorrents.zone/favicon.ico\" alt=\"LimeTorrents\"/></a>"                                          >> $XRELFILE
 
-        echo -e  "             <a target=\"_blank\" href=\"http://extratorrent.host/search/?search=${TITLESEARCH}%20${RELEASEYEAR}&srt=seeds&order=desc\">"    >> $XRELFILE
-        echo -e  "               <img src=\"https://extratorrent.host/images/favicon.ico\" alt=\"Extratorrent\"/></a>"                       >> $XRELFILE
+        echo -e  "             <a target=\"_blank\" href=\"http://extratorrent.host/search/?search=${TITLESEARCH}%20${RELEASEYEAR}&srt=seeds&order=desc\">"  >> $XRELFILE
+        echo -e  "               <img src=\"https://extratorrent.host/images/favicon.ico\" alt=\"Extratorrent\"/></a>"                    >> $XRELFILE
 
         echo -e  "             <a target=\"_blank\" href=\"https://www.google.de/search?safe=off&site=webhp&source=hp&q=$TITLESEARCHG\">" >> $XRELFILE
         echo -e  "               <img src=\"https://www.google.com/favicon.ico\" alt=\"Google\" height=16/></a>"                          >> $XRELFILE
@@ -777,13 +780,13 @@ if [ $NOMINEESCOUNT -eq 0 ]
                         else
                           if [ $ISDOCU -gt 0 ]
                           then
-                            echo -e  "10_${MOVIELENGHT}\"><i class=\"fas fa-camera fa-sm\""                                                     >> $XRELFILE
+                            echo -e  "10_${MOVIELENGHT}\"><i class=\"fas fa-camera fa-sm\""                                                              >> $XRELFILE
                           else
                             if [ $ISANIME -gt 0 ]
                             then
-                              echo -e  "11_${MOVIELENGHT}\"><i class=\"fas fa-paint-brush fa-sm\""                                                     >> $XRELFILE
+                              echo -e  "11_${MOVIELENGHT}\"><i class=\"fas fa-paint-brush fa-sm\""                                                       >> $XRELFILE
                             else
-                              echo -e  "99_${MOVIELENGHT}\"><i class=\"fas fa-tools fa-sm\""                                                                 >> $XRELFILE
+                              echo -e  "99_${MOVIELENGHT}\"><i class=\"fas fa-tools fa-sm\""                                                             >> $XRELFILE
                             fi
                           fi
                         fi
@@ -801,7 +804,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         do
           echo "      "$cat | sed 's/"//g'                                                                                                >> $XRELFILE
         done
-        echo -e  "\"></i></td>"                                                                                                             >> $XRELFILE
+        echo -e  "\"></i></td>"                                                                                                           >> $XRELFILE
 
         echo -e  "          <td title=\"media type\" class=\"media_type\" "                                                               >> $XRELFILE
 
@@ -818,20 +821,20 @@ if [ $NOMINEESCOUNT -eq 0 ]
         if [ $ISDOCU -gt 0 ]
         then
           # video icon
-          echo -en " sorttable_customkey=\"${MOVIELENGHT}_4\"><i title=\"Documentary ${MOVIELENGHT}\" class=\"${MOVIELENGHT} fas fa-video fa-sm\"></i>"   >> $XRELFILE
+          echo -en " sorttable_customkey=\"${MOVIELENGHT}_4\"><i title=\"Documentary ${MOVIELENGHT}\" class=\"${LENGHTSYMBOL}\"></i>"                >> $XRELFILE
         else
           if [ $ISANIME -gt 0 ]
           then
             # paint-brush icon
-            echo -en " sorttable_customkey=\"${MOVIELENGHT}_2\"><i title=\"Animated ${MOVIELENGHT}\" class=\"${MOVIELENGHT} fas fa-paint-brush fa-sm\"></i>"   >> $XRELFILE
+            echo -en " sorttable_customkey=\"${MOVIELENGHT}_2\"><i title=\"Animated ${MOVIELENGHT}\" class=\"${LENGHTSYMBOL}\"></i>"                 >> $XRELFILE
           else
             if [ $ISSERIES -gt 0 ]
             then
               # tv icon
-              echo -en " sorttable_customkey=\"${MOVIELENGHT}_3\"><i title=\"Limited Series or movie made for TV\" class=\"${MOVIELENGHT} fas fa-tv fa-sm\"></i>"   >> $XRELFILE
+              echo -en " sorttable_customkey=\"${MOVIELENGHT}_3\"><i title=\"Limited Series or movie made for TV\" class=\"${LENGHTSYMBOL}\"></i>"   >> $XRELFILE
             else
               # film icon
-              echo -en " sorttable_customkey=\"${MOVIELENGHT}_1\"><i title=\"${MOVIELENGHT}\" class=\"${MOVIELENGHT} fas fa-film\"></i>"   >> $XRELFILE
+              echo -en " sorttable_customkey=\"${MOVIELENGHT}_1\"><i title=\"${MOVIELENGHT}\" class=\"${LENGHTSYMBOL}\"></i>"                        >> $XRELFILE
             fi
           fi
         fi
