@@ -56,11 +56,11 @@ table.nominations tbody tr td:first-child::before {
 }
 
 .nomcount {
-  float: right;
+  text-align: right;
 }
 
 .nomsymbol {
-  float: left;
+  text-align: center;
 }
 
 .media_type {

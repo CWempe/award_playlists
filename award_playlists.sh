@@ -443,6 +443,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e "          <th title=\"watched\"><i class=\"fas fa-eye fa-xs\"></i></th>"                              >> $XRELFILE
       echo -e "          <th title=\"Links\" class=\"sorttable_nosort\"><i class=\"fas fa-search fa-xs\"></i></th>"  >> $XRELFILE
       echo -e "          <th title=\"amount of nominations\"><i class=\"fas fa-trophy fa-xs\"></i></th>"             >> $XRELFILE
+      echo -e "          <th title=\"importance of nominations\"><i class=\"fas fa-trophy fa-xs\"></i></th>"         >> $XRELFILE
       echo -e "          <th title=\"media type\"><i class=\"fas fa-tags fa-xs\"></i></th>"                          >> $XRELFILE
       echo -e "          <th title=\"Movietitle\">Title</th>"                             >> $XRELFILE
       echo -e "        </tr>"                                                             >> $XRELFILE
@@ -530,10 +531,11 @@ if [ $NOMINEESCOUNT -eq 0 ]
           # check categories
           ISSERIES=$(echo ${CATEGORIES[@]} | grep -c "Series" )
           ISSHORT=$(echo ${CATEGORIES[@]}  | grep -c "Short" )
+          ISTV=$(echo ${CATEGORIES[@]}     | grep -c "Television" )
           ISDOCU=$(echo ${CATEGORIES[@]}   | grep -c "Documentary" )
           ISANIME=$(echo ${CATEGORIES[@]}  | grep -c "Animated" )
 
-          BESTMOVIE=$(echo ${CATEGORIES[@]}    | grep -v "Foreign"  | grep -v "Animated" | grep -c -e "Best Motion Picture" -e "Worst Picture" -e "Best Television")
+          BESTMOVIE=$(echo ${CATEGORIES[@]}    | grep -c -e "Best Motion Picture of the Year" -e "Best Motion Picture - Comedy" -e "Best Motion Picture - Musical" -e "Worst Picture" -e "Best Television")
           BESTFOREIGN=$(echo ${CATEGORIES[@]}  | grep -c "Foreign" )
           BESTANIME=$(echo ${CATEGORIES[@]}    | grep -c "Animated" )
           BESTACTOR=$(echo ${CATEGORIES[@]}    | grep -c -e "Actress" -e "Actor" )
@@ -660,6 +662,18 @@ if [ $NOMINEESCOUNT -eq 0 ]
         fi
       fi
 
+      if [ $ISSHORT -gt 0 ]
+      then
+        MOVIELENGHT="Short"
+      else
+        if [ $ISTV -gt 0 ]
+        then
+          MOVIELENGHT="TV"
+        else
+          MOVIELENGHT="Movie"
+        fi
+      fi
+
       ####
       # Create HTML-file with links to xRel.to
       ####
@@ -722,49 +736,56 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e  "               <img src=\"https://www.google.com/favicon.ico\" alt=\"Google\" height=16/></a>"                          >> $XRELFILE
 
         echo -e  "             </td>"                                                                                                     >> $XRELFILE
-        echo -e  "          <td nowrap title=\"nominated in:"                                                                                    >> $XRELFILE
-
-        for cat in "${CATEGORIES[@]}>"
-        do
-          echo "      "$cat | sed 's/"//g'                                                                                                >> $XRELFILE
-        done
-        echo -en "<span class=\"nomsymbol\">"                                                                                             >> $XRELFILE
+        echo -e  "          <td class=\"nomcount\">${NOMINATIONS}</td>"                                                                   >> $XRELFILE
+        echo -en "<td class=\"nomsymbol\" sorttable_customkey=\""                                                                         >> $XRELFILE
 
         if [ $BESTMOVIE -gt 0 ]
         then
-          echo -e  "<i class=\"fas fa-star fa-xs\"></i>"                                                                                  >> $XRELFILE
+          echo -e  "01_${MOVIELENGHT}\"><i class=\"fas fa-star fa-xs\""                                                                                  >> $XRELFILE
         else
-          if [ $BESTANIME -gt 0 ]
+          if [ $BESTACTOR -gt 0 ]
           then
-            echo -e  "<i class=\"fas fa-paint-brush fa-xs\"></i>"                                                                         >> $XRELFILE
+            echo -e  "02_${MOVIELENGHT}\"><i class=\"fas fa-user fa-sm\""                                                                                >> $XRELFILE
           else
-            if [ $BESTFOREIGN -gt 0 ]
+            if [ $BESTDIR -gt 0 ]
             then
-              echo -e  "<i class=\"fas fa-closed-captioning fa-sm\"></i>"                                                                 >> $XRELFILE
+              echo -e  "03_${MOVIELENGHT}\"><i class=\"fas fa-bullhorn fa-sm\""                                                                          >> $XRELFILE
             else
-              if [ $BESTACTOR -gt 0 ]
+              if [ $BESTPLAY -gt 0 ]
               then
-                echo -e  "<i class=\"fas fa-user fa-sm\"></i>"                                                                            >> $XRELFILE
+                echo -e  "04_${MOVIELENGHT}\"><i class=\"fas fa-book fa-sm\""                                                                            >> $XRELFILE
               else
-                if [ $BESTDIR -gt 0 ]
+                if [ $BESTSONG -gt 0 ]
                 then
-                  echo -e  "<i class=\"fas fa-bullhorn fa-sm\"></i>"                                                                      >> $XRELFILE
+                  echo -e  "05_${MOVIELENGHT}\"><i class=\"fas fa-music fa-sm\""                                                                         >> $XRELFILE
                 else
-                  if [ $BESTPLAY -gt 0 ]
+                  if [ $BESTCAM -gt 0 ]
                   then
-                    echo -e  "<i class=\"fas fa-book fa-sm\"></i>"                                                                        >> $XRELFILE
+                    echo -e  "06_${MOVIELENGHT}\"><i class=\"fas fa-video fa-sm\""                                                                       >> $XRELFILE
                   else
-                    if [ $BESTSONG -gt 0 ]
+                    if [ $BESTEDIT -gt 0 ]
                     then
-                      echo -e  "<i class=\"fas fa-music fa-sm\"></i>"                                                                     >> $XRELFILE
+                      echo -e  "07_${MOVIELENGHT}\"><i class=\"fas fa-cut fa-sm\""                                                                       >> $XRELFILE
                     else
-                      if [ $BESTCAM -gt 0 ]
+                      if [ $BESTANIME -gt 0 ]
                       then
-                        echo -e  "<i class=\"fas fa-video fa-sm\"></i>"                                                                        >> $XRELFILE
+                        echo -e  "08_${MOVIELENGHT}\"><i class=\"fas fa-paint-brush fa-xs\""                                                             >> $XRELFILE
                       else
-                        if [ $BESTEDIT -gt 0 ]
+                        if [ $BESTFOREIGN -gt 0 ]
                         then
-                          echo -e  "<i class=\"fas fa-cut fa-sm\"></i>"                                                                     >> $XRELFILE
+                          echo -e  "09_${MOVIELENGHT}\"><i class=\"fas fa-closed-captioning fa-sm\""                                                     >> $XRELFILE
+                        else
+                          if [ $ISDOCU -gt 0 ]
+                          then
+                            echo -e  "10_${MOVIELENGHT}\"><i class=\"fas fa-camera fa-sm\""                                                     >> $XRELFILE
+                          else
+                            if [ $ISANIME -gt 0 ]
+                            then
+                              echo -e  "11_${MOVIELENGHT}\"><i class=\"fas fa-paint-brush fa-sm\""                                                     >> $XRELFILE
+                            else
+                              echo -e  "99_${MOVIELENGHT}\"><i class=\"fas fa-tools fa-sm\""                                                                 >> $XRELFILE
+                            fi
+                          fi
                         fi
                       fi
                     fi
@@ -775,11 +796,12 @@ if [ $NOMINEESCOUNT -eq 0 ]
           fi
         fi
 
-
-
-        echo -e  "</span>"                                                                                                                >> $XRELFILE
-        echo -e  "<span class=\"nomcount\">${NOMINATIONS}</span>"                                                                         >> $XRELFILE
-        echo -e  "</td>"                                                                                                                  >> $XRELFILE
+        echo -e  " title=\"nominated in:"                                                                                                 >> $XRELFILE
+        for cat in "${CATEGORIES[@]}>"
+        do
+          echo "      "$cat | sed 's/"//g'                                                                                                >> $XRELFILE
+        done
+        echo -e  "\"></i></td>"                                                                                                             >> $XRELFILE
 
         echo -e  "          <td title=\"media type\" class=\"media_type\" "                                                               >> $XRELFILE
 
@@ -792,15 +814,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
             echo -e "  ISANIME:     $ISANIME"
         fi
 
-
-        if [ $ISSHORT -gt 0 ]
-        then
-          # tv icon
-          MOVIELENGHT="Short"
-        else
-          # film icon
-          MOVIELENGHT="Movie"
-        fi
 
         if [ $ISDOCU -gt 0 ]
         then
@@ -875,7 +888,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
       echo -e  "      <tfoot>"                                                               >> $XRELFILE
       echo -e  "        <tr>"                                                                >> $XRELFILE
       echo -en "          <tr><td>$NOMINEESCOUNT</td><td>$MOVIECOUNT</td><td>$WATCHEDCOUNT"  >> $XRELFILE
-      echo -en           "</td><td></td><td></td><td></td><td></td></tr>"                    >> $XRELFILE
+      echo -en           "</td><td></td><td></td><td></td><td></td><td></td></tr>"           >> $XRELFILE
       echo -e  "        </tr>"                                                               >> $XRELFILE
       echo -e  "      </tfoot>"                                                              >> $XRELFILE
       echo -e  "    </table>"                                               >> $XRELFILE
