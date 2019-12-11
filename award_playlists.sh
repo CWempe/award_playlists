@@ -2,7 +2,6 @@
 #################################################################################################################
 #
 # by Christoph Wempe
-# 2016-08-21
 #
 # This script creates a smart playlist from a list of award-nominees from IMDB.
 # Sorted by number of nominations (ascending).
@@ -10,7 +9,7 @@
 # It parses the IMDB-ID from the webpage, looks them up in your own Kodi-movie-databse
 # and uses the localized titles of the movies to create the smartplaylist.
 # This is necessary, because some titles won't match in some languages.
-# 
+#
 # Since your databse grows by the time (movies get added) you need to recreate the playlist every now and then.
 # Only movies wich are present in your databse get added to the playlist.
 #
@@ -20,9 +19,6 @@
 #  - install "sqlite3"
 #
 #################################################################################################################
-
-
-
 
 ####
 # define default values
@@ -49,10 +45,8 @@ STATS="1"
 # xRel (0/1)
 XREL="0"
 
-
 echo ""
 echo "####################### $DATETIME #######################"
-
 
 while getopts vdfe:m:y:t:sx opt
   do
@@ -139,8 +133,6 @@ while getopts vdfe:m:y:t:sx opt
   esac
 done
 
-
-
 # Define Event
 case $EVENTARG in
   b|B )
@@ -205,9 +197,7 @@ case $EVENTARG in
     ;;
 esac
 
-
 echo "### $EVENT $YEAR"
-
 
 # Define files and directories
 BINDIR="$( cd "$(dirname "$0")" || { echo "Command cd failed!"; exit 1; } ; pwd -P )"
@@ -232,7 +222,6 @@ cd "$BINDIR" || { echo "Command cd failed!"; exit 1; }
 # Git commit
 GITCOMMIT=$(git log --date=format:'%F %R' --pretty=format:'%cd (Commit: %h)' -n 1)
 #' fix wrong syntax highlighting in mcedit
-
 
 if [ "$VERBOSE" -eq 1 ]
   then
@@ -270,20 +259,19 @@ if [ "$VERBOSE" -eq 1 ]
     echo -e ""
 fi
 
-
-if [ ! -d $DATDIR ]
+if [ ! -d "$DATDIR" ]
   then
     echo -e "\$DATDIR does not exist. Creating it now ..."
-    mkdir $DATDIR
+    mkdir "$DATDIR"
 fi
 
-if [ ! -d $TMPDIR ]
+if [ ! -d "$TMPDIR" ]
   then
     echo -e "\$TMPDIR does not exist. Creating it now ..."
-    mkdir $TMPDIR
+    mkdir "$TMPDIR"
 fi
 
-if [ ! -s $DBFILE ]
+if [ ! -s "$DBFILE" ]
   then
     if [ "$VERBOSE" -eq 1 ]
       then
@@ -299,16 +287,14 @@ if [ ! -d "$PLVEVENTDIR" ]
         echo -e "Event-Playlist-Directory does not exist yet.\nWill create folder now."
     fi
     mkdir "$PLVEVENTDIR"
-    chown $USER:$GROUP "$PLVEVENTDIR"
+    chown "$USER":"$GROUP" "$PLVEVENTDIR"
 fi
-
 
 # creatre backup of statistics file
 if [ -f "$STATFILE" ]
   then
     cp "$STATFILE" "$STATFILEOLD"
 fi
-
 
 ####
 # Downloading list of nominees from imdb.com and generate ID-File if not already existing
@@ -330,7 +316,7 @@ if [ ! -s "$NOMINEEJSON" ] || [ "$FORCE" -eq 1 ]
     fi
 
     # Get JSON from HTML-file
-    cat $NOMINEEHTML \
+    cat "$NOMINEEHTML" \
       | grep "IMDbReactWidgets.NomineesWidget.push" \
       | sed "s/IMDbReactWidgets.NomineesWidget.push(.'center-3-react',//" \
       | sed "s/.);$//" \
@@ -345,28 +331,25 @@ if [ ! -s "$NOMINEEJSON" ] || [ "$FORCE" -eq 1 ]
     fi
 fi
 
-
-
 # check if $IDSFILE exists (and is not empty)
-if [ ! -s $IDSFILE ] || [ "$FORCE" -eq 1 ]
+if [ ! -s "$IDSFILE" ] || [ "$FORCE" -eq 1 ]
   then
     # $IDSFILE does not exist or is empty or force-mode is enabled
 
-    if [ ! -s $NOMINEEJSON ]
+    if [ ! -s "$NOMINEEJSON" ]
       then
         echo -e "JSON-file does not exist or is empty!"
         exit 1
     fi
 
     # Get IMDB-IDs from nominee-list
-
-    cat $NOMINEEJSON \
+    cat "$NOMINEEJSON" \
       | jq '.nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[] | if (.primaryNominees[].const | startswith("tt") ) then .primaryNominees[] | [.const, .name] else .secondaryNominees[] | [.const, .name] end | @tsv' \
       | awk '{print "echo  "$0}' | sh \
       | sort \
       | uniq -c\
       | sort -nr \
-      > $IDSFILE
+      > "$IDSFILE"
 
   else
     # $IDSFILE is present and not empty
@@ -377,7 +360,7 @@ if [ ! -s $IDSFILE ] || [ "$FORCE" -eq 1 ]
 fi
 
 # Count nominees
-NOMINEESCOUNT=`wc -l $IDSFILE | awk '{print $1}'`
+NOMINEESCOUNT=$(wc -l "$IDSFILE" | awk '{print $1}')
 MOVIECOUNT=0
 WATCHEDCOUNT=0
 
@@ -386,7 +369,7 @@ WATCHEDCOUNT=0
 # Generate Playlist
 ####
 
-if [ $NOMINEESCOUNT -eq 0 ]
+if [ "$NOMINEESCOUNT" -eq 0 ]
   then
     STATTEXT="No nominees!"
   else
@@ -395,12 +378,14 @@ if [ $NOMINEESCOUNT -eq 0 ]
     # Printing header to playlist
     ####
     echo -e "Printing header to playlist ..."
-    echo -e "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"           >  "$PLAYLISTFILE"
-    echo -e "<!-- This Smartplaylist was created by \"$0\" at $(date +%F\ %T) -->"      >> "$PLAYLISTFILE"
-    echo -e "<smartplaylist type=\"movies\">"                                          >> "$PLAYLISTFILE"
-    echo -e "  <name>$PLAYLISTNAME</name>"                                             >> "$PLAYLISTFILE"
-    echo -e "  <match>all</match>"                                                     >> "$PLAYLISTFILE"
-    echo -e "  <rule field=\"title\" operator=\"is\">"                                 >> "$PLAYLISTFILE"
+    {
+      echo -e "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"
+      echo -e "<!-- This Smartplaylist was created by \"$0\" at $(date +%F\ %T) -->"
+      echo -e "<smartplaylist type=\"movies\">"
+      echo -e "  <name>$PLAYLISTNAME</name>"
+      echo -e "  <match>all</match>"
+      echo -e "  <rule field=\"title\" operator=\"is\">"
+    } > "$PLAYLISTFILE"
 
     if [ "$TV" = "yes" ]
       then
@@ -408,12 +393,14 @@ if [ $NOMINEESCOUNT -eq 0 ]
         # Printing header to playlist for tv shows
         ####
         echo -e "Printing header to playlist for tv shows..."
-        echo -e "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"           >  "$PLAYLISTFILETV"
-        echo -e "<!-- This Smartplaylist was created by \"$0\" at `date +%F\ %T` -->"      >> "$PLAYLISTFILETV"
-        echo -e "<smartplaylist type=\"tvshows\">"                                         >> "$PLAYLISTFILETV"
-        echo -e "  <name>$PLAYLISTNAMETV</name>"                                           >> "$PLAYLISTFILETV"
-        echo -e "  <match>all</match>"                                                     >> "$PLAYLISTFILETV"
-        echo -e "  <rule field=\"title\" operator=\"is\">"                                 >> "$PLAYLISTFILETV"
+        {
+          echo -e "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"
+          echo -e "<!-- This Smartplaylist was created by \"$0\" at $(date +%F\ %T) -->"
+          echo -e "<smartplaylist type=\"tvshows\">"
+          echo -e "  <name>$PLAYLISTNAMETV</name>"
+          echo -e "  <match>all</match>"
+          echo -e "  <rule field=\"title\" operator=\"is\">"
+        }  >  "$PLAYLISTFILETV"
     fi
 
     ####
@@ -421,36 +408,37 @@ if [ $NOMINEESCOUNT -eq 0 ]
     ####
     if [ "$XREL" -eq 1 ]
     then
-      # 
-      echo -e "<!DOCTYPE html>"                                                           >  $XRELFILE
-      echo -e "<html lang=\"en\">"                                                        >> "$XRELFILE"
-      echo -e "  <head>"                                                                  >> "$XRELFILE"
-      echo -e "    <meta charset=\"utf-8\"/>"                                             >> "$XRELFILE"
-      echo -e "    <title>$EVENT $YEAR</title>"                                           >> "$XRELFILE"
-      echo -e "    <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"http://www.oscars.org/favicon.ico\" />"       >> "$XRELFILE"
-      echo -e "    <link rel=\"stylesheet\" type=\"text/css\" href=\"$CSSFILE\" />"       >> "$XRELFILE"
-      echo -e "    <link rel=\"stylesheet\" href=\"https://use.fontawesome.com/releases/v5.7.2/css/all.css\" integrity=\"sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr\" crossorigin=\"anonymous\" />"  >> "$XRELFILE"
-      echo -e "    <script src=\"sorttable.js\"></script>"                                >> "$XRELFILE"
-      echo -e "  </head>"                                                                 >> "$XRELFILE"
-      echo -e "  <body>"                                                                  >> "$XRELFILE"
-      echo -e "    <h1>$PLAYLISTNAME</h1>"                                                >> "$XRELFILE"
-      echo -e "    <h2>Movies</h2>"                                                       >> "$XRELFILE"
-      echo -e "    <p><a target=\"_blank\" href=\"$NOMINEEURL\">IMDB's Awards Central</a></p>"  >> "$XRELFILE"
-      echo -e "    <table class=\"sortable nominations\">"                                      >> "$XRELFILE"
-      echo -e "      <thead>"                                                                   >> "$XRELFILE"
-      echo -e "        <tr>"                                                                    >> "$XRELFILE"
-      echo -e "          <th title=\"Number\" class=\"sorttable_nosort\">#</th>"                                     >> "$XRELFILE"
-      echo -e "          <th title=\"in Database\"><i class=\"fas fa-hdd fa-xs\"></i></th>"                          >> "$XRELFILE"
-      echo -e "          <th title=\"watched\"><i class=\"fas fa-eye fa-xs\"></i></th>"                              >> "$XRELFILE"
-      echo -e "          <th title=\"Links\" class=\"sorttable_nosort\"><i class=\"fas fa-search fa-xs\"></i></th>"  >> "$XRELFILE"
-      echo -e "          <th title=\"amount of nominations\"><i class=\"fas fa-trophy fa-xs\"></i></th>"             >> "$XRELFILE"
-      echo -e "          <th title=\"most important nomination\"><i class=\"fas fa-star fa-xs\"></i></th>"           >> "$XRELFILE"
-      echo -e "          <th title=\"media type\"><i class=\"fas fa-tags fa-xs\"></i></th>"                          >> "$XRELFILE"
-      echo -e "          <th title=\"Movietitle\">Title</th>"                             >> "$XRELFILE"
-      echo -e "        </tr>"                                                             >> "$XRELFILE"
-      echo -e "      </thead>"                                                            >> "$XRELFILE"
-      echo -e "      <tbody>"                                                             >> "$XRELFILE"
-      
+      {
+        echo -e "<!DOCTYPE html>"
+        echo -e "<html lang=\"en\">"
+        echo -e "  <head>"
+        echo -e "    <meta charset=\"utf-8\"/>"
+        echo -e "    <title>$EVENT $YEAR</title>"
+        echo -e "    <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"http://www.oscars.org/favicon.ico\" />"
+        echo -e "    <link rel=\"stylesheet\" type=\"text/css\" href=\"$CSSFILE\" />"
+        echo -e "    <link rel=\"stylesheet\" href=\"https://use.fontawesome.com/releases/v5.7.2/css/all.css\" integrity=\"sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr\" crossorigin=\"anonymous\" />"
+        echo -e "    <script src=\"sorttable.js\"></script>"
+        echo -e "  </head>"
+        echo -e "  <body>"
+        echo -e "    <h1>$PLAYLISTNAME</h1>"
+        echo -e "    <h2>Movies</h2>"
+        echo -e "    <p><a target=\"_blank\" href=\"$NOMINEEURL\">IMDB's Awards Central</a></p>"
+        echo -e "    <table class=\"sortable nominations\">"
+        echo -e "      <thead>"
+        echo -e "        <tr>"
+        echo -e "          <th title=\"Number\" class=\"sorttable_nosort\">#</th>"
+        echo -e "          <th title=\"in Database\"><i class=\"fas fa-hdd fa-xs\"></i></th>"
+        echo -e "          <th title=\"watched\"><i class=\"fas fa-eye fa-xs\"></i></th>"
+        echo -e "          <th title=\"Links\" class=\"sorttable_nosort\"><i class=\"fas fa-search fa-xs\"></i></th>"
+        echo -e "          <th title=\"amount of nominations\"><i class=\"fas fa-trophy fa-xs\"></i></th>"
+        echo -e "          <th title=\"most important nomination\"><i class=\"fas fa-star fa-xs\"></i></th>"
+        echo -e "          <th title=\"media type\"><i class=\"fas fa-tags fa-xs\"></i></th>"
+        echo -e "          <th title=\"Movietitle\">Title</th>"
+        echo -e "        </tr>"
+        echo -e "      </thead>"
+        echo -e "      <tbody>"
+      } >  "$XRELFILE"
+
       # copy css file is necessary
       if [ ! -f "$CSSSOURCE" ]
         then
@@ -484,16 +472,14 @@ if [ $NOMINEESCOUNT -eq 0 ]
         echo -e "Getting movietitles and printing them to playlist ..."
     fi
 
-
     # Read ID and find title
     while read -r LINE
     do
       NOMINATIONS=$(echo "$LINE" | awk '{print $1}')
-      ID=`echo $LINE | awk '{print $2}'`
-      TITLE=`echo $LINE | cut -c 13-`
-      TITLESEARCH=`echo "$TITLE" | sed -r "s/(\ |,|')/%20/g"`
-      TITLESEARCHG=`echo "$TITLE" | sed -r "s/(\ |,|')/+/g"`
-
+      ID=$(echo "$LINE" | awk '{print $2}')
+      TITLE=$(echo "$LINE" | cut -c 13-)
+      TITLESEARCH=$(echo "$TITLE" | sed -r "s/(\ |,|')/%20/g")
+      TITLESEARCHG=$(echo "$TITLE" | sed -r "s/(\ |,|')/+/g")
 
       if [ "$VERBOSE" -eq 1 ]
         then
@@ -501,18 +487,17 @@ if [ $NOMINEESCOUNT -eq 0 ]
           echo "$TITLE:"
       fi
 
-
       if [ "$EVENTSTRING" = "golden-globes" ] || [ "$EVENTSTRING" = "oscars" ] || [ "$EVENTSTRING" = "bafta" ] || [ "$EVENTSTRING" = "independant" ] || [ "$EVENTSTRING" = "sag" ]
       then
-        RELEASEYEAR=`expr $YEAR - 1`
+        RELEASEYEAR=$((YEAR - 1))
       else
         RELEASEYEAR="$YEAR"
       fi
 
       # get categories for nominations
       readarray CATEGORIES < <(cat "$NOMINEEJSON" \
-                    | jq --arg ID $ID ".nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[]
-                                         | objects | select((.primaryNominees[]? | .const == \"$ID\") or (.secondaryNominees[]? | .const == \"$ID\")) 
+                    | jq --arg ID "$ID" ".nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[]
+                                         | objects | select((.primaryNominees[]? | .const == \"$ID\") or (.secondaryNominees[]? | .const == \"$ID\"))
                                          | .categoryName | @sh" )
 
       if [ "$VERBOSE" -eq 1 ]
@@ -521,13 +506,13 @@ if [ $NOMINEESCOUNT -eq 0 ]
       fi
 
       # Search title in Database using IMDBid
-      SQLRESULT=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, playCount, '$NOMINATIONS' as nominations FROM movie_view WHERE uniqueid_value IS '$ID' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1"`
+      SQLRESULT=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") "$DBFILE" "SELECT c00, playCount, '$NOMINATIONS' as nominations FROM movie_view WHERE uniqueid_value IS '$ID' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1")
       if [ "$VERBOSE" -eq 1 ]
         then
           echo -e "  SQL movie: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
       fi
       # replace certain characters in title to match sql syntax
-      TITLESQL=$(echo $TITLE | sed "s/\(&\|'\|:\)/%/g")
+      TITLESQL=$(echo "$TITLE" | sed "s/\(&\|'\|:\)/%/g")
 
           # check categories
           ISSERIES=$(echo "${CATEGORIES[@]}" | grep -c "Series" )
@@ -575,7 +560,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
         # increment MOVIECOUNT
         MOVIECOUNT=$((MOVIECOUNT+1))
 
-
         if [ "$PLAYCOUNT" = "" ]
         then
           PLAYCOUNT=0
@@ -589,7 +573,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
           >> "$PLAYLISTFILE"
 
       else
-
           # Search series in Database using Title
           SQLRESULT2=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") "$DBFILE" "SELECT c00, totalCount, watchedCount, '$NOMINATIONS' as nominations FROM tvshow_view WHERE c00 IS '$TITLESQL' GROUP BY c00 LIMIT 1")
           if [ "$VERBOSE" -eq 1 ]
@@ -612,7 +595,6 @@ if [ $NOMINEESCOUNT -eq 0 ]
                 echo -e "  TOTALCOUNT: $TOTALCOUNT"
             fi
 
-
             if [ "$PLAYCOUNT" = "" ]
             then
               PLAYCOUNT=0
@@ -620,20 +602,16 @@ if [ $NOMINEESCOUNT -eq 0 ]
               # increment WATCHEDCOUNT
               WATCHEDCOUNT=$((WATCHEDCOUNT+1))
             fi
-
-
           else
             PLAYCOUNT=0
             INDATABASE="no"
-            if [ "$TV" = "yes" ]
-              then
-                 # write in tv playlist
-                 echo -e "    <value>$TITLESQL</value>" \
-                  >> "$PLAYLISTFILETV"
-            fi
-
           fi
-
+          if [ "$TV" = "yes" ]
+            then
+                # write in tv playlist
+                echo -e "    <value>$TITLESQL</value>" \
+                >> "$PLAYLISTFILETV"
+          fi
       fi
 
       if [ "$VERBOSE" -eq 1 ]
@@ -641,10 +619,9 @@ if [ $NOMINEESCOUNT -eq 0 ]
           echo -e "  PLAYCOUNT: $PLAYCOUNT"
       fi
 
-
       # check it is a th show
       if [ $PLAYCOUNT -eq 0 ]
-      then 
+      then
         WATCHED="no"
         if [ $ISSERIES -gt 0 ]
         then
@@ -691,108 +668,109 @@ if [ $NOMINEESCOUNT -eq 0 ]
       ####
       if [ "$XREL" -eq 1 ]
       then
-
-        echo -e  "        <tr>"                                                                                         >> "$XRELFILE"
-        echo -e  "          <td title=\"number\"        class=\"number\"></td>"                                         >> "$XRELFILE"
-        echo -en "          <td title=\"in Database?\"  class=\"db $INDATABASE\" "                                      >> "$XRELFILE"
-        if [ "$INDATABASE" = "yes" ]
-        then
-          # check mark
-          echo -en "sorttable_customkey=\"1\"><i class=\"fas fa-check fa-sm\"></i>"         >> "$XRELFILE"
-        else
-          # X
-          echo -en "sorttable_customkey=\"2\"><i class=\"fas fa-times fa-sm\"></i>"         >> "$XRELFILE"
-        fi
-        echo -e         " </td>"                                                                                       >> "$XRELFILE"
-        echo -en "          <td title=\"$WATCHEDNOTE\" class=\"watched $WATCHED\" "         >> "$XRELFILE"
-        case "$WATCHED" in
-          yes)
-            # check mark
-            echo -en "sorttable_customkey=\"1\"><i class=\"fas fa-check fa-sm\"></i>"       >> "$XRELFILE"
-            ;;
-          partly)
-            # O
-            echo -en "sorttable_customkey=\"2\"><i class=\"fas fa-percent fa-sm\"></i>"   >> "$XRELFILE"
-            ;;
-          *)
-            # X
-            echo -en "sorttable_customkey=\"3\"><i class=\"fas fa-times fa-sm\"></i>"       >> "$XRELFILE"
-        esac
-
-        echo -e          "</td>"                                                                                                          >> "$XRELFILE"
-
-        echo -e  "          <td title=\"Links\" class=\"links\">"                                                                         >> "$XRELFILE"
-
-        echo -e  "             <a target=\"_blank\" href=\"https://www.imdb.com/title/$ID/\">"                                            >> "$XRELFILE"
-        echo -e  "               <img src=\"https://www.imdb.com/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"                      >> "$XRELFILE"
-
-        echo -e  "             <a target=\"_blank\" href=\"https://www.themoviedb.org/search?query=$TITLESEARCH\">"                       >> "$XRELFILE"
-        echo -e  "               <img src=\"https://www.themoviedb.org/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"                >> "$XRELFILE"
-
-        echo -e  "             <a target=\"_blank\" href=\"https://www.xrel.to/search.html?xrel_search_query=$ID\">"                      >> "$XRELFILE"
-        echo -e  "               <img src=\"https://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a>     "                                    >> "$XRELFILE"
-
-        echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"       >> "$XRELFILE"
-        echo -e  "               <img src=\"https://thepiratebay.org/favicon.ico\" alt=\"The Pirate Bay\"/></a>"                          >> "$XRELFILE"
-
-        echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?search=$TITLESEARCH%20$RELEASEYEAR&order=seeders&by=DESC\">"        >> "$XRELFILE"
-        echo -e  "               <img src=\"https://rarbg.to/favicon.ico\" alt=\"RARBG\"/></a>"                                           >> "$XRELFILE"
-
-        echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.zone/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"               >> "$XRELFILE"
-        echo -e  "               <img src=\"https://www.limetorrents.zone/favicon.ico\" alt=\"LimeTorrents\"/></a>"                                          >> "$XRELFILE"
-
-        echo -e  "             <a target=\"_blank\" href=\"https://www.google.de/search?safe=off&site=webhp&source=hp&q=$TITLESEARCHG\">" >> "$XRELFILE"
-        echo -e  "               <img src=\"https://www.google.com/favicon.ico\" alt=\"Google\" height=16/></a>"                          >> "$XRELFILE"
-
-        echo -e  "             </td>"                                                                                                     >> "$XRELFILE"
-        echo -e  "          <td class=\"nomcount\">${NOMINATIONS}</td>"                                                                   >> "$XRELFILE"
-        echo -en "<td class=\"nomsymbol\" sorttable_customkey=\""                                                                         >> "$XRELFILE"
-
-        if [ "$BESTMOVIE" -gt 0 ]
-        then
-          echo -e  "01_${MOVIELENGHT}\"><i class=\"fas fa-star fa-xs\""                                                                                  >> "$XRELFILE"
-        else
-          if [ "$BESTACTOR" -gt 0 ]
+        {
+          echo -e  "        <tr>"
+          echo -e  "          <td title=\"number\"        class=\"number\"></td>"
+          echo -en "          <td title=\"in Database?\"  class=\"db $INDATABASE\" "
+          if [ "$INDATABASE" = "yes" ]
           then
-            echo -e  "02_${MOVIELENGHT}\"><i class=\"fas fa-user fa-sm\""                                                                                >> "$XRELFILE"
+            # check mark
+            echo -en "sorttable_customkey=\"1\"><i class=\"fas fa-check fa-sm\"></i>"
           else
-            if [ "$BESTDIR" -gt 0 ]
+            # X
+            echo -en "sorttable_customkey=\"2\"><i class=\"fas fa-times fa-sm\"></i>"
+          fi
+          echo -e         " </td>"
+          echo -en "          <td title=\"$WATCHEDNOTE\" class=\"watched $WATCHED\" "
+          case "$WATCHED" in
+            yes)
+              # check mark
+              echo -en "sorttable_customkey=\"1\"><i class=\"fas fa-check fa-sm\"></i>"
+              ;;
+            partly)
+              # O
+              echo -en "sorttable_customkey=\"2\"><i class=\"fas fa-percent fa-sm\"></i>"
+              ;;
+            *)
+              # X
+              echo -en "sorttable_customkey=\"3\"><i class=\"fas fa-times fa-sm\"></i>"
+          esac
+
+          echo -e          "</td>"
+
+          echo -e  "          <td title=\"Links\" class=\"links\">"
+
+          echo -e  "             <a target=\"_blank\" href=\"https://www.imdb.com/title/$ID/\">"
+          echo -e  "               <img src=\"https://www.imdb.com/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"
+
+          echo -e  "             <a target=\"_blank\" href=\"https://www.themoviedb.org/search?query=$TITLESEARCH\">"
+          echo -e  "               <img src=\"https://www.themoviedb.org/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"
+
+          echo -e  "             <a target=\"_blank\" href=\"https://www.xrel.to/search.html?xrel_search_query=$ID\">"
+          echo -e  "               <img src=\"https://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a>     "
+
+          echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"
+          echo -e  "               <img src=\"https://thepiratebay.org/favicon.ico\" alt=\"The Pirate Bay\"/></a>"
+
+          echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?search=$TITLESEARCH%20$RELEASEYEAR&order=seeders&by=DESC\">"
+          echo -e  "               <img src=\"https://rarbg.to/favicon.ico\" alt=\"RARBG\"/></a>"
+
+          echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.zone/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"
+          echo -e  "               <img src=\"https://www.limetorrents.zone/favicon.ico\" alt=\"LimeTorrents\"/></a>"
+
+          echo -e  "             <a target=\"_blank\" href=\"https://www.google.de/search?safe=off&site=webhp&source=hp&q=$TITLESEARCHG\">"
+          echo -e  "               <img src=\"https://www.google.com/favicon.ico\" alt=\"Google\" height=16/></a>"
+
+          echo -e  "             </td>"
+          echo -e  "          <td class=\"nomcount\">${NOMINATIONS}</td>"
+          echo -en "<td class=\"nomsymbol\" sorttable_customkey=\""
+
+          if [ "$BESTMOVIE" -gt 0 ]
+          then
+            echo -e  "01_${MOVIELENGHT}\"><i class=\"fas fa-star fa-xs\""
+          else
+            if [ "$BESTACTOR" -gt 0 ]
             then
-              echo -e  "03_${MOVIELENGHT}\"><i class=\"fas fa-bullhorn fa-sm\""                                                                          >> "$XRELFILE"
+              echo -e  "02_${MOVIELENGHT}\"><i class=\"fas fa-user fa-sm\""
             else
-              if [ "$BESTPLAY" -gt 0 ]
+              if [ "$BESTDIR" -gt 0 ]
               then
-                echo -e  "04_${MOVIELENGHT}\"><i class=\"fas fa-book fa-sm\""                                                                            >> "$XRELFILE"
+                echo -e  "03_${MOVIELENGHT}\"><i class=\"fas fa-bullhorn fa-sm\""
               else
-                if [ "$BESTSONG" -gt 0 ]
+                if [ "$BESTPLAY" -gt 0 ]
                 then
-                  echo -e  "05_${MOVIELENGHT}\"><i class=\"fas fa-music fa-sm\""                                                                         >> "$XRELFILE"
+                  echo -e  "04_${MOVIELENGHT}\"><i class=\"fas fa-book fa-sm\""
                 else
-                  if [ "$BESTCAM" -gt 0 ]
+                  if [ "$BESTSONG" -gt 0 ]
                   then
-                    echo -e  "06_${MOVIELENGHT}\"><i class=\"fas fa-video fa-sm\""                                                                       >> "$XRELFILE"
+                    echo -e  "05_${MOVIELENGHT}\"><i class=\"fas fa-music fa-sm\""
                   else
-                    if [ "$BESTEDIT" -gt 0 ]
+                    if [ "$BESTCAM" -gt 0 ]
                     then
-                      echo -e  "07_${MOVIELENGHT}\"><i class=\"fas fa-cut fa-sm\""                                                                       >> "$XRELFILE"
+                      echo -e  "06_${MOVIELENGHT}\"><i class=\"fas fa-video fa-sm\""
                     else
-                      if [ "$BESTANIME" -gt 0 ]
+                      if [ "$BESTEDIT" -gt 0 ]
                       then
-                        echo -e  "08_${MOVIELENGHT}\"><i class=\"fas fa-paint-brush fa-xs\""                                                             >> "$XRELFILE"
+                        echo -e  "07_${MOVIELENGHT}\"><i class=\"fas fa-cut fa-sm\""
                       else
-                        if [ "$BESTFOREIGN" -gt 0 ]
+                        if [ "$BESTANIME" -gt 0 ]
                         then
-                          echo -e  "09_${MOVIELENGHT}\"><i class=\"fas fa-closed-captioning fa-sm\""                                                     >> "$XRELFILE"
+                          echo -e  "08_${MOVIELENGHT}\"><i class=\"fas fa-paint-brush fa-xs\""
                         else
-                          if [ "$ISDOCU" -gt 0 ]
+                          if [ "$BESTFOREIGN" -gt 0 ]
                           then
-                            echo -e  "10_${MOVIELENGHT}\"><i class=\"fas fa-camera fa-sm\""                                                              >> "$XRELFILE"
+                            echo -e  "09_${MOVIELENGHT}\"><i class=\"fas fa-closed-captioning fa-sm\""
                           else
-                            if [ "$ISANIME" -gt 0 ]
+                            if [ "$ISDOCU" -gt 0 ]
                             then
-                              echo -e  "11_${MOVIELENGHT}\"><i class=\"fas fa-paint-brush fa-sm\""                                                       >> "$XRELFILE"
+                              echo -e  "10_${MOVIELENGHT}\"><i class=\"fas fa-camera fa-sm\""
                             else
-                              echo -e  "99_${MOVIELENGHT}\"><i class=\"fas fa-tools fa-sm\""                                                             >> "$XRELFILE"
+                              if [ "$ISANIME" -gt 0 ]
+                              then
+                                echo -e  "11_${MOVIELENGHT}\"><i class=\"fas fa-paint-brush fa-sm\""
+                              else
+                                echo -e  "99_${MOVIELENGHT}\"><i class=\"fas fa-tools fa-sm\""
+                              fi
                             fi
                           fi
                         fi
@@ -803,53 +781,51 @@ if [ $NOMINEESCOUNT -eq 0 ]
               fi
             fi
           fi
-        fi
 
-        echo -e  " title=\"nominated in:"                                                                                                 >> "$XRELFILE"
-        for cat in "${CATEGORIES[@]}"
-        do
-          echo "      " "$cat" | sed 's/"//g'                                                                                                >> "$XRELFILE"
-        done
-        echo -e  "\"></i></td>"                                                                                                           >> "$XRELFILE"
+          echo -e  " title=\"nominated in:"
+          for cat in "${CATEGORIES[@]}"
+          do
+            echo "      " "$cat" | sed 's/"//g'
+          done
+          echo -e  "\"></i></td>"
 
-        echo -e  "          <td title=\"media type\" class=\"media_type\" "                                                               >> "$XRELFILE"
+          echo -e  "          <td title=\"media type\" class=\"media_type\" "
 
-        if [ "$VERBOSE" -eq 1 ]
-          then
-            echo -e "  EVENTSTRING: $EVENTSTRING"
-            echo -e "  ISSERIES:    $ISSERIES"
-            echo -e "  ISSHORT:     $ISSHORT"
-            echo -e "  ISDOCU:      $ISDOCU"
-            echo -e "  ISANIME:     $ISANIME"
-        fi
-
-
-        if [ "$ISDOCU" -gt 0 ]
-        then
-          # video icon
-          echo -en " sorttable_customkey=\"${MOVIELENGHT}_4\"><i title=\"Documentary ${MOVIELENGHT}\" class=\"${LENGHTSYMBOL}\"></i>"                >> "$XRELFILE"
-        else
-          if [ "$ISANIME" -gt 0 ]
-          then
-            # paint-brush icon
-            echo -en " sorttable_customkey=\"${MOVIELENGHT}_2\"><i title=\"Animated ${MOVIELENGHT}\" class=\"${LENGHTSYMBOL}\"></i>"                 >> "$XRELFILE"
-          else
-            if [ $ISSERIES -gt 0 ]
+          if [ "$VERBOSE" -eq 1 ]
             then
-              # tv icon
-              echo -en " sorttable_customkey=\"${MOVIELENGHT}_3\"><i title=\"Limited Series or movie made for TV\" class=\"${LENGHTSYMBOL}\"></i>"   >> "$XRELFILE"
+              echo -e "  EVENTSTRING: $EVENTSTRING"
+              echo -e "  ISSERIES:    $ISSERIES"
+              echo -e "  ISSHORT:     $ISSHORT"
+              echo -e "  ISDOCU:      $ISDOCU"
+              echo -e "  ISANIME:     $ISANIME"
+          fi
+
+          if [ "$ISDOCU" -gt 0 ]
+          then
+            # video icon
+            echo -en " sorttable_customkey=\"${MOVIELENGHT}_4\"><i title=\"Documentary ${MOVIELENGHT}\" class=\"${LENGHTSYMBOL}\"></i>"
+          else
+            if [ "$ISANIME" -gt 0 ]
+            then
+              # paint-brush icon
+              echo -en " sorttable_customkey=\"${MOVIELENGHT}_2\"><i title=\"Animated ${MOVIELENGHT}\" class=\"${LENGHTSYMBOL}\"></i>"
             else
-              # film icon
-              echo -en " sorttable_customkey=\"${MOVIELENGHT}_1\"><i title=\"${MOVIELENGHT}\" class=\"${LENGHTSYMBOL}\"></i>"                        >> "$XRELFILE"
+              if [ $ISSERIES -gt 0 ]
+              then
+                # tv icon
+                echo -en " sorttable_customkey=\"${MOVIELENGHT}_3\"><i title=\"Limited Series or movie made for TV\" class=\"${LENGHTSYMBOL}\"></i>"
+              else
+                # film icon
+                echo -en " sorttable_customkey=\"${MOVIELENGHT}_1\"><i title=\"${MOVIELENGHT}\" class=\"${LENGHTSYMBOL}\"></i>"
+              fi
             fi
           fi
-        fi
 
-        echo -en            "</a></td>"   >> "$XRELFILE"
-        echo -en "          <td title=\"Movietitle\" class=\"title\">"                                                                    >> "$XRELFILE"
-        echo -e              "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></td>"                               >> "$XRELFILE"
-        echo -e "        </tr>"                                                                                                           >> "$XRELFILE"
-
+          echo -en            "</a></td>"   >> "$XRELFILE"
+          echo -en "          <td title=\"Movietitle\" class=\"title\">"
+          echo -e              "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></td>"
+          echo -e "        </tr>"
+        } >> "$XRELFILE"
       fi
 
     done < "$IDSFILE"
@@ -863,16 +839,19 @@ if [ $NOMINEESCOUNT -eq 0 ]
       then
         echo -e "Printing footers ..."
     fi
-    echo -e "  </rule>"                                                            >> "$PLAYLISTFILE"
-    echo -e "  <rule field=\"year\" operator=\"greaterthan\">$OLDESTYEAR</rule>"   >> "$PLAYLISTFILE"
-    echo -e "</smartplaylist>"                                                     >> "$PLAYLISTFILE"
-    
+    {
+      echo -e "  </rule>"
+      echo -e "  <rule field=\"year\" operator=\"greaterthan\">$OLDESTYEAR</rule>"
+      echo -e "</smartplaylist>"
+    } >> "$PLAYLISTFILE"
+
     if [ "$TV" = "yes" ]
       then
-        echo -e "  </rule>"                                      >> "$PLAYLISTFILETV"
-        echo -e "</smartplaylist>"                               >> "$PLAYLISTFILETV"
+        {
+          echo -e "  </rule>"
+          echo -e "</smartplaylist>"
+        } >> "$PLAYLISTFILETV"
     fi
-
 
     ####
     # Create statistics
@@ -893,24 +872,26 @@ if [ $NOMINEESCOUNT -eq 0 ]
     ####
     if [ "$XREL" -eq 1 ]
     then
-      echo -e  "      </tbody>"                                                              >> "$XRELFILE"
-      echo -e  "      <tfoot>"                                                               >> "$XRELFILE"
-      echo -e  "        <tr>"                                                                >> "$XRELFILE"
-      echo -en "          <tr><td>$NOMINEESCOUNT</td><td>$MOVIECOUNT</td><td>$WATCHEDCOUNT"  >> "$XRELFILE"
-      echo -en           "</td><td></td><td></td><td></td><td></td><td></td></tr>"           >> "$XRELFILE"
-      echo -e  "        </tr>"                                                               >> "$XRELFILE"
-      echo -e  "      </tfoot>"                                                              >> "$XRELFILE"
-      echo -e  "    </table>"                                               >> "$XRELFILE"
+      {
+        echo -e  "      </tbody>"
+        echo -e  "      <tfoot>"
+        echo -e  "        <tr>"
+        echo -en "          <tr><td>$NOMINEESCOUNT</td><td>$MOVIECOUNT</td><td>$WATCHEDCOUNT"
+        echo -en           "</td><td></td><td></td><td></td><td></td><td></td></tr>"
+        echo -e  "        </tr>"
+        echo -e  "      </tfoot>"
+        echo -e  "    </table>"
 
-      echo -e  "    <br>"                                                   >> "$XRELFILE"
-      echo -e  "    <table class=\"meta\">"                                 >> "$XRELFILE"
-      echo -e  "      <tr><td><i class=\"fas fa-sync-alt\"></td>"           >> "$XRELFILE"
-      echo -e  "          <td></i>$DATETIME</td></tr>"                      >> "$XRELFILE"
-      echo -e  "      <tr><td><i class=\"fas fa-code-branch\"></i></td>"    >> "$XRELFILE"
-      echo -e  "          <td>${GITCOMMIT}</td></tr>"                       >> "$XRELFILE"
-      echo -e  "     <table>"                                               >> "$XRELFILE"
-      echo -e  "  </body>"                                                  >> "$XRELFILE"
-      echo -e  "</html>"                                                    >> "$XRELFILE"
+        echo -e  "    <br>"
+        echo -e  "    <table class=\"meta\">"
+        echo -e  "      <tr><td><i class=\"fas fa-sync-alt\"></td>"
+        echo -e  "          <td></i>$DATETIME</td></tr>"
+        echo -e  "      <tr><td><i class=\"fas fa-code-branch\"></i></td>"
+        echo -e  "          <td>${GITCOMMIT}</td></tr>"
+        echo -e  "     <table>"
+        echo -e  "  </body>"
+        echo -e  "</html>"
+      } >> "$XRELFILE"
     fi
 fi
 
@@ -938,7 +919,6 @@ fi
 
 if [ "$MAIL" != "" ]
   then
-    
     if [ -f "$STATFILEOLD" ]
       then
         STATDIFF=$(diff "$STATFILE" "$STATFILEOLD")
@@ -958,7 +938,7 @@ if [ "$MAIL" != "" ]
           then
             echo -e "Stats did not change. Not sending mail."
         fi
-    fi        
+    fi
 fi
 
 
@@ -976,7 +956,7 @@ if [ $DEBUG -ne 1 ]
     if [ -f "$STATFILEOLD" ]
       then
         rm "$STATFILEOLD"
-    fi    
+    fi
   else
     if [ "$VERBOSE" -eq 1 ]
       then
