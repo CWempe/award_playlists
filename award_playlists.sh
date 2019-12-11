@@ -271,19 +271,19 @@ if [ "$VERBOSE" -eq 1 ]
 fi
 
 
-if [ ! -d $DATDIR ]
+if [ ! -d "$DATDIR" ]
   then
     echo -e "\$DATDIR does not exist. Creating it now ..."
-    mkdir $DATDIR
+    mkdir "$DATDIR"
 fi
 
-if [ ! -d $TMPDIR ]
+if [ ! -d "$TMPDIR" ]
   then
     echo -e "\$TMPDIR does not exist. Creating it now ..."
-    mkdir $TMPDIR
+    mkdir "$TMPDIR"
 fi
 
-if [ ! -s $DBFILE ]
+if [ ! -s "$DBFILE" ]
   then
     if [ "$VERBOSE" -eq 1 ]
       then
@@ -299,7 +299,7 @@ if [ ! -d "$PLVEVENTDIR" ]
         echo -e "Event-Playlist-Directory does not exist yet.\nWill create folder now."
     fi
     mkdir "$PLVEVENTDIR"
-    chown $USER:$GROUP "$PLVEVENTDIR"
+    chown "$USER":"$GROUP" "$PLVEVENTDIR"
 fi
 
 
@@ -330,7 +330,7 @@ if [ ! -s "$NOMINEEJSON" ] || [ "$FORCE" -eq 1 ]
     fi
 
     # Get JSON from HTML-file
-    cat $NOMINEEHTML \
+    cat "$NOMINEEHTML" \
       | grep "IMDbReactWidgets.NomineesWidget.push" \
       | sed "s/IMDbReactWidgets.NomineesWidget.push(.'center-3-react',//" \
       | sed "s/.);$//" \
@@ -348,11 +348,11 @@ fi
 
 
 # check if $IDSFILE exists (and is not empty)
-if [ ! -s $IDSFILE ] || [ "$FORCE" -eq 1 ]
+if [ ! -s "$IDSFILE" ] || [ "$FORCE" -eq 1 ]
   then
     # $IDSFILE does not exist or is empty or force-mode is enabled
 
-    if [ ! -s $NOMINEEJSON ]
+    if [ ! -s "$NOMINEEJSON" ]
       then
         echo -e "JSON-file does not exist or is empty!"
         exit 1
@@ -360,13 +360,13 @@ if [ ! -s $IDSFILE ] || [ "$FORCE" -eq 1 ]
 
     # Get IMDB-IDs from nominee-list
 
-    cat $NOMINEEJSON \
+    cat "$NOMINEEJSON" \
       | jq '.nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[] | if (.primaryNominees[].const | startswith("tt") ) then .primaryNominees[] | [.const, .name] else .secondaryNominees[] | [.const, .name] end | @tsv' \
       | awk '{print "echo  "$0}' | sh \
       | sort \
       | uniq -c\
       | sort -nr \
-      > $IDSFILE
+      > "$IDSFILE"
 
   else
     # $IDSFILE is present and not empty
@@ -377,7 +377,7 @@ if [ ! -s $IDSFILE ] || [ "$FORCE" -eq 1 ]
 fi
 
 # Count nominees
-NOMINEESCOUNT=`wc -l $IDSFILE | awk '{print $1}'`
+NOMINEESCOUNT=$(wc -l "$IDSFILE" | awk '{print $1}')
 MOVIECOUNT=0
 WATCHEDCOUNT=0
 
@@ -386,7 +386,7 @@ WATCHEDCOUNT=0
 # Generate Playlist
 ####
 
-if [ $NOMINEESCOUNT -eq 0 ]
+if [ "$NOMINEESCOUNT" -eq 0 ]
   then
     STATTEXT="No nominees!"
   else
@@ -409,7 +409,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
         ####
         echo -e "Printing header to playlist for tv shows..."
         echo -e "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"           >  "$PLAYLISTFILETV"
-        echo -e "<!-- This Smartplaylist was created by \"$0\" at `date +%F\ %T` -->"      >> "$PLAYLISTFILETV"
+        echo -e "<!-- This Smartplaylist was created by \"$0\" at $(date +%F\ %T) -->"      >> "$PLAYLISTFILETV"
         echo -e "<smartplaylist type=\"tvshows\">"                                         >> "$PLAYLISTFILETV"
         echo -e "  <name>$PLAYLISTNAMETV</name>"                                           >> "$PLAYLISTFILETV"
         echo -e "  <match>all</match>"                                                     >> "$PLAYLISTFILETV"
@@ -422,7 +422,7 @@ if [ $NOMINEESCOUNT -eq 0 ]
     if [ "$XREL" -eq 1 ]
     then
       # 
-      echo -e "<!DOCTYPE html>"                                                           >  $XRELFILE
+      echo -e "<!DOCTYPE html>"                                                           >  "$XRELFILE"
       echo -e "<html lang=\"en\">"                                                        >> "$XRELFILE"
       echo -e "  <head>"                                                                  >> "$XRELFILE"
       echo -e "    <meta charset=\"utf-8\"/>"                                             >> "$XRELFILE"
@@ -489,10 +489,10 @@ if [ $NOMINEESCOUNT -eq 0 ]
     while read -r LINE
     do
       NOMINATIONS=$(echo "$LINE" | awk '{print $1}')
-      ID=`echo $LINE | awk '{print $2}'`
-      TITLE=`echo $LINE | cut -c 13-`
-      TITLESEARCH=`echo "$TITLE" | sed -r "s/(\ |,|')/%20/g"`
-      TITLESEARCHG=`echo "$TITLE" | sed -r "s/(\ |,|')/+/g"`
+      ID=$(echo "$LINE" | awk '{print $2}')
+      TITLE=$(echo "$LINE" | cut -c 13-)
+      TITLESEARCH=$(echo "$TITLE" | sed -r "s/(\ |,|')/%20/g")
+      TITLESEARCHG=$(echo "$TITLE" | sed -r "s/(\ |,|')/+/g")
 
 
       if [ "$VERBOSE" -eq 1 ]
@@ -504,14 +504,14 @@ if [ $NOMINEESCOUNT -eq 0 ]
 
       if [ "$EVENTSTRING" = "golden-globes" ] || [ "$EVENTSTRING" = "oscars" ] || [ "$EVENTSTRING" = "bafta" ] || [ "$EVENTSTRING" = "independant" ] || [ "$EVENTSTRING" = "sag" ]
       then
-        RELEASEYEAR=`expr $YEAR - 1`
+        RELEASEYEAR=$((YEAR - 1))
       else
         RELEASEYEAR="$YEAR"
       fi
 
       # get categories for nominations
       readarray CATEGORIES < <(cat "$NOMINEEJSON" \
-                    | jq --arg ID $ID ".nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[]
+                    | jq --arg ID "$ID" ".nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[]
                                          | objects | select((.primaryNominees[]? | .const == \"$ID\") or (.secondaryNominees[]? | .const == \"$ID\")) 
                                          | .categoryName | @sh" )
 
@@ -521,13 +521,13 @@ if [ $NOMINEESCOUNT -eq 0 ]
       fi
 
       # Search title in Database using IMDBid
-      SQLRESULT=`sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE "SELECT c00, playCount, '$NOMINATIONS' as nominations FROM movie_view WHERE uniqueid_value IS '$ID' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1"`
+      SQLRESULT=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") "$DBFILE" "SELECT c00, playCount, '$NOMINATIONS' as nominations FROM movie_view WHERE uniqueid_value IS '$ID' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1")
       if [ "$VERBOSE" -eq 1 ]
         then
           echo -e "  SQL movie: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
       fi
       # replace certain characters in title to match sql syntax
-      TITLESQL=$(echo $TITLE | sed "s/\(&\|'\|:\)/%/g")
+      TITLESQL=$(echo "$TITLE" | sed "s/\(&\|'\|:\)/%/g")
 
           # check categories
           ISSERIES=$(echo "${CATEGORIES[@]}" | grep -c "Series" )
