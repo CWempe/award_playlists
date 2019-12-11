@@ -625,13 +625,13 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           else
             PLAYCOUNT=0
             INDATABASE="no"
+          fi
             if [ "$TV" = "yes" ]
               then
                  # write in tv playlist
                  echo -e "    <value>$TITLESQL</value>" \
                   >> "$PLAYLISTFILETV"
             fi
-
           fi
 
       fi
