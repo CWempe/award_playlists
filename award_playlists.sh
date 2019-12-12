@@ -197,6 +197,16 @@ case $EVENTARG in
     ;;
 esac
 
+# Define Functions
+trim() {
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    echo -n "$var"
+}
+
 echo "### $EVENT $YEAR"
 
 # Define files and directories
@@ -478,13 +488,16 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       NOMINATIONS=$(echo "$LINE" | awk '{print $1}')
       ID=$(echo "$LINE" | awk '{print $2}')
       TITLE=$(echo "$LINE" | cut -c 13-)
+      TITLE=$(trim "$TITLE")
       TITLESEARCH=$(echo "$TITLE" | sed -r "s/(\ |,|')/%20/g")
       TITLESEARCHG=$(echo "$TITLE" | sed -r "s/(\ |,|')/+/g")
 
       if [ "$VERBOSE" -eq 1 ]
         then
-          echo ""
-          echo "$TITLE:"
+          echo "###################"
+          echo "## $TITLE:"
+          echo "ID:    $ID"
+          echo "LINE:  $LINE"
       fi
 
       if [ "$EVENTSTRING" = "golden-globes" ] || [ "$EVENTSTRING" = "oscars" ] || [ "$EVENTSTRING" = "bafta" ] || [ "$EVENTSTRING" = "independant" ] || [ "$EVENTSTRING" = "sag" ]
@@ -577,7 +590,8 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           SQLRESULT2=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") "$DBFILE" "SELECT c00, totalCount, watchedCount, '$NOMINATIONS' as nominations FROM tvshow_view WHERE c00 IS '$TITLESQL' GROUP BY c00 LIMIT 1")
           if [ "$VERBOSE" -eq 1 ]
             then
-              echo -e "  SQL series: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, totalCount, watchedCount, '\"$NOMINATIONS\"' as nominations FROM tvshow_view WHERE c00 IS '\"$TITLESQL\"' GROUP BY c00 LIMIT 1\""
+              echo -e "  SQL series: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \"SELECT c00, totalCount, watchedCount, '\"$NOMINATIONS\"' as nominations FROM tvshow_view WHERE c00 IS '\"$TITLESQL\"' GROUP BY c00 LIMIT 1\""
+              echo -e "  SQLRESULT2: $SQLRESULT2"
           fi
 
           if [ "$SQLRESULT2" != "" ]
