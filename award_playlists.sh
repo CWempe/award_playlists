@@ -197,6 +197,16 @@ case $EVENTARG in
     ;;
 esac
 
+# Define Functions
+trim() {
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"   
+    echo -n "$var"
+}
+
 echo "### $EVENT $YEAR"
 
 # Define files and directories
@@ -478,6 +488,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       NOMINATIONS=$(echo "$LINE" | awk '{print $1}')
       ID=$(echo "$LINE" | awk '{print $2}')
       TITLE=$(echo "$LINE" | cut -c 13-)
+      TITLE=$(trim "$TITLE")
       TITLESEARCH=$(echo "$TITLE" | sed -r "s/(\ |,|')/%20/g")
       TITLESEARCHG=$(echo "$TITLE" | sed -r "s/(\ |,|')/+/g")
 
