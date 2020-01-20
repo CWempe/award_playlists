@@ -528,22 +528,21 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       TITLESQL=$(echo "$TITLE" | sed "s/\(&\|'\|:\)/%/g")
 
           # check categories
-          ISSERIES=$(echo "${CATEGORIES[@]}" | grep -c "Series" )
-          ISSHORT=$(echo "${CATEGORIES[@]}"  | grep -c "Short" )
-          ISTV=$(echo "${CATEGORIES[@]}"     | grep -c "Television" )
-          ISDOCU=$(echo "${CATEGORIES[@]}"   | grep -c "Documentary" )
-          ISANIME=$(echo "${CATEGORIES[@]}"  | grep -c "Animated" )
-
+          ISSERIES=$(echo "${CATEGORIES[@]}"     | grep -c "Series" )
+          ISSHORT=$(echo "${CATEGORIES[@]}"      | grep -c "Short" )
+          ISTV=$(echo "${CATEGORIES[@]}"         | grep -c "Television" )
+          ISDOCU=$(echo "${CATEGORIES[@]}"       | grep -c "Documentary" )
+          ISANIME=$(echo "${CATEGORIES[@]}"      | grep -c "Animated" )
           BESTMOVIE=$(echo "${CATEGORIES[@]}"    | grep -c -e "Best Motion Picture of the Year" \
-                                                         -e "Best Motion Picture - Comedy" \
-                                                         -e "Best Motion Picture - Musical" \
-                                                         -e "Outstanding Drama Series" \
-                                                         -e "Outstanding Comedy Series" \
-                                                         -e "Outstanding Limited Series" \
-                                                         -e "Outstanding Television Movie" \
-                                                         -e "Worst Picture" \
-                                                         -e "Best Television")
-          BESTFOREIGN=$(echo "${CATEGORIES[@]}"  | grep -c "Foreign" )
+                                                           -e "Best Motion Picture - Comedy" \
+                                                           -e "Best Motion Picture - Musical" \
+                                                           -e "Outstanding Drama Series" \
+                                                           -e "Outstanding Comedy Series" \
+                                                           -e "Outstanding Limited Series" \
+                                                           -e "Outstanding Television Movie" \
+                                                           -e "Worst Picture" \
+                                                           -e "Best Television")
+          BESTFOREIGN=$(echo "${CATEGORIES[@]}"  | grep -c -e "Foreign" -e "Best International Feature Film" )
           BESTANIME=$(echo "${CATEGORIES[@]}"    | grep -c "Animated" )
           BESTACTOR=$(echo "${CATEGORIES[@]}"    | grep -c -e "Actress" -e "Actor" )
           BESTSONG=$(echo "${CATEGORIES[@]}"     | grep -c -e "Song" )
