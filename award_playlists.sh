@@ -731,6 +731,12 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.zone/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"
           echo -e  "               <img src=\"https://www.limetorrents.zone/favicon.ico\" alt=\"LimeTorrents\"/></a>"
 
+          echo -e  "             <a target=\"_blank\" href=\"https://1337x.to/sort-category-search/${TITLESEARCH}%20${RELEASEYEAR}/Movies/seeders/desc/1/\">"
+          echo -e  "               <img src=\"https://1337x.to/favicon.ico\" alt=\"1337x\"/></a>"
+
+          echo -e  "             <a target=\"_blank\" href=\"https://yts.lt/browse-movies/${TITLESEARCH}%20${RELEASEYEAR}/all/all/0/seeds\">"
+          echo -e  "               <img src=\"https://yts.lt/assets/images/website/favicon.ico\" alt=\"YTS\"/></a>"
+
           echo -e  "             <a target=\"_blank\" href=\"https://www.google.de/search?safe=off&site=webhp&source=hp&q=$TITLESEARCHG\">"
           echo -e  "               <img src=\"https://www.google.com/favicon.ico\" alt=\"Google\" height=16/></a>"
 
