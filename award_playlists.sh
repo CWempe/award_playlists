@@ -223,7 +223,7 @@ if [ ! -f "$CONFIG" ]
     exit 1
 fi
 # import custom config
-# shellcheck source="$CONFIG"
+# shellcheck disable=SC1091,SC1090
 source "$CONFIG"
 
 # change dir to $BINDIR for git to work
