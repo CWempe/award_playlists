@@ -326,8 +326,7 @@ if [ ! -s "$NOMINEEJSON" ] || [ "$FORCE" -eq 1 ]
     fi
 
     # Get JSON from HTML-file
-    cat "$NOMINEEHTML" \
-      | grep "IMDbReactWidgets.NomineesWidget.push" \
+    grep "IMDbReactWidgets.NomineesWidget.push" "$NOMINEEHTML" \
       | sed "s/IMDbReactWidgets.NomineesWidget.push(.'center-3-react',//" \
       | sed "s/.);$//" \
       | jq . \
@@ -353,8 +352,8 @@ if [ ! -s "$IDSFILE" ] || [ "$FORCE" -eq 1 ]
     fi
 
     # Get IMDB-IDs from nominee-list
-    cat "$NOMINEEJSON" \
-      | jq '.nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[] | if (.primaryNominees[].const | startswith("tt") ) then .primaryNominees[] | [.const, .name] else .secondaryNominees[] | [.const, .name] end | @tsv' \
+    < "$NOMINEEJSON" \
+        jq '.nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[] | if (.primaryNominees[].const | startswith("tt") ) then .primaryNominees[] | [.const, .name] else .secondaryNominees[] | [.const, .name] end | @tsv' \
       | awk '{print "echo  "$0}' | sh \
       | sort \
       | uniq -c\
@@ -508,10 +507,10 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       fi
 
       # get categories for nominations
-      readarray CATEGORIES < <(cat "$NOMINEEJSON" \
-                    | jq --arg ID "$ID" ".nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[]
-                                         | objects | select((.primaryNominees[]? | .const == \"$ID\") or (.secondaryNominees[]? | .const == \"$ID\"))
-                                         | .categoryName | @sh" )
+      readarray CATEGORIES < <(< "$NOMINEEJSON" \
+                                   jq --arg ID "$ID" ".nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[]
+                                 | objects | select((.primaryNominees[]? | .const == \"$ID\") or (.secondaryNominees[]? | .const == \"$ID\"))
+                                 | .categoryName | @sh" )
 
       if [ "$VERBOSE" -eq 1 ]
         then
