@@ -372,6 +372,8 @@ fi
 NOMINEESCOUNT=$(wc -l "$IDSFILE" | awk '{print $1}')
 MOVIECOUNT=0
 WATCHEDCOUNT=0
+NOMCOUNT=0
+WATCHEDNOMCOUNT=0
 
 
 ####
@@ -570,6 +572,8 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
 
         # increment MOVIECOUNT
         MOVIECOUNT=$((MOVIECOUNT+1))
+        # increment NOMCOUNT
+        NOMCOUNT=$((NOMCOUNT+NOMINATIONS))
 
         if [ "$PLAYCOUNT" = "" ]
         then
@@ -577,6 +581,8 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         else
           # increment WATCHEDCOUNT
           WATCHEDCOUNT=$((WATCHEDCOUNT+1))
+          # increment WATCHEDNOMCOUNT
+          WATCHEDNOMCOUNT=$((WATCHEDNOMCOUNT+NOMINATIONS))
         fi
 
         # Write in playlist
@@ -857,7 +863,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
     ####
     # Create statistics
     ####
-    STATTEXT="Total nominees:  $NOMINEESCOUNT\nin your databse: $MOVIECOUNT\nalready watched: $WATCHEDCOUNT"
+    STATTEXT="in your databse:            $MOVIECOUNT/$NOMINEESCOUNT\nalready watched:          $WATCHEDCOUNT/$NOMINEESCOUNT\nwatched nominations: $WATCHEDNOMCOUNT/$NOMCOUNT"
 
     ####
     # Change owner of file
@@ -878,7 +884,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         echo -e  "      <tfoot>"
         echo -e  "        <tr>"
         echo -en "          <td>$NOMINEESCOUNT</td><td>$MOVIECOUNT</td><td>$WATCHEDCOUNT"
-        echo -en           "</td><td></td><td></td><td></td><td></td><td></td>"
+        echo -en           "</td><td></td><td>$WATCHEDNOMCOUNT</td><td></td><td></td><td></td>"
         echo -e  "        </tr>"
         echo -e  "      </tfoot>"
         echo -e  "    </table>"
