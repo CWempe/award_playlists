@@ -746,59 +746,39 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           if [ "$BESTMOVIE" -gt 0 ]
           then
             echo -e  "01_${MOVIELENGHT}\"><i class=\"fas fa-star fa-xs\""
-          else
-            if [ "$BESTACTOR" -gt 0 ]
+          elif [ "$BESTACTOR" -gt 0 ]
             then
               echo -e  "02_${MOVIELENGHT}\"><i class=\"fas fa-user fa-sm\""
-            else
-              if [ "$BESTDIR" -gt 0 ]
+          elif [ "$BESTDIR" -gt 0 ]
               then
                 echo -e  "03_${MOVIELENGHT}\"><i class=\"fas fa-bullhorn fa-sm\""
-              else
-                if [ "$BESTPLAY" -gt 0 ]
+          elif [ "$BESTPLAY" -gt 0 ]
                 then
                   echo -e  "04_${MOVIELENGHT}\"><i class=\"fas fa-book fa-sm\""
-                else
-                  if [ "$BESTSONG" -gt 0 ]
+          elif [ "$BESTSONG" -gt 0 ]
                   then
                     echo -e  "05_${MOVIELENGHT}\"><i class=\"fas fa-music fa-sm\""
-                  else
-                    if [ "$BESTCAM" -gt 0 ]
+          elif [ "$BESTCAM" -gt 0 ]
                     then
                       echo -e  "06_${MOVIELENGHT}\"><i class=\"fas fa-video fa-sm\""
-                    else
-                      if [ "$BESTEDIT" -gt 0 ]
+          elif [ "$BESTEDIT" -gt 0 ]
                       then
                         echo -e  "07_${MOVIELENGHT}\"><i class=\"fas fa-cut fa-sm\""
-                      else
-                        if [ "$BESTANIME" -gt 0 ]
+          elif [ "$BESTANIME" -gt 0 ]
                         then
                           echo -e  "08_${MOVIELENGHT}\"><i class=\"fas fa-paint-brush fa-xs\""
-                        else
-                          if [ "$BESTFOREIGN" -gt 0 ]
+          elif [ "$BESTFOREIGN" -gt 0 ]
                           then
                             echo -e  "09_${MOVIELENGHT}\"><i class=\"fas fa-closed-captioning fa-sm\""
-                          else
-                            if [ "$ISDOCU" -gt 0 ]
+          elif [ "$ISDOCU" -gt 0 ]
                             then
                               echo -e  "10_${MOVIELENGHT}\"><i class=\"fas fa-camera fa-sm\""
-                            else
-                              if [ "$ISANIME" -gt 0 ]
+          elif [ "$ISANIME" -gt 0 ]
                               then
                                 echo -e  "11_${MOVIELENGHT}\"><i class=\"fas fa-paint-brush fa-sm\""
                               else
                                 echo -e  "99_${MOVIELENGHT}\"><i class=\"fas fa-tools fa-sm\""
                               fi
-                            fi
-                          fi
-                        fi
-                      fi
-                    fi
-                  fi
-                fi
-              fi
-            fi
-          fi
 
           echo -e  " title=\"nominated in:"
           for cat in "${CATEGORIES[@]}"
