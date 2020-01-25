@@ -863,7 +863,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
     ####
     # Create statistics
     ####
-    STATTEXT="in your databse:            $MOVIECOUNT/$NOMINEESCOUNT\nalready watched:          $WATCHEDCOUNT/$NOMINEESCOUNT\nwatched nominations: $WATCHEDNOMCOUNT/$NOMCOUNT"
+    STATTEXT="in your databse:            $MOVIECOUNT/$NOMINEESCOUNT ($(( 100*MOVIECOUNT/NOMINEESCOUNT ))%)\nalready watched:          $WATCHEDCOUNT/$NOMINEESCOUNT ($(( 100*WATCHEDCOUNT/NOMINEESCOUNT ))%)\nwatched nominations: $WATCHEDNOMCOUNT/$NOMCOUNT ($(( 100*WATCHEDNOMCOUNT/NOMCOUNT ))%)"
 
     ####
     # Change owner of file
