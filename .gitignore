@@ -10,6 +10,7 @@ tmp/**
 # except example config
 !conf/custom.conf.original
 !conf/awards.css
+!conf/awards_dark.css
 
 # Exclude backups
 *.devel

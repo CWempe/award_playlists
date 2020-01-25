@@ -1,0 +1,114 @@
+/* html * {
+    font-family: Helvetica;
+    font-size: 100%;
+    color: #FFFFFF;
+    background-color: #121212;
+} */
+
+body {
+  font-family: Helvetica;
+  font-size: 100%;
+  color: #FFFFFF;
+  background-color: #121212;
+}
+
+h1 {
+    font-size: 1.4em;
+}
+
+h2 {
+    font-size: 1.3em;
+}
+
+a:any-link {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+thead {
+  background-color: #424242;
+  font-size: 1.2em;
+}
+
+tfoot {
+  background-color: #424242;
+  font-size: .9em;
+}
+
+table.nominations tbody {
+  background-color: #212121;
+}
+
+tr {
+  height: 1.4em;
+}
+
+/* table.nominations tbody tr:nth-child(odd) { */
+tr:hover {
+  background-color: #303030;
+}
+
+/* 
+* add incrementing numbers in front of every row
+*/
+
+table.nominations {
+  counter-reset: rowNumber;
+}
+
+table.nominations tbody tr {
+  counter-increment: rowNumber;
+}
+
+table.nominations tbody tr td:first-child::before {
+  content: counter(rowNumber);
+  font-size: 0.8em;
+  text-align: right;
+}
+
+.links {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.title {
+  padding-left: 0.5em;
+}
+
+.meta {
+  font-size: .8em;
+  opacity: 0.5;
+}
+
+.timestamp {
+  padding-left: 2em;
+}
+
+.nomcount {
+  text-align: right;
+}
+
+.nomsymbol {
+  text-align: center;
+  padding-left: 8px;
+}
+
+.media_type {
+  text-align: center;
+}
+
+.yes {
+  color: #2e7b32;
+  text-align: center;
+}
+
+.partly {
+  color: #f57f17;
+  text-align: center;
+}
+
+.no {
+  color: #d32f2f;
+  text-align: center;
+}
+
