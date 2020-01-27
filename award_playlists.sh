@@ -520,10 +520,10 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       fi
 
       # Search title in Database using IMDBid
-      SQLRESULT=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") "$DBFILE" "SELECT c00, playCount, '$NOMINATIONS' as nominations FROM movie_view WHERE uniqueid_value IS '$ID' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1")
+      SQLRESULT=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") "$DBFILE" "SELECT c00, playCount, '$NOMINATIONS' as nominations, strFileName FROM movie_view WHERE uniqueid_value IS '$ID' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1")
       if [ "$VERBOSE" -eq 1 ]
         then
-          echo -e "  SQL movie: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
+          echo -e "  SQL movie: sqlite3 -init <(echo .timeout $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations, strFileName FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
       fi
       # replace certain characters in title to match sql syntax
       TITLESQL=$(echo "$TITLE" | sed "s/\(&\|'\|:\)/%/g")
@@ -565,6 +565,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       then
         PLAYCOUNT=$(echo "$SQLRESULT" | awk -F \| '{print $2}')
         TITLE=$(echo "$SQLRESULT" | awk -F \| '{print $1}')
+        FILENAME=$(echo "$SQLRESULT" | awk -F \| '{print $4}')
         TITLESQL=$(echo "$TITLE" | sed "s/\(&\|'\|:\)/%/g")
         INDATABASE="yes"
         ISSERIES=0
@@ -590,6 +591,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           >> "$PLAYLISTFILE"
 
       else
+          FILENAME="not in Database"
           # Search series in Database using Title
           SQLRESULT2=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") "$DBFILE" "SELECT c00, totalCount, watchedCount, '$NOMINATIONS' as nominations FROM tvshow_view WHERE c00 IS '$TITLESQL' GROUP BY c00 LIMIT 1")
           if [ "$VERBOSE" -eq 1 ]
@@ -635,6 +637,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       if [ "$VERBOSE" -eq 1 ]
         then
           echo -e "  PLAYCOUNT: $PLAYCOUNT"
+          echo -e "  FILENAME:  $FILENAME"
       fi
 
       # check it is a th show
@@ -689,7 +692,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         {
           echo -e  "        <tr>"
           echo -e  "          <td title=\"number\"        class=\"number\"></td>"
-          echo -en "          <td title=\"in Database?\"  class=\"db $INDATABASE\" "
+          echo -en "          <td title=\"${FILENAME}\"  class=\"db $INDATABASE\" "
           if [ "$INDATABASE" = "yes" ]
           then
             # check mark
