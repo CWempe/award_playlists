@@ -424,6 +424,10 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         echo -e "<html lang=\"en\">"
         echo -e "  <head>"
         echo -e "    <meta charset=\"utf-8\"/>"
+        if [[ "${CSSFILE}" == "awards_dark.css" ]]
+          then
+            echo -e "    <meta name=\"theme-color\" content=\"#212121\">"
+        fi
         echo -e "    <title>$EVENT $YEAR</title>"
         echo -e "    <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"http://www.oscars.org/favicon.ico\" />"
         echo -e "    <link rel=\"stylesheet\" type=\"text/css\" href=\"$CSSFILE\" />"
