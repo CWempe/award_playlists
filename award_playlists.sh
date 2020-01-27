@@ -567,7 +567,12 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         TITLE=$(echo "$SQLRESULT" | awk -F \| '{print $1}')
         FILENAME=$(echo "$SQLRESULT" | awk -F \| '{print $4}')
         TITLESQL=$(echo "$TITLE" | sed "s/\(&\|'\|:\)/%/g")
-        INDATABASE="yes"
+        if [[ "${FILENAME}" == *"TRAILERONLY"* ]]
+          then
+            INDATABASE="no"
+          else
+            INDATABASE="yes"
+        fi
         ISSERIES=0
         #ISSHORT=0
 
