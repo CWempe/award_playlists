@@ -45,6 +45,8 @@ CSSDEST="$HTMLDIR/$CSSFILE"
 JSFILE="sorttable.js"
 JSSOURCE="http://www.kryogenix.org/code/browser/sorttable/sorttable.js"
 JSDEST="$HTMLDIR/$JSFILE"
+FAVICONDIR="favicons"
+FAVICONPATH="$HTMLDIR/${FAVICONDIR}"
 XRELFILE="$HTMLDIR/"$FILENAMEPREFIX".html"
 
 # Timeout in ms to prevent "Database is locked" error
@@ -60,3 +62,7 @@ SUBJECT="[award_playlist] $EVENT ($YEAR)"
 # file owner
 USER="kodi"
 GROUP="kodi"
+
+# owner for www files
+WWWUSER="munin"
+WWWGROUP="munin"

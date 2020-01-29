@@ -300,6 +300,16 @@ if [ ! -d "$PLVEVENTDIR" ]
     chown "$USER":"$GROUP" "$PLVEVENTDIR"
 fi
 
+if [ ! -d "$FAVICONPATH" ]
+  then
+    if [ "$VERBOSE" -eq 1 ]
+      then
+        echo -e "Favicon-Directory does not exist yet.\nWill create folder now."
+    fi
+    mkdir "$FAVICONPATH"
+    chown "$WWWUSER":"$WWWGROUP" "$FAVICONPATH"
+fi
+
 # creatre backup of statistics file
 if [ -f "$STATFILE" ]
   then
@@ -368,17 +378,73 @@ if [ ! -s "$IDSFILE" ] || [ "$FORCE" -eq 1 ]
     fi
 fi
 
+
+####
+# download favicons to improve side loading
+####
+
+declare -A FAVICONFILE
+declare -A FAVICONURL
+
+FAVICONFILE[awards]="awards.ico"
+FAVICONURL[awards]="http://www.oscars.org/favicon.ico"
+
+FAVICONFILE[imdb]="imdb.ico"
+FAVICONURL[imdb]="https://www.imdb.com/favicon.ico"
+
+FAVICONFILE[themoviedb]="themoviedb.ico"
+FAVICONURL[themoviedb]="https://www.themoviedb.org/favicon.ico"
+
+FAVICONFILE[xrel]="xrel.ico"
+FAVICONURL[xrel]="https://www.xrel.to/favicon.ico"
+
+FAVICONFILE[thepiratebay]="thepiratebay.ico"
+FAVICONURL[thepiratebay]="https://thepiratebay.org/favicon.ico"
+
+FAVICONFILE[rarbg]="rarbg.ico"
+FAVICONURL[rarbg]="https://rarbg.to/favicon.ico"
+
+FAVICONFILE[limetorrents]="limetorrents.ico"
+FAVICONURL[limetorrents]="https://www.limetorrents.zone/favicon.ico"
+
+FAVICONFILE[1337x]="1337x.ico"
+FAVICONURL[1337x]="https://1337x.to/favicon.ico"
+
+FAVICONFILE[yts]="yts.ico"
+FAVICONURL[yts]="https://yts.lt/assets/images/website/favicon.ico"
+
+FAVICONFILE[google]="google.ico"
+FAVICONURL[google]="https://www.google.com/favicon.ico"
+
+
+for WEBSITE in awards imdb themoviedb xrel thepiratebay rarbg limetorrents 1337x yts google
+do
+  # check if file exists
+  if [ ! -f "${FAVICONPATH}/${FAVICONFILE[$WEBSITE]}" ]
+    then
+      if [ "$VERBOSE" -eq 1 ]
+        then
+          echo -e "Downloading favicon from ${FAVICONURL[$WEBSITE]} to ${FAVICONPATH}/${FAVICONFILE[$WEBSITE]} ..."
+      fi
+      wget "${FAVICONURL[$WEBSITE]}" -O "${FAVICONPATH}/${FAVICONFILE[$WEBSITE]}" 
+    else
+      if [ "$VERBOSE" -eq 1 ]
+        then
+          echo -e "Favicon: ${FAVICONPATH}/${FAVICONFILE[$WEBSITE]} already exists."
+      fi
+  fi
+done
+
+####
+# Generate Playlist
+####
+
 # Count nominees
 NOMINEESCOUNT=$(wc -l "$IDSFILE" | awk '{print $1}')
 MOVIECOUNT=0
 WATCHEDCOUNT=0
 NOMCOUNT=0
 WATCHEDNOMCOUNT=0
-
-
-####
-# Generate Playlist
-####
 
 if [ "$NOMINEESCOUNT" -eq 0 ]
   then
@@ -430,7 +496,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         fi
         echo -e "    <meta name=\"viewport\" content=\"width=device-width\">"
         echo -e "    <title>$EVENT $YEAR</title>"
-        echo -e "    <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"http://www.oscars.org/favicon.ico\" />"
+        echo -e "    <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"${FAVICONDIR}/${FAVICONFILE[awards]}\" />"
         echo -e "    <link rel=\"stylesheet\" type=\"text/css\" href=\"$CSSFILE\" />"
         echo -e "    <link rel=\"stylesheet\" href=\"https://use.fontawesome.com/releases/v5.7.2/css/all.css\" integrity=\"sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr\" crossorigin=\"anonymous\" />"
         echo -e "    <script src=\"sorttable.js\"></script>"
@@ -732,31 +798,31 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           echo -e  "          <td title=\"Links\" class=\"links\">"
 
           echo -e  "             <a target=\"_blank\" href=\"https://www.imdb.com/title/$ID/\">"
-          echo -e  "               <img src=\"https://www.imdb.com/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[imdb]}\" alt=\"The Movie DB\" height=16/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://www.themoviedb.org/search?query=$TITLESEARCH\">"
-          echo -e  "               <img src=\"https://www.themoviedb.org/favicon.ico\" alt=\"The Movie DB\" height=16/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[themoviedb]}\" alt=\"The Movie DB\" height=16/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://www.xrel.to/search.html?xrel_search_query=$ID\">"
-          echo -e  "               <img src=\"https://www.xrel.to/favicon.ico\" alt=\"xREL\"/></a>     "
+          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[xrel]}\" alt=\"xREL\"/></a>     "
 
           echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"
-          echo -e  "               <img src=\"https://thepiratebay.org/favicon.ico\" alt=\"The Pirate Bay\"/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[thepiratebay]}\" alt=\"The Pirate Bay\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?category=14;48;17;44;45;47;50;51;52;42;46&search=$TITLESEARCH%20$RELEASEYEAR&order=seeders&by=DESC\">"
-          echo -e  "               <img src=\"https://rarbg.to/favicon.ico\" alt=\"RARBG\"/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[rarbg]}\" alt=\"RARBG\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.zone/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"
-          echo -e  "               <img src=\"https://www.limetorrents.zone/favicon.ico\" alt=\"LimeTorrents\"/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[limetorrents]}\" alt=\"LimeTorrents\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://1337x.to/sort-category-search/${TITLESEARCH}%20${RELEASEYEAR}/Movies/seeders/desc/1/\">"
-          echo -e  "               <img src=\"https://1337x.to/favicon.ico\" alt=\"1337x\"/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[1337x]}\" alt=\"1337x\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://yts.lt/browse-movies/${TITLESEARCH}%20${RELEASEYEAR}/all/all/0/seeds\">"
-          echo -e  "               <img src=\"https://yts.lt/assets/images/website/favicon.ico\" alt=\"YTS\"/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[yts]}\" alt=\"YTS\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://www.google.de/search?safe=off&site=webhp&source=hp&q=$TITLESEARCHG\">"
-          echo -e  "               <img src=\"https://www.google.com/favicon.ico\" alt=\"Google\" height=16/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[google]}\" alt=\"Google\" height=16/></a>"
 
           echo -e  "             </td>"
           echo -e  "          <td class=\"nomcount\">${NOMINATIONS}</td>"
