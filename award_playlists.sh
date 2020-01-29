@@ -36,6 +36,8 @@ VERBOSE="0"
 DEBUG="0"
 # Force (0/1)
 FORCE="0"
+# FORCEICONS (0/1)
+FORCEICONS="0"
 # TV shows (0/1)
 TV="0"
 # Mail address
@@ -48,7 +50,7 @@ XREL="0"
 echo ""
 echo "####################### $DATETIME #######################"
 
-while getopts vdfe:m:y:t:sx opt
+while getopts vdfie:m:y:t:sx opt
   do
     case $opt in
       v)      # Verbose
@@ -67,6 +69,9 @@ while getopts vdfe:m:y:t:sx opt
           then
             echo -e "Argument -e : $OPTARG"
         fi
+        ;;
+      i)
+        FORCEICONS="1"
         ;;
       m)      # mail address
         MAIL="$OPTARG"
@@ -113,6 +118,7 @@ while getopts vdfe:m:y:t:sx opt
         echo "          [-v] Verbose-Mode: Print more output"
         echo "          [-d] Debug-Mode: No Files removed"
         echo "          [-f] Force-Mode: Download new Nominee-List; Overwrite existing ID-File"
+        echo "          [-i] Force-Mode: Download new favicons"
         echo "          [-e] Event: Specify the Event"
         echo "                 (A)cademy Awards or (O)scars"
         echo "                 (B)AFTAS"
@@ -240,6 +246,7 @@ if [ "$VERBOSE" -eq 1 ]
     echo -e " DEBUG:          $DEBUG"
     echo -e " VERBOSE:        $VERBOSE"
     echo -e " FORCE:          $FORCE"
+    echo -e " FORCEICONS:     $FORCEICONS"
     echo -e " TV:             $TV"
     echo -e " STATS:          $STATS"
     echo -e " XREL:           $XREL"
@@ -420,13 +427,13 @@ FAVICONURL[google]="https://www.google.com/favicon.ico"
 for WEBSITE in awards imdb themoviedb xrel thepiratebay rarbg limetorrents 1337x yts google
 do
   # check if file exists
-  if [ ! -f "${FAVICONPATH}/${FAVICONFILE[$WEBSITE]}" ]
+  if [[ ! -f "${FAVICONPATH}/${FAVICONFILE[$WEBSITE]}" || "${FORCEICONS}" == "1" ]]
     then
       if [ "$VERBOSE" -eq 1 ]
         then
           echo -e "Downloading favicon from ${FAVICONURL[$WEBSITE]} to ${FAVICONPATH}/${FAVICONFILE[$WEBSITE]} ..."
       fi
-      wget "${FAVICONURL[$WEBSITE]}" -O "${FAVICONPATH}/${FAVICONFILE[$WEBSITE]}" 
+      wget -U "${FAVICONUSERAGENT}" "${FAVICONURL[$WEBSITE]}" -O "${FAVICONPATH}/${FAVICONFILE[$WEBSITE]}" -q
     else
       if [ "$VERBOSE" -eq 1 ]
         then
