@@ -434,6 +434,7 @@ do
           echo -e "Downloading favicon from ${FAVICONURL[$WEBSITE]} to ${FAVICONPATH}/${FAVICONFILE[$WEBSITE]} ..."
       fi
       wget -U "${FAVICONUSERAGENT}" "${FAVICONURL[$WEBSITE]}" -O "${FAVICONPATH}/${FAVICONFILE[$WEBSITE]}" -q
+      chown "$WWWUSER":"$WWWGROUP" "${FAVICONPATH}/${FAVICONFILE[$WEBSITE]}"
     else
       if [ "$VERBOSE" -eq 1 ]
         then
