@@ -990,6 +990,9 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
     fi
 fi
 
+# change owner of html file
+chown "$WWWUSER":"$WWWGROUP" "$XRELFILE"
+
 
 ####
 # Printing Infos to stdout and optionally to stats file
