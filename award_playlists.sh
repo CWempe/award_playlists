@@ -428,6 +428,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           then
             echo -e "    <meta name=\"theme-color\" content=\"#212121\">"
         fi
+        echo -e "    <meta name=\"viewport\" content=\"width=device-width\">"
         echo -e "    <title>$EVENT $YEAR</title>"
         echo -e "    <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"http://www.oscars.org/favicon.ico\" />"
         echo -e "    <link rel=\"stylesheet\" type=\"text/css\" href=\"$CSSFILE\" />"
@@ -842,7 +843,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
 
           echo -en            "</a></td>"   >> "$XRELFILE"
           echo -en "          <td title=\"Movietitle\" class=\"title\">"
-          echo -e              "<a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></td>"
+          echo -e              "<div class=\"title_shortening\"><a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></div></td>"
           echo -e "        </tr>"
         } >> "$XRELFILE"
       fi

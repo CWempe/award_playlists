@@ -54,6 +54,7 @@ tr:hover {
 
 table.nominations {
   counter-reset: rowNumber;
+  width: max-content;
 }
 
 table.nominations tbody tr {
@@ -71,8 +72,17 @@ table.nominations tbody tr td:first-child::before {
   padding-right: 0.5em;
 }
 
-.title {
+td.title {
   padding-left: 0.5em;
+}
+
+@media (max-width: 700px)  { 
+  div.title_shortening {
+    width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .meta {
