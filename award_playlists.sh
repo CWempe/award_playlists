@@ -554,6 +554,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
                 echo "wget \"$JSSOURCE\" -o \"$JSDEST\""
             fi
             wget "$JSSOURCE" -O "$JSDEST"
+            chown "$WWWUSER":"$WWWGROUP" "$JSDEST"
       fi
     fi
 
