@@ -1,8 +1,39 @@
+/* DEFAULT COLORS */
+
+
+/* DARK COLORS */
+
+body {
+  color: #FFFFFF;
+  background-color: #121212;
+}
+
+a:any-link {
+  color: #FFFFFF;
+}
+
+thead {
+  background-color: #424242;
+}
+
+tfoot {
+  background-color: #424242;
+}
+
+table.nominations tbody {
+  background-color: #212121;
+}
+
+tr:hover {
+  background-color: #303030;
+}
+
+
+/* OTHER STYLE SETTINGS */
+
 body {
   font-family: Helvetica;
   font-size: 100%;
-  color: #FFFFFF;
-  background-color: #121212;
 }
 
 h1 {
@@ -14,30 +45,19 @@ h2 {
 }
 
 a:any-link {
-  color: #FFFFFF;
   text-decoration: none;
 }
 
 thead {
-  background-color: #424242;
   font-size: 1.2em;
 }
 
 tfoot {
-  background-color: #424242;
   font-size: .9em;
-}
-
-table.nominations tbody {
-  background-color: #212121;
 }
 
 tr {
   height: 1.4em;
-}
-
-tr:hover {
-  background-color: #303030;
 }
 
 table.nominations {
