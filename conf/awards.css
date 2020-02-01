@@ -1,6 +1,63 @@
-html * {
-    font-family: Helvetica;
-    font-size: 100%;
+/* DEFAULT COLORS */
+
+thead {
+  color: #FFFFFF;
+  background-color: #212121;
+  font-size: 1.2em;
+}
+
+tfoot {
+  color: #FFFFFF;
+  background-color: #616161;
+  font-size: .9em;
+}
+
+a:any-link {
+  color: #000000;
+}
+
+table.nominations tbody {
+  background-color: #F5F5F5;
+}
+
+tr:hover td {
+  background-color: #E0E0E0;
+}
+
+/* DARK COLORS */
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #FFFFFF;
+    background-color: #121212;
+  }
+
+  a:any-link {
+    color: #FFFFFF;
+  }
+
+  thead {
+    background-color: #424242;
+  }
+
+  tfoot {
+    background-color: #424242;
+  }
+
+  table.nominations tbody {
+    background-color: #212121;
+  }
+
+  tr:hover td {
+    background-color: #303030;
+  }
+}
+
+/* OTHER STYLE SETTINGS */
+
+body {
+  font-family: Helvetica;
+  font-size: 100%;
 }
 
 h1 {
@@ -11,29 +68,25 @@ h2 {
     font-size: 1.3em;
 }
 
+a:any-link {
+  text-decoration: none;
+}
+
 thead {
-    color: #FFFFFF;
-    background-color: #000000;
-    font-size: 1.2em;
+  font-size: 1.2em;
 }
 
 tfoot {
-    color: #FFFFFF;
-    background-color: #696969;
-    font-size: .9em;
+  font-size: .9em;
 }
 
-table.nominations tbody tr:nth-child(odd) {
-    background-color: #F0F0F0;
+tr {
+  height: 1.4em;
 }
-
-
-/* 
- * add incrementing numbers in frint of every row
- */
 
 table.nominations {
   counter-reset: rowNumber;
+  width: max-content;
 }
 
 table.nominations tbody tr {
@@ -46,9 +99,27 @@ table.nominations tbody tr td:first-child::before {
   text-align: right;
 }
 
+.links {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+td.title {
+  padding-left: 0.5em;
+}
+
+@media (max-width: 700px)  { 
+  div.title_shortening {
+    width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
 
 .meta {
   font-size: .8em;
+  opacity: 0.5;
 }
 
 .timestamp {
@@ -61,6 +132,7 @@ table.nominations tbody tr td:first-child::before {
 
 .nomsymbol {
   text-align: center;
+  padding-left: 8px;
 }
 
 .media_type {
@@ -68,17 +140,17 @@ table.nominations tbody tr td:first-child::before {
 }
 
 .yes {
-  color: green;
+  color: #2e7b32;
   text-align: center;
 }
 
 .partly {
-  color: Chocolate;
+  color: #f57f17;
   text-align: center;
 }
 
 .no {
-  color: red;
+  color: #d32f2f;
   text-align: center;
 }
 
