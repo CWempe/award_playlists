@@ -30,6 +30,8 @@ DBFILE=`ls -t $DBDIR/MyVideos*.db | head -1`
 NOMINEEURL="http://www.imdb.com/event/$EVENTID/$YEAR"
 # temp-file for IMDB-Nominee-List
 NOMINEEHTML="$TMPDIR/$FILENAMEPREFIX.html"
+# json-file for IMDB-Nominee-List
+NOMINEEJSON="$TMPDIR/$FILENAMEPREFIX.json"
 # temp-file for IMDB-Nominee-List
 IDSFILE="$DATDIR/$FILENAMEPREFIX.ids"
 # filename of playlist
