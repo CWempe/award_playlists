@@ -34,6 +34,8 @@ EVENT="G"
 VERBOSE="0"
 # Debug (0/1)
 DEBUG="0"
+# Force sending Mail(0/1)
+FORCESEND="0"
 # Force (0/1)
 FORCE="0"
 # FORCEICONS (0/1)
@@ -50,11 +52,14 @@ XREL="0"
 echo ""
 echo "####################### $DATETIME #######################"
 
-while getopts vdfie:m:y:t:sx opt
+while getopts vcdfie:m:y:t:sx opt
   do
     case $opt in
       v)      # Verbose
         VERBOSE="1"
+        ;;
+      c)      # force
+        FORCESEND="1"
         ;;
       d)      # DEBUG
         DEBUG="1"
@@ -113,10 +118,11 @@ while getopts vdfie:m:y:t:sx opt
         XREL="1"
         ;;
       \?)     # Ungueltige Option
-        echo "usage: $0 [-v] [-d] [-f] [-e E] [-y YYYY] [-t yes|no] [-x]"
+        echo "usage: $0 [-v] [-c] [-d] [-f] [-i] [-e E] [-y YYYY] [-m address] [-t yes|no] [-s] [-x]"
         echo "example: $0 -vdf -e G -y 2013"
         echo "          [-v] Verbose-Mode: Print more output"
         echo "          [-d] Debug-Mode: No Files removed"
+        echo "          [-c] Force-Mode: Send mail even nothing changed"
         echo "          [-f] Force-Mode: Download new Nominee-List; Overwrite existing ID-File"
         echo "          [-i] Force-Mode: Download new favicons"
         echo "          [-e] Event: Specify the Event"
@@ -1024,11 +1030,11 @@ if [ "$MAIL" != "" ]
         STATDIFF="new"
     fi
 
-    if [ "$STATDIFF" != "" ]
+    if [ "$STATDIFF" != "" ] || [ "${FORCESEND}" = "1" ]
       then
         if [ "$VERBOSE" -eq 1 ]
           then
-            echo -e "Stats changed. Sending mails."
+            echo -e "Stats changed or sending is forced. Sending mails."
         fi
         echo -e "From: $FROM\nSubject: $SUBJECT\n\n$STATTEXT" | "$SENDMAIL" "$MAIL"
       else
