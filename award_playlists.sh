@@ -1016,11 +1016,13 @@ then
   echo -e "$STATTEXT" > "$STATFILE"
 fi
 
-
+# Generate URL for Mail
+if [ "${URLROOT}" != "" ]
+  then
+    URLTEXT="\n\n${URLROOT}/${FILENAMEPREFIX}.html"
+fi
 
 # check if stats have changed since last run
-
-
 if [ "$MAIL" != "" ]
   then
     if [ -f "$STATFILEOLD" ]
@@ -1036,7 +1038,7 @@ if [ "$MAIL" != "" ]
           then
             echo -e "Stats changed or sending is forced. Sending mails."
         fi
-        echo -e "From: $FROM\nSubject: $SUBJECT\n\n$STATTEXT" | "$SENDMAIL" "$MAIL"
+        echo -e "From: ${FROM}\nSubject: ${SUBJECT}\n\n${STATTEXT}${URLTEXT}" | "${SENDMAIL}" "${MAIL}"
       else
         if [ "$VERBOSE" -eq 1 ]
           then
