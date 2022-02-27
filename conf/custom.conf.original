@@ -10,7 +10,7 @@ DATDIR="$BINDIR/dat"
 TMPDIR="$BINDIR/tmp"
 SENDMAIL="/usr/sbin/sendmail"
 
-### Change this paths to your enviroment ###
+### Change this paths to your environment ###
 # Path to XBMC-directory
 USERDIR="/var/lib/vdr/.xbmc/userdata"
 DBDIR="$USERDIR/Database"
