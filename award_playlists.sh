@@ -983,7 +983,12 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         echo -e  "      </tfoot>"
         echo -e  "    </table>"
 
-        echo -e  "    <br>"
+        if [ "${LINK_ODR}" -eq 1 ] && [ ${EVENTSTRING} = "oscars" ]
+          then
+            # shellcheck disable=SC2140
+            echo -e  "    <p><a target="_blank" href="https://oscarsdeathrace.com/">Oscar Death Race</a> (<a target="_blank" href="https://discord.com/channels/285429851463221258/831261774342258769">Discord</a>, <a target="_blank" href="https://www.reddit.com/r/oscarsdeathrace/">Reddit</a>)</p>"
+        fi
+
         echo -e  "    <table class=\"meta\">"
         echo -e  "      <tr><td><i class=\"fas fa-sync-alt\"></td>"
         echo -e  "          <td></i>$DATETIME</td></tr>"
@@ -1020,6 +1025,12 @@ fi
 if [ "${URLROOT}" != "" ]
   then
     URLTEXT="\n\n${URLROOT}/${FILENAMEPREFIX}.html"
+  else
+    URLTEXT=""
+fi
+if [ "${LINK_ODR}" -eq 1 ] && [ ${EVENTSTRING} = "oscars" ]
+  then
+    URLTEXT="${URLTEXT}\n\nhttps://oscarsdeathrace.com/"
 fi
 
 # check if stats have changed since last run

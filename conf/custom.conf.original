@@ -60,6 +60,8 @@ XRELFILE="$HTMLDIR/"$FILENAMEPREFIX".html"
 # Timeout in ms to prevent "Database is locked" error
 DBTIMEOUT=2000
 
+# Add link to oscarsdeathrace.com
+LINK_ODR=1
 
 # Mail
 FROMNAME="Award Playlists"
