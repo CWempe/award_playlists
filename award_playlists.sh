@@ -87,7 +87,7 @@ while getopts vcdfie:m:y:t:sx opt
         ;;
       y)      # year
         YEAR="$OPTARG"
-        OLDESTYEAR=$((YEAR - 3))
+        OLDESTYEAR=$((YEAR - 4))
         if [ "$VERBOSE" -eq 1 ]
           then
             echo -e "Argument -y : $OPTARG"
