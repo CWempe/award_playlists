@@ -1144,8 +1144,41 @@ fi
 
 # Create body of index table
 for EVENT in ${EVENTS}; do
+
+  # Define Event
+  case $EVENT in
+    bafta )
+      EVENTNAME="BAFTA"
+      ;;
+    critics )
+      EVENTNAME="Critics Choice"
+      ;;
+    emmy )
+      EVENTNAME="Emmy Awards"
+      ;;
+    golden-globes )
+      EVENTNAME="Golden Globe Awards"
+      ;;
+    independant )
+      EVENTNAME="Independent Spirit"
+      ;;
+    razzies )
+      EVENTNAME="Razzie Awards"
+      ;;
+    sag )
+      EVENTNAME="SAG Awards"
+      ;;
+    sundance )
+      EVENTNAME="Sundance Film Festival"
+      ;;
+    oscars )
+      EVENTNAME="Academy Awards"
+      ;;
+  esac
+
+
   echo -e  "        <tr>"                                                                >> "${INDEXHTML}"
-  echo -e  "          <td title=\"${EVENT}\"        class=\"\">${EVENT}</td>"            >> "${INDEXHTML}"
+  echo -e  "          <td title=\"${EVENTNAME}\"        class=\"\">${EVENTNAME}</td>"    >> "${INDEXHTML}"
   for YEAR in ${YEARS}; do
     NOMINEEHTML="${HTMLDIR}/nominees_${EVENT}_${YEAR}.html"
     if [ -f "${NOMINEEHTML}" ]
@@ -1160,7 +1193,7 @@ for EVENT in ${EVENTS}; do
             echo -e  "          <td title=\"no data\"  class=\"event\"><a href=\"./nominees_${EVENT}_${YEAR}.html\">n/a</a></td>"   >> "${INDEXHTML}"
         fi
       else
-        echo -e  "          <td title=\"no data\"  class=\"event\"></td>"                     >> "${INDEXHTML}"
+        echo -e  "          <td title=\"no data\"  class=\"event\"></td>"                >> "${INDEXHTML}"
     fi
   done
   echo -e  "        </tr>"                                                               >> "${INDEXHTML}"
