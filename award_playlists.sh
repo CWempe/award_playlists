@@ -1155,9 +1155,9 @@ for EVENT in ${EVENTS}; do
             EVENTMOVIES=$(echo ${EVENTSTATS} | awk -F# '{print $3}')
             EVENTMOVIESWATCHED=$(echo ${EVENTSTATS} | awk -F# '{print $5}')
             EVENTMOVIESWATCHEDPERCENTAGE=$((100*${EVENTMOVIESWATCHED}/${EVENTMOVIES}))
-            echo -e  "          <td title=\"watched ${EVENTMOVIESWATCHED} of ${EVENTMOVIES}\"  class=\"event\"><a href=\"./nominees_${EVENT}_${YEAR}.html\">$EVENTMOVIESWATCHEDPERCENTAGE %</a></td>"   >> "${INDEXHTML}"
+            echo -e  "          <td title=\"watched ${EVENTMOVIESWATCHED} of ${EVENTMOVIES}\"  class=\"event\"><a href=\"./nominees_${EVENT}_${YEAR}.html\"><div class=\"pie animate\" style=\"--p:${EVENTMOVIESWATCHEDPERCENTAGE};\">${EVENTMOVIESWATCHEDPERCENTAGE} %</div></a></td>"   >> "${INDEXHTML}"
           else
-            echo -e  "          <td title=\"no data\"  class=\"event\"><a href=\"./nominees_${EVENT}_${YEAR}.html\">${YEAR}</a></td>"   >> "${INDEXHTML}"
+            echo -e  "          <td title=\"no data\"  class=\"event\"><a href=\"./nominees_${EVENT}_${YEAR}.html\">n/a</a></td>"   >> "${INDEXHTML}"
         fi
       else
         echo -e  "          <td title=\"no data\"  class=\"event\"></td>"                     >> "${INDEXHTML}"
@@ -1177,6 +1177,8 @@ done
 #  echo -e  "        </tr>"
 #  echo -e  "      </tfoot>"
   echo -e  "    </table>"
+
+  echo -e  "    </br>"
 
   echo -e  "    <table class=\"meta\">"
   echo -e  "      <tr><td><i class=\"fas fa-sync-alt\"></td>"
