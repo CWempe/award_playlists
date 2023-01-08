@@ -378,10 +378,11 @@ if [ ! -s "$IDSFILE" ] || [ "$FORCE" -eq 1 ]
     < "$NOMINEEJSON" \
         jq '.nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[] | if (.primaryNominees[].const | startswith("tt") ) then .primaryNominees[] | [.const, .name] else .secondaryNominees[] | [.const, .name] end | @tsv' \
       | awk '{print "echo  "$0}' | sh \
+      | sed 's/\\t/\t/g' \
       | sort \
-      | uniq -c\
+      | uniq -c \
       | sort -nr \
-      > "$IDSFILE"
+      > "${IDSFILE}"
 
   else
     # $IDSFILE is present and not empty
