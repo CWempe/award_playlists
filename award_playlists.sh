@@ -994,6 +994,11 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
             echo -e  "    <p><a target="_blank" href="https://oscarsdeathrace.com/">Oscar Death Race</a> (<a target="_blank" href="https://discord.com/channels/285429851463221258/831261774342258769">Discord</a>, <a target="_blank" href="https://www.reddit.com/r/oscarsdeathrace/">Reddit</a>)</p>"
         fi
 
+        echo -e  "<!--"
+        echo -e  "#STATS#${NOMINEESCOUNT}#${MOVIECOUNT}#${WATCHEDCOUNT}#${WATCHEDNOMCOUNT}"
+        echo -e  "for index.html"
+        echo -e  "//-->"
+        echo -e  "    </br>"
         echo -e  "    <table class=\"meta\">"
         echo -e  "      <tr><td><i class=\"fas fa-sync-alt\"></td>"
         echo -e  "          <td></i>$DATETIME</td></tr>"
@@ -1145,9 +1150,17 @@ for EVENT in ${EVENTS}; do
     NOMINEEHTML="${HTMLDIR}/nominees_${EVENT}_${YEAR}.html"
     if [ -f "${NOMINEEHTML}" ]
       then
-        echo -e  "          <td title=\"${EVENT} ${YEAR}\"  class=\"\"><a href=\"./nominees_${EVENT}_${YEAR}.html\">${YEAR}</a></td>"   >> "${INDEXHTML}"
+        if EVENTSTATS=$(grep "#STATS" ${NOMINEEHTML})
+          then
+            EVENTMOVIES=$(echo ${EVENTSTATS} | awk -F# '{print $3}')
+            EVENTMOVIESWATCHED=$(echo ${EVENTSTATS} | awk -F# '{print $5}')
+            EVENTMOVIESWATCHEDPERCENTAGE=$((100*${EVENTMOVIESWATCHED}/${EVENTMOVIES}))
+            echo -e  "          <td title=\"watched ${EVENTMOVIESWATCHED} of ${EVENTMOVIES}\"  class=\"event\"><a href=\"./nominees_${EVENT}_${YEAR}.html\">$EVENTMOVIESWATCHEDPERCENTAGE %</a></td>"   >> "${INDEXHTML}"
+          else
+            echo -e  "          <td title=\"no data\"  class=\"event\"><a href=\"./nominees_${EVENT}_${YEAR}.html\">${YEAR}</a></td>"   >> "${INDEXHTML}"
+        fi
       else
-        echo -e  "          <td title=\"no data\"  class=\"\"></td>"                     >> "${INDEXHTML}"
+        echo -e  "          <td title=\"no data\"  class=\"event\"></td>"                     >> "${INDEXHTML}"
     fi
   done
   echo -e  "        </tr>"                                                               >> "${INDEXHTML}"

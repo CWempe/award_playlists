@@ -24,6 +24,20 @@ tr:hover td {
   background-color: #E0E0E0;
 }
 
+table.shows {
+  counter-reset: rowNumber;
+  width: max-content;
+}
+
+table.shows tbody tr {
+  counter-increment: rowNumber;
+}
+
+table.shows td.event {
+  font-size: 0.8em;
+  text-align: right;
+}
+
 /* DARK COLORS */
 
 @media (prefers-color-scheme: dark) {
@@ -45,6 +59,10 @@ tr:hover td {
   }
 
   table.nominations tbody {
+    background-color: #212121;
+  }
+
+  table.shows tbody {
     background-color: #212121;
   }
 
