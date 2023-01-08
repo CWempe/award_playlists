@@ -1022,6 +1022,11 @@ then
   echo -e "$STATTEXT" > "$STATFILE"
 fi
 
+
+####
+# Send mail
+####
+
 # Generate URL for Mail
 if [ "${URLROOT}" != "" ]
   then
@@ -1058,6 +1063,7 @@ if [ "$MAIL" != "" ]
         fi
     fi
 fi
+
 
 
 ####
