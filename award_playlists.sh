@@ -671,6 +671,11 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         MOVIECOUNT=$((MOVIECOUNT+1))
         # increment NOMCOUNT
         NOMCOUNT=$((NOMCOUNT+NOMINATIONS))
+        if [ "$VERBOSE" -eq 1 ]
+          then
+            echo -e "  NOMCOUNT: $NOMCOUNT"
+        fi
+
 
         if [ "$PLAYCOUNT" = "" ]
         then
@@ -962,7 +967,22 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
     ####
     # Create statistics
     ####
-    STATTEXT="in your databse:            $MOVIECOUNT/$NOMINEESCOUNT ($(( 100*MOVIECOUNT/NOMINEESCOUNT ))%)\nalready watched:          $WATCHEDCOUNT/$NOMINEESCOUNT ($(( 100*WATCHEDCOUNT/NOMINEESCOUNT ))%)\nwatched nominations:  $WATCHEDNOMCOUNT/$NOMCOUNT ($(( 100*WATCHEDNOMCOUNT/NOMCOUNT ))%)"
+    if [ "$VERBOSE" -eq 1 ]
+      then
+        echo -e "  NOMCOUNT: $NOMCOUNT"
+    fi
+    if [ $NOMINEESCOUNT -gt 0 ]
+      then
+        STATTEXT="in your databse:            $MOVIECOUNT/$NOMINEESCOUNT ($(( 100*MOVIECOUNT/NOMINEESCOUNT )) %)\nalready watched:          $WATCHEDCOUNT/$NOMINEESCOUNT ($(( 100*WATCHEDCOUNT/NOMINEESCOUNT )) %)\n"
+      else
+        STATTEXT="in your databse:            $MOVIECOUNT/$NOMINEESCOUNT \n"
+    fi
+    if [ $NOMCOUNT -gt 0 ]
+      then
+        STATTEXT="${STATTEXT}watched nominations:  $WATCHEDNOMCOUNT/$NOMCOUNT ($(( 100*WATCHEDNOMCOUNT/NOMCOUNT )) %)"
+      else
+        STATTEXT="${STATTEXT}watched nominations:  $WATCHEDNOMCOUNT/$NOMCOUNT"
+    fi
 
     ####
     # Change owner of file
