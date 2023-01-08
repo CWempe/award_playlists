@@ -418,7 +418,7 @@ FAVICONFILE[rarbg]="rarbg.ico"
 FAVICONURL[rarbg]="https://rarbg.to/favicon.ico"
 
 FAVICONFILE[limetorrents]="limetorrents.ico"
-FAVICONURL[limetorrents]="https://www.limetorrents.zone/favicon.ico"
+FAVICONURL[limetorrents]="https://www.limetorrents.lol/favicon.ico"
 
 FAVICONFILE[1337x]="1337x.ico"
 FAVICONURL[1337x]="https://1337x.to/favicon.ico"
@@ -827,7 +827,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?category=14;48;17;44;45;47;50;51;52;42;46&search=$TITLESEARCH%20$RELEASEYEAR&order=seeders&by=DESC\">"
           echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[rarbg]}\" alt=\"RARBG\"/></a>"
 
-          echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.zone/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"
+          echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.lol/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"
           echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[limetorrents]}\" alt=\"LimeTorrents\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://1337x.to/sort-category-search/${TITLESEARCH}%20${RELEASEYEAR}/Movies/seeders/desc/1/\">"
