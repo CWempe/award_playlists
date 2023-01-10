@@ -153,7 +153,13 @@ case $EVENTARG in
     EVENTID="ev0000123"
     TV="no"
     ;;
-  c|C )
+  ca|CA )
+    EVENT="Cannes Film Festival"
+    EVENTSTRING="cannes"
+    EVENTID="ev0000147"
+    TV="no"
+    ;;
+  c|C|cri|CRI )
     EVENT="Critics Choice"
     EVENTSTRING="critics"
     EVENTID="ev0000133"
@@ -1169,6 +1175,9 @@ for EVENT in ${EVENTS}; do
   case $EVENT in
     bafta )
       EVENTNAME="BAFTA"
+      ;;
+    cannes )
+      EVENTNAME="Cannes Film Festival"
       ;;
     critics )
       EVENTNAME="Critics Choice"
