@@ -178,7 +178,7 @@ case $EVENTARG in
     fi
     ;;
   i|I )
-    EVENT="Independent Spirit"
+    EVENT="Independent Spirit Awards"
     EVENTSTRING="independant"
     EVENTID="ev0000349"
     TV="no"
@@ -1180,7 +1180,7 @@ for EVENT in ${EVENTS}; do
       EVENTNAME="Golden Globe Awards"
       ;;
     independant )
-      EVENTNAME="Independent Spirit"
+      EVENTNAME="Independent Spirit Awards"
       ;;
     razzies )
       EVENTNAME="Razzie Awards"
