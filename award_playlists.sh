@@ -249,9 +249,16 @@ INDEXHTML="${HTMLDIR}/index.html"
 # change dir to $BINDIR for git to work
 cd "$BINDIR" || { echo "Command cd failed!"; exit 1; }
 
-# Git commit
+# Get last git commit hash
 GITCOMMIT=$(git log --date=format:'%F %R' --pretty=format:'%cd (Commit: %h)' -n 1)
 #' fix wrong syntax highlighting in mcedit
+
+
+if [ "$YEAR" = "2017" ]
+  then
+    # The Critict Choice Awards 2017 show was moved forward to Dec 2016
+    NOMINEEURL="http://www.imdb.com/event/$EVENTID/2016/2"
+fi
 
 if [ "$VERBOSE" -eq 1 ]
   then
