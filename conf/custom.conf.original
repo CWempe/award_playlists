@@ -9,6 +9,7 @@ FILENAMEPREFIX="nominees_"$EVENTSTRING"_"$YEAR
 DATDIR="$BINDIR/dat"
 TMPDIR="$BINDIR/tmp"
 SENDMAIL="/usr/sbin/sendmail"
+GITBIN="git"
 
 ### Change this paths to your environment ###
 # Path to XBMC-directory

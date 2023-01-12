@@ -250,7 +250,7 @@ INDEXHTML="${HTMLDIR}/index.html"
 cd "$BINDIR" || { echo "Command cd failed!"; exit 1; }
 
 # Get last git commit hash
-GITCOMMIT=$(git log --date=format:'%F %R' --pretty=format:'%cd (Commit: %h)' -n 1)
+GITCOMMIT=$(${GITBIN} log --date=format:'%F %R' --pretty=format:'%cd (Commit: %h)' -n 1)
 #' fix wrong syntax highlighting in mcedit
 
 
