@@ -153,7 +153,13 @@ case $EVENTARG in
     EVENTID="ev0000123"
     TV="no"
     ;;
-  c|C )
+  ca|CA )
+    EVENT="Cannes Film Festival"
+    EVENTSTRING="cannes"
+    EVENTID="ev0000147"
+    TV="no"
+    ;;
+  c|C|cri|CRI )
     EVENT="Critics Choice"
     EVENTSTRING="critics"
     EVENTID="ev0000133"
@@ -178,7 +184,7 @@ case $EVENTARG in
     fi
     ;;
   i|I )
-    EVENT="Independent Spirit"
+    EVENT="Independent Spirit Awards"
     EVENTSTRING="independant"
     EVENTID="ev0000349"
     TV="no"
@@ -238,12 +244,21 @@ fi
 # shellcheck disable=SC1091,SC1090
 source "$CONFIG"
 
+INDEXHTML="${HTMLDIR}/index.html"
+
 # change dir to $BINDIR for git to work
 cd "$BINDIR" || { echo "Command cd failed!"; exit 1; }
 
-# Git commit
+# Get last git commit hash
 GITCOMMIT=$(git log --date=format:'%F %R' --pretty=format:'%cd (Commit: %h)' -n 1)
 #' fix wrong syntax highlighting in mcedit
+
+
+if [ "$YEAR" = "2017" ]
+  then
+    # The Critict Choice Awards 2017 show was moved forward to Dec 2016
+    NOMINEEURL="http://www.imdb.com/event/$EVENTID/2016/2"
+fi
 
 if [ "$VERBOSE" -eq 1 ]
   then
@@ -270,6 +285,8 @@ if [ "$VERBOSE" -eq 1 ]
     echo -e " BINDIR:         $BINDIR"
     echo -e " CONFIG:         $CONFIG"
     echo -e " DBFILE:         $DBFILE"
+    echo -e " HTMLDIRL:       $HTMLDIR"
+    echo -e " INDEXHTML:      $INDEXHTML"
     echo -e " NOMINEEURL:     $NOMINEEURL"
     echo -e " NOMINEEHTML:    $NOMINEEHTML"
     echo -e " NOMINEEJSON:    $NOMINEEJSON"
@@ -378,10 +395,11 @@ if [ ! -s "$IDSFILE" ] || [ "$FORCE" -eq 1 ]
     < "$NOMINEEJSON" \
         jq '.nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[] | if (.primaryNominees[].const | startswith("tt") ) then .primaryNominees[] | [.const, .name] else .secondaryNominees[] | [.const, .name] end | @tsv' \
       | awk '{print "echo  "$0}' | sh \
+      | sed 's/\\t/\t/g' \
       | sort \
-      | uniq -c\
+      | uniq -c \
       | sort -nr \
-      > "$IDSFILE"
+      > "${IDSFILE}"
 
   else
     # $IDSFILE is present and not empty
@@ -418,7 +436,7 @@ FAVICONFILE[rarbg]="rarbg.ico"
 FAVICONURL[rarbg]="https://rarbg.to/favicon.ico"
 
 FAVICONFILE[limetorrents]="limetorrents.ico"
-FAVICONURL[limetorrents]="https://www.limetorrents.zone/favicon.ico"
+FAVICONURL[limetorrents]="https://www.limetorrents.lol/favicon.ico"
 
 FAVICONFILE[1337x]="1337x.ico"
 FAVICONURL[1337x]="https://1337x.to/favicon.ico"
@@ -666,6 +684,11 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         MOVIECOUNT=$((MOVIECOUNT+1))
         # increment NOMCOUNT
         NOMCOUNT=$((NOMCOUNT+NOMINATIONS))
+        if [ "$VERBOSE" -eq 1 ]
+          then
+            echo -e "  NOMCOUNT: $NOMCOUNT"
+        fi
+
 
         if [ "$PLAYCOUNT" = "" ]
         then
@@ -827,7 +850,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?category=14;48;17;44;45;47;50;51;52;42;46&search=$TITLESEARCH%20$RELEASEYEAR&order=seeders&by=DESC\">"
           echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[rarbg]}\" alt=\"RARBG\"/></a>"
 
-          echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.zone/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"
+          echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.lol/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"
           echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[limetorrents]}\" alt=\"LimeTorrents\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://1337x.to/sort-category-search/${TITLESEARCH}%20${RELEASEYEAR}/Movies/seeders/desc/1/\">"
@@ -957,7 +980,22 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
     ####
     # Create statistics
     ####
-    STATTEXT="in your databse:            $MOVIECOUNT/$NOMINEESCOUNT ($(( 100*MOVIECOUNT/NOMINEESCOUNT ))%)\nalready watched:          $WATCHEDCOUNT/$NOMINEESCOUNT ($(( 100*WATCHEDCOUNT/NOMINEESCOUNT ))%)\nwatched nominations:  $WATCHEDNOMCOUNT/$NOMCOUNT ($(( 100*WATCHEDNOMCOUNT/NOMCOUNT ))%)"
+    if [ "$VERBOSE" -eq 1 ]
+      then
+        echo -e "  NOMCOUNT: $NOMCOUNT"
+    fi
+    if [ $NOMINEESCOUNT -gt 0 ]
+      then
+        STATTEXT="in your databse:            $MOVIECOUNT/$NOMINEESCOUNT ($(( 100*MOVIECOUNT/NOMINEESCOUNT )) %)\nalready watched:          $WATCHEDCOUNT/$NOMINEESCOUNT ($(( 100*WATCHEDCOUNT/NOMINEESCOUNT )) %)\n"
+      else
+        STATTEXT="in your databse:            $MOVIECOUNT/$NOMINEESCOUNT \n"
+    fi
+    if [ $NOMCOUNT -gt 0 ]
+      then
+        STATTEXT="${STATTEXT}watched nominations:  $WATCHEDNOMCOUNT/$NOMCOUNT ($(( 100*WATCHEDNOMCOUNT/NOMCOUNT )) %)"
+      else
+        STATTEXT="${STATTEXT}watched nominations:  $WATCHEDNOMCOUNT/$NOMCOUNT"
+    fi
 
     ####
     # Change owner of file
@@ -989,6 +1027,11 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
             echo -e  "    <p><a target="_blank" href="https://oscarsdeathrace.com/">Oscar Death Race</a> (<a target="_blank" href="https://discord.com/channels/285429851463221258/831261774342258769">Discord</a>, <a target="_blank" href="https://www.reddit.com/r/oscarsdeathrace/">Reddit</a>)</p>"
         fi
 
+        echo -e  "<!--"
+        echo -e  "#STATS#${NOMINEESCOUNT}#${MOVIECOUNT}#${WATCHEDCOUNT}#${WATCHEDNOMCOUNT}"
+        echo -e  "for index.html"
+        echo -e  "//-->"
+        echo -e  "    </br>"
         echo -e  "    <table class=\"meta\">"
         echo -e  "      <tr><td><i class=\"fas fa-sync-alt\"></td>"
         echo -e  "          <td></i>$DATETIME</td></tr>"
@@ -1020,6 +1063,11 @@ then
   fi
   echo -e "$STATTEXT" > "$STATFILE"
 fi
+
+
+####
+# Send mail
+####
 
 # Generate URL for Mail
 if [ "${URLROOT}" != "" ]
@@ -1057,6 +1105,169 @@ if [ "$MAIL" != "" ]
         fi
     fi
 fi
+
+
+####
+# create index.html
+####
+
+# Search for Award-HTML files
+if [ "$VERBOSE" -eq 1 ]
+  then
+    echo ""
+    echo "HTML files:"
+    find ${HTMLDIR} -name nominees*.html
+fi
+
+# Get all available years
+YEARS=$(find ${HTMLDIR} -name nominees*.html | awk -F "_" '{print substr($(NF), 1, length($(NF)-1))}' | sort -u -r)
+#' fix wrong syntax highlighting in mcedit
+
+if [ "$VERBOSE" -eq 1 ]
+  then
+    echo ""
+    echo "YEARS: ${YEARS}"
+fi
+
+
+
+# Get all available events
+EVENTS=$(find ${HTMLDIR} -name nominees*.html | awk -F "_" '{print $(NF-1)}' | sort -u)
+#' fix wrong syntax highlighting in mcedit
+
+if [ "$VERBOSE" -eq 1 ]
+  then
+    echo ""
+    echo "EVENTS: ${EVENTS}"
+fi
+
+
+# Create header of index.html
+{
+   echo -e "<!DOCTYPE html>"
+   echo -e "<html lang=\"en\">"
+   echo -e "  <head>"
+   echo -e "    <meta charset=\"utf-8\"/>"
+   if [[ "${CSSFILE}" == "awards_dark.css" ]]
+     then
+       echo -e "    <meta name=\"theme-color\" content=\"#212121\">"
+   fi
+   echo -e "    <meta name=\"viewport\" content=\"width=device-width\">"
+   echo -e "    <title>Award Shows</title>"
+   echo -e "    <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"favicons/awards.ico\" />"
+   echo -e "    <link rel=\"stylesheet\" type=\"text/css\" href=\"$CSSFILE\" />"
+   echo -e "    <link rel=\"stylesheet\" href=\"https://use.fontawesome.com/releases/v5.7.2/css/all.css\" integrity=\"sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr\" crossorigin=\"anonymous\" />"
+   echo -e "    <script src=\"sorttable.js\"></script>"
+   echo -e "  </head>"
+   echo -e "  <body>"
+   echo -e "    <h1>Award Shows</h1>"
+#   echo -e "    <h2>Award Shows</h2>"
+   echo -e "    <table class=\"sortable shows\">"
+   echo -e "      <thead>"
+   echo -e "        <tr>"
+   echo -e "          <th title=\"Event\" class=\"\">Event</th>"
+   for YEAR in ${YEARS}; do
+     echo -e "          <th title=\"${YEAR}\" class=\"sorttable_nosort\">${YEAR}</th>"
+   done
+   echo -e "        </tr>"
+   echo -e "      </thead>"
+   echo -e "      <tbody>"
+ } >  "$INDEXHTML"
+
+
+# Create body of index table
+for EVENT in ${EVENTS}; do
+
+  # Define Event
+  case $EVENT in
+    bafta )
+      EVENTNAME="BAFTA"
+      ;;
+    cannes )
+      EVENTNAME="Cannes Film Festival"
+      ;;
+    critics )
+      EVENTNAME="Critics Choice"
+      ;;
+    emmy )
+      EVENTNAME="Emmy Awards"
+      ;;
+    golden-globes )
+      EVENTNAME="Golden Globe Awards"
+      ;;
+    independant )
+      EVENTNAME="Independent Spirit Awards"
+      ;;
+    razzies )
+      EVENTNAME="Razzie Awards"
+      ;;
+    sag )
+      EVENTNAME="SAG Awards"
+      ;;
+    sundance )
+      EVENTNAME="Sundance Film Festival"
+      ;;
+    oscars )
+      EVENTNAME="Academy Awards"
+      ;;
+  esac
+
+
+  echo -e  "        <tr>"                                                                >> "${INDEXHTML}"
+  echo -e  "          <td title=\"${EVENTNAME}\"        class=\"\">${EVENTNAME}</td>"    >> "${INDEXHTML}"
+  for YEAR in ${YEARS}; do
+    NOMINEEHTML="${HTMLDIR}/nominees_${EVENT}_${YEAR}.html"
+    if [ -f "${NOMINEEHTML}" ]
+      then
+        if EVENTSTATS=$(grep "#STATS" ${NOMINEEHTML})
+          then
+            EVENTMOVIES=$(echo ${EVENTSTATS} | awk -F# '{print $3}')
+            EVENTMOVIESWATCHED=$(echo ${EVENTSTATS} | awk -F# '{print $5}')
+            EVENTMOVIESWATCHEDPERCENTAGE=$((100*${EVENTMOVIESWATCHED}/${EVENTMOVIES}))
+            echo -e  "          <td title=\"watched ${EVENTMOVIESWATCHED} of ${EVENTMOVIES}\"  class=\"event\"><a href=\"./nominees_${EVENT}_${YEAR}.html\"><div class=\"pie animate\" style=\"--p:${EVENTMOVIESWATCHEDPERCENTAGE};\">${EVENTMOVIESWATCHEDPERCENTAGE} %</div></a></td>"   >> "${INDEXHTML}"
+          else
+            echo -e  "          <td title=\"no data\"  class=\"event\"><a href=\"./nominees_${EVENT}_${YEAR}.html\">n/a</a></td>"   >> "${INDEXHTML}"
+        fi
+      else
+        echo -e  "          <td title=\"no data\"  class=\"event\"></td>"                >> "${INDEXHTML}"
+    fi
+  done
+  echo -e  "        </tr>"                                                               >> "${INDEXHTML}"
+done
+
+
+# Create footer for HTML-file
+{
+  echo -e  "      </tbody>"
+#  echo -e  "      <tfoot>"
+#  echo -e  "        <tr>"
+#  echo -en "          <td></td><td></td><td>"
+#  echo -en           "</td><td></td><td></td><td></td><td></td><td></td>"
+#  echo -e  "        </tr>"
+#  echo -e  "      </tfoot>"
+  echo -e  "    </table>"
+
+  echo -e  "    </br>"
+
+  echo -e  "    <table class=\"meta\">"
+  echo -e  "      <tr><td><i class=\"fas fa-sync-alt\"></td>"
+  echo -e  "          <td></i>$DATETIME</td></tr>"
+  echo -e  "      <tr><td><i class=\"fas fa-code-branch\"></i></td>"
+  echo -e  "          <td>${GITCOMMIT}</td></tr>"
+  echo -e  "     <table>"
+  echo -e  "  </body>"
+  echo -e  "</html>"
+} >> "${INDEXHTML}"
+
+
+
+
+
+
+
+
+
+
 
 
 ####

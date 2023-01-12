@@ -24,6 +24,20 @@ tr:hover td {
   background-color: #E0E0E0;
 }
 
+table.shows {
+  counter-reset: rowNumber;
+  width: max-content;
+}
+
+table.shows tbody tr {
+  counter-increment: rowNumber;
+}
+
+table.shows td.event {
+  font-size: 0.8em;
+  text-align: right;
+}
+
 /* DARK COLORS */
 
 @media (prefers-color-scheme: dark) {
@@ -45,6 +59,10 @@ tr:hover td {
   }
 
   table.nominations tbody {
+    background-color: #212121;
+  }
+
+  table.shows tbody {
     background-color: #212121;
   }
 
@@ -154,3 +172,63 @@ td.title {
   text-align: center;
 }
 
+
+/* 
+  pie chart
+  source: https://stackoverflow.com/a/52205730
+*/
+
+
+@property --p{
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+
+.pie {
+  --p:20;      /* the percentage */
+  --b:5px;    /* the thickness */
+  --c:hsl(calc(var(--p)),100%,50%);; /* the color */
+  --w:40px;   /* the size*/
+  
+  width:var(--w);
+  aspect-ratio:1/1;
+  position:relative;
+  display:inline-grid;
+  margin:2px;
+  place-content:center;
+  font-size:0.8em;
+  font-weight:bold;
+  font-family:sans-serif;
+}
+.pie:before,
+.pie:after {
+  content:"";
+  position:absolute;
+  border-radius:50%;
+}
+.pie:before {
+  inset:0;
+  background:
+    radial-gradient(farthest-side,var(--c) 98%,#0000) top/var(--b) var(--b) no-repeat,
+    conic-gradient(var(--c) calc(var(--p)*1%),#0000 0);
+  -webkit-mask:radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
+          mask:radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
+}
+.pie:after {
+  inset:calc(50% - var(--b)/2);
+  background:var(--c);
+  transform:rotate(calc(var(--p)*3.6deg - 90deg)) translate(calc(var(--w)/2 - 50%));
+}
+.animate {
+  animation:p 1s .5s both;
+}
+.no-round:before {
+  background-size:0 0,auto;
+}
+.no-round:after {
+  content:none;
+}
+@keyframes p{
+  from{--p:0;}
+}
