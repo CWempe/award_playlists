@@ -229,7 +229,7 @@ echo "### $EVENT $YEAR"
 
 # Define files and directories
 BINDIR="$( cd "$(dirname "$0")" || { echo "Command cd failed!"; exit 1; } ; pwd -P )"
-# " to correct syntax highlichting in mcedit
+# " to correct syntax highlighting in mcedit
 CONFDIR="$BINDIR/conf"
 # custom config file
 CONFIG="$CONFDIR/custom.conf"
@@ -631,6 +631,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       fi
       # replace certain characters in title to match sql syntax
       TITLESQL=$(echo "$TITLE" | sed "s/\(&\|'\|:\)/%/g")
+      # " to correct syntax highlighting in mcedit
 
           # check categories
           ISSERIES=$(echo "${CATEGORIES[@]}"     | grep -c "Series" )
@@ -671,6 +672,8 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         TITLE=$(echo "$SQLRESULT" | awk -F \| '{print $1}')
         FILENAME=$(echo "$SQLRESULT" | awk -F \| '{print $4}')
         TITLESQL=$(echo "$TITLE" | sed "s/\(&\|'\|:\)/%/g")
+        # " to correct syntax highlighting in mcedit
+
         if [[ "${FILENAME}" == *"TRAILERONLY"* ]]
           then
             INDATABASE="no"
