@@ -850,7 +850,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"
           echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[thepiratebay]}\" alt=\"The Pirate Bay\"/></a>"
 
-          echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?category=14;48;17;44;45;47;50;51;52;42;46&search=$TITLESEARCH%20$RELEASEYEAR&order=seeders&by=DESC\">"
+          echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?imdb=$ID&order=seeders&by=DESC\">"
           echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[rarbg]}\" alt=\"RARBG\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.lol/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"
