@@ -77,9 +77,47 @@ There are several named volumes:
 > VOLUME /kodi/userdata/playlists/video
 > VOLUME /www
 > VOLUME /etc/crontabs
+> VOLUME /etc/msmtprc.d
 
 To customize the configuration you need to create `conf/custom.conf`(copy from `custom.conf.original`).
 
 `/www` is mountet as read-only in the web-Container, too.
 
 Edit `/etc/crontabs/root` to add/edit/remove cronjobs.
+
+### Mail config
+
+To send mails from inside the container you need to configure msmtp via the named volume `/etc/msmtprc.d`.
+
+`/etc/msmtprc.d/msmtprc`:
+
+```
+# Set default values for all following accounts.
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+syslog         on
+
+# Gmail
+account        gmail
+host           smtp.gmail.com
+port           587
+from           sender@example.com
+user           sender@example.com
+password       <your_Secret>
+domain         mydomain.example.com
+
+# Set a default account
+account default : gmail
+aliases        /etc/msmtprc.d/aliases
+```
+
+`/etc/msmtprc.d/aliases`:
+
+```
+root: me@example.com
+
+default: me@example.com
+
+```
