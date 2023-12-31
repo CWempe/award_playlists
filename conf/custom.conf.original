@@ -13,12 +13,12 @@ GITBIN="git"
 
 ### Change this paths to your environment ###
 # Path to XBMC-directory
-USERDIR="/var/lib/vdr/.xbmc/userdata"
+USERDIR="/kodi/userdata"
 DBDIR="$USERDIR/Database"
 PLVDIR="$USERDIR/playlists/video"
 PLVEVENTDIR="$PLVDIR/$EVENT"
 # path to web server root or similar directory
-HTMLDIR="/var/www"
+HTMLDIR="/www"
 
 # URL to open the generated website without html file.
 # Will be included in mail if not empty.

@@ -21,3 +21,65 @@ Even if this movie is now technically in your database and can be marked as `wat
  - edit the $USERDIR value so the script can find your MyVideoXX.db
    see: http://kodi.wiki/view/XBMC_databases#The_Video_Library
  - install "sqlite3"
+
+## Docker
+
+You can run this script in a Docker container.
+The container itself is actually running cron and you can add your cronjobs to update your playlists.
+
+### Build container
+
+```shell
+docker build . -t award_playlists
+```
+
+### Run container
+
+Here is an examplke how to start the container via CLI:
+
+```shell
+docker run \
+  --name=awards_playlists \
+  -v award_playlists-config:/app/conf \
+  -v award_playlists-data:/app/dat \
+  -v award_playlists-www:/www \
+  -v award_playlists-log:/app/log \
+  -v award_playlists-cron:/etc/crontabs \
+  -v /storage/.kodi/userdata/Database:/kodi/userdata/Database:ro \
+  -v /storage/.kodi/userdata/playlists/video:/kodi/userdata/playlists/video \
+  -v /etc/localtime:/etc/localtime:ro \
+  -d \
+  --restart=unless-stopped \
+  award_playlists:latest
+```
+
+And a separat container for the web server
+
+```shell
+docker run \
+  --name=awards_www \
+  -v award_playlists-www:/usr/share/nginx/html:ro \
+  -p 8081:80 \
+  -v /etc/localtime:/etc/localtime:ro \
+  -d \
+  --restart=unless-stopped \
+  nginx:alpine
+```
+
+### Docker volumes
+
+There are several named volumes:
+
+> VOLUME /app/conf
+> VOLUME /app/dat
+> VOLUME /app/log
+> VOLUME /kodi/userdata/Database
+> VOLUME /kodi/userdata/playlists/video
+> VOLUME /www
+> VOLUME /etc/crontabs
+
+To customize the configuration you need to create `conf/custom.conf`(copy from `custom.conf.original`).
+
+`/www` is mountet as read-only in the web-Container, too.
+
+Edit `/etc/crontabs/root` to add/edit/remove cronjobs.

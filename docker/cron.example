@@ -1,0 +1,12 @@
+###
+### Awards-Playlist
+###
+
+# 2023
+15   *  *   *   *   /app/award_playlists.sh -x -e cri -y 2023        >> /app/log/nominees_critics_2023.log
+25   *  *   *   *   /app/award_playlists.sh -x -e i   -y 2023        >> /app/log/nominees_independant_2023.log
+35   *  *   *   *   /app/award_playlists.sh -x -e a   -y 2023        >> /app/log/nominees_oscars_2023.log
+45   *  *   *   *   /app/award_playlists.sh -x -e r   -y 2023        >> /app/log/nominees_razzies_2023.log
+
+# 2024
+*/2  *  *   *   *   /app/award_playlists.sh -x -e g   -y 2024 -d -v  >> /app/log/nominees_golden-globes_2024.log

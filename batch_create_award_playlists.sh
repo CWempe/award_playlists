@@ -14,6 +14,6 @@ for EVENT in $3
     for YEAR in $(seq $1 $2)
       do
         echo "$EVENT $YEAR"
-        /storage/scripts/award_playlists/award_playlists.sh -e $EVENT -y $YEAR -x
+        /app/award_playlists.sh -e $EVENT -y $YEAR -x
     done
 done
