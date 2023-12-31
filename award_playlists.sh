@@ -432,9 +432,6 @@ FAVICONURL[xrel]="https://www.xrel.to/favicon.ico"
 FAVICONFILE[thepiratebay]="thepiratebay.ico"
 FAVICONURL[thepiratebay]="https://thepiratebay.org/favicon.ico"
 
-FAVICONFILE[rarbg]="rarbg.ico"
-FAVICONURL[rarbg]="https://rarbg.to/favicon.ico"
-
 FAVICONFILE[limetorrents]="limetorrents.ico"
 FAVICONURL[limetorrents]="https://www.limetorrents.lol/favicon.ico"
 
@@ -448,7 +445,7 @@ FAVICONFILE[google]="google.ico"
 FAVICONURL[google]="https://www.google.com/favicon.ico"
 
 
-for WEBSITE in awards imdb themoviedb xrel thepiratebay rarbg limetorrents 1337x yts google
+for WEBSITE in awards imdb themoviedb xrel thepiratebay limetorrents 1337x yts google
 do
   # check if file exists
   if [[ ! -f "${FAVICONPATH}/${FAVICONFILE[$WEBSITE]}" || "${FORCEICONS}" == "1" ]]
@@ -849,9 +846,6 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
 
           echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"
           echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[thepiratebay]}\" alt=\"The Pirate Bay\"/></a>"
-
-          echo -e  "             <a target=\"_blank\" href=\"https://rarbg.to/torrents.php?imdb=$ID&order=seeders&by=DESC\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[rarbg]}\" alt=\"RARBG\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.lol/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"
           echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[limetorrents]}\" alt=\"LimeTorrents\"/></a>"
