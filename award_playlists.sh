@@ -418,7 +418,9 @@ declare -A FAVICONFILE
 declare -A FAVICONURL
 
 FAVICONFILE[awards]="awards.ico"
-FAVICONURL[awards]="http://www.oscars.org/favicon.ico"
+FAVICONURL[awards]="https://www.oscarsdeathrace.com/favicon.ico"
+# The original favicon gets Error 403 when trying to download via wget
+#FAVICONURL[awards]="http://www.oscars.org/favicon.ico"
 
 FAVICONFILE[imdb]="imdb.ico"
 FAVICONURL[imdb]="https://www.imdb.com/favicon.ico"
