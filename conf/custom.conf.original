@@ -17,7 +17,7 @@ USERDIR="/var/lib/vdr/.xbmc/userdata"
 DBDIR="$USERDIR/Database"
 PLVDIR="$USERDIR/playlists/video"
 PLVEVENTDIR="$PLVDIR/$EVENT"
-# patch to web server root or similar directory
+# path to web server root or similar directory
 HTMLDIR="/var/www"
 
 # URL to open the generated website without html file.
