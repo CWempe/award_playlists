@@ -629,6 +629,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           echo -e "  SQL movie: sqlite3 -init <(echo .timeout -separator ';;;' $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations, strFileName FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
       fi
       # replace certain characters in title to match sql syntax
+      # shellcheck disable=SC2001
       TITLESQL=$(echo "$TITLE" | sed "s/\(&\|'\|:\)/%/g")
       # " to correct syntax highlighting in mcedit
 
@@ -670,6 +671,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         PLAYCOUNT=$(echo "$SQLRESULT" | awk -F ";;;" '{print $2}')
         TITLE=$(echo "$SQLRESULT" | awk -F ";;;" '{print $1}')
         FILENAME=$(echo "$SQLRESULT" | awk -F ";;;" '{print $4}')
+        # shellcheck disable=SC2001
         TITLESQL=$(echo "$TITLE" | sed "s/\(&\|'\|:\)/%/g")
         # " to correct syntax highlighting in mcedit
 
@@ -757,20 +759,20 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       fi
 
       # check it is a th show
-      if [ $PLAYCOUNT -eq 0 ]
+      if [ "$PLAYCOUNT" -eq 0 ]
       then
         WATCHED="no"
-        if [ $ISSERIES -gt 0 ]
+        if [ "$ISSERIES" -gt 0 ]
         then
           WATCHEDNOTE="not watched ($PLAYCOUNT/$TOTALCOUNT)"
         else
           WATCHEDNOTE="not watched"
         fi
       else
-        if [ $ISSERIES -gt 0 ]
+        if [ "$ISSERIES" -gt 0 ]
         then
           # have all episodes been watched
-          if [ $PLAYCOUNT -eq "$TOTALCOUNT" ]
+          if [ "$PLAYCOUNT" -eq "$TOTALCOUNT" ]
           then
             WATCHED="yes"
             WATCHEDNOTE="watched ($PLAYCOUNT/$TOTALCOUNT)"
@@ -817,6 +819,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
             # X
             echo -en "sorttable_customkey=\"2\"><i class=\"fas fa-times fa-sm\"></i>"
           fi
+          # shellcheck disable=SC2291
           echo -e         " </td>"
           echo -en "          <td title=\"$WATCHEDNOTE\" class=\"watched $WATCHED\" "
           case "$WATCHED" in
@@ -833,6 +836,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
               echo -en "sorttable_customkey=\"3\"><i class=\"fas fa-times fa-sm\"></i>"
           esac
 
+          # shellcheck disable=SC2291
           echo -e          "</td>"
 
           echo -e  "          <td title=\"Links\" class=\"links\">"
@@ -933,7 +937,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
               # paint-brush icon
               echo -en " sorttable_customkey=\"${MOVIELENGHT}_2\"><i title=\"Animated ${MOVIELENGHT}\" class=\"${LENGHTSYMBOL}\"></i>"
             else
-              if [ $ISSERIES -gt 0 ]
+              if [ "$ISSERIES" -gt 0 ]
               then
                 # tv icon
                 echo -en " sorttable_customkey=\"${MOVIELENGHT}_3\"><i title=\"Limited Series or movie made for TV\" class=\"${LENGHTSYMBOL}\"></i>"
@@ -944,8 +948,10 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
             fi
           fi
 
+          # shellcheck disable=SC2291
           echo -en            "</a></td>"   >> "$XRELFILE"
           echo -en "          <td title=\"Movietitle\" class=\"title\">"
+          # shellcheck disable=SC2291
           echo -e              "<div class=\"title_shortening\"><a target=\"_blank\" href=\"http://www.imdb.com/title/$ID/\">$TITLE</a></div></td>"
           echo -e "        </tr>"
         } >> "$XRELFILE"
@@ -983,13 +989,13 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       then
         echo -e "  NOMCOUNT: $NOMCOUNT"
     fi
-    if [ $NOMINEESCOUNT -gt 0 ]
+    if [ "$NOMINEESCOUNT" -gt 0 ]
       then
         STATTEXT="in your databse:            $MOVIECOUNT/$NOMINEESCOUNT ($(( 100*MOVIECOUNT/NOMINEESCOUNT )) %)\nalready watched:          $WATCHEDCOUNT/$NOMINEESCOUNT ($(( 100*WATCHEDCOUNT/NOMINEESCOUNT )) %)\n"
       else
         STATTEXT="in your databse:            $MOVIECOUNT/$NOMINEESCOUNT \n"
     fi
-    if [ $NOMCOUNT -gt 0 ]
+    if [ "$NOMCOUNT" -gt 0 ]
       then
         STATTEXT="${STATTEXT}watched nominations:  $WATCHEDNOMCOUNT/$NOMCOUNT ($(( 100*WATCHEDNOMCOUNT/NOMCOUNT )) %)"
       else
@@ -1015,6 +1021,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         echo -e  "      <tfoot>"
         echo -e  "        <tr>"
         echo -en "          <td>$NOMINEESCOUNT</td><td>$MOVIECOUNT</td><td>$WATCHEDCOUNT"
+        # shellcheck disable=SC2291
         echo -en           "</td><td></td><td>$WATCHEDNOMCOUNT</td><td></td><td></td><td></td>"
         echo -e  "        </tr>"
         echo -e  "      </tfoot>"
@@ -1054,7 +1061,7 @@ echo -e ""
 echo -e "$STATTEXT"
 echo -e ""
 
-if [ $STATS -eq 1 ]
+if [ "$STATS" -eq 1 ]
 then
   if [ "$VERBOSE" -eq 1 ]
     then
@@ -1115,11 +1122,11 @@ if [ "$VERBOSE" -eq 1 ]
   then
     echo ""
     echo "HTML files:"
-    find ${HTMLDIR} -name nominees*.html
+    find "${HTMLDIR}" -name 'nominees*.html'
 fi
 
 # Get all available years
-YEARS=$(find ${HTMLDIR} -name nominees*.html | awk -F "_" '{print substr($(NF), 1, length($(NF)-1))}' | sort -u -r)
+YEARS=$(find "${HTMLDIR}" -name 'nominees*.html' | awk -F "_" '{print substr($(NF), 1, length($(NF)-1))}' | sort -u -r)
 #' fix wrong syntax highlighting in mcedit
 
 if [ "$VERBOSE" -eq 1 ]
@@ -1131,7 +1138,7 @@ fi
 
 
 # Get all available events
-EVENTS=$(find ${HTMLDIR} -name nominees*.html | awk -F "_" '{print $(NF-1)}' | sort -u)
+EVENTS=$(find "${HTMLDIR}" -name 'nominees*.html' | awk -F "_" '{print $(NF-1)}' | sort -u)
 #' fix wrong syntax highlighting in mcedit
 
 if [ "$VERBOSE" -eq 1 ]
@@ -1218,11 +1225,11 @@ for EVENT in ${EVENTS}; do
     NOMINEEHTML="${HTMLDIR}/nominees_${EVENT}_${YEAR}.html"
     if [ -f "${NOMINEEHTML}" ]
       then
-        if EVENTSTATS=$(grep "#STATS" ${NOMINEEHTML})
+        if EVENTSTATS=$(grep "#STATS" "${NOMINEEHTML}")
           then
-            EVENTMOVIES=$(echo ${EVENTSTATS} | awk -F# '{print $3}')
-            EVENTMOVIESWATCHED=$(echo ${EVENTSTATS} | awk -F# '{print $5}')
-            EVENTMOVIESWATCHEDPERCENTAGE=$((100*${EVENTMOVIESWATCHED}/${EVENTMOVIES}))
+            EVENTMOVIES=$(echo "${EVENTSTATS}" | awk -F# '{print $3}')
+            EVENTMOVIESWATCHED=$(echo "${EVENTSTATS}" | awk -F# '{print $5}')
+            EVENTMOVIESWATCHEDPERCENTAGE=$((100*EVENTMOVIESWATCHED/EVENTMOVIES))
             echo -e  "          <td title=\"watched ${EVENTMOVIESWATCHED} of ${EVENTMOVIES}\"  class=\"event\"><a href=\"./nominees_${EVENT}_${YEAR}.html\"><div class=\"pie animate\" style=\"--p:${EVENTMOVIESWATCHEDPERCENTAGE};\">${EVENTMOVIESWATCHEDPERCENTAGE} %</div></a></td>"   >> "${INDEXHTML}"
           else
             echo -e  "          <td title=\"no data\"  class=\"event\"><a href=\"./nominees_${EVENT}_${YEAR}.html\">n/a</a></td>"   >> "${INDEXHTML}"
@@ -1252,7 +1259,7 @@ done
   echo -e  "      <tr title=\"Last site update\"><td><i class=\"fas fa-sync-alt\"></td>"
   echo -e  "          <td></i>$DATETIME</td></tr>"
   echo -e  "      <tr title=\"Last database update\"><td><i class=\"fas fa-database\"></td>"
-  echo -e  "          <td></i>$(date -r ${DBFILE} +"%Y-%m-%d %H:%M")</td></tr>"
+  echo -e  "          <td></i>$(date -r "${DBFILE}" +"%Y-%m-%d %H:%M")</td></tr>"
   echo -e  "      <tr title=\"Last repository commit\"><td><i class=\"fas fa-code-branch\"></i></td>"
   echo -e  "          <td>${GITCOMMIT}</td></tr>"
   echo -e  "     <table>"
