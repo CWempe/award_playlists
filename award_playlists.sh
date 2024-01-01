@@ -643,15 +643,21 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           BESTMOVIE=$(echo "${CATEGORIES[@]}"    | grep -c -e "Best Motion Picture of the Year" \
                                                            -e "Best Motion Picture - Comedy" \
                                                            -e "Best Motion Picture - Musical" \
+                                                           -e "Best Motion Picture, Drama" \
+                                                           -e "Best Motion Picture, Musical or Comedy" \
                                                            -e "Outstanding Drama Series" \
                                                            -e "Outstanding Comedy Series" \
                                                            -e "Outstanding Limited Series" \
                                                            -e "Outstanding Television Movie" \
                                                            -e "Worst Picture" \
-                                                           -e "Best Television")
-          BESTFOREIGN=$(echo "${CATEGORIES[@]}"  | grep -c -e "Foreign" -e "Best International Feature Film" )
+                                                           -e "Best Television" )
+          BESTFOREIGN=$(echo "${CATEGORIES[@]}"  | grep -c -e "Foreign" \
+                                                           -e "Non-English Language" \
+                                                           -e "Best International Feature Film" )
           BESTANIME=$(echo "${CATEGORIES[@]}"    | grep -c "Animated" )
-          BESTACTOR=$(echo "${CATEGORIES[@]}"    | grep -c -e "Actress" -e "Actor" )
+          BESTACTOR=$(echo "${CATEGORIES[@]}"    | grep -c -e "Actress" \
+                                                           -e "Actor" \
+                                                           -e "Performance" )
           BESTSONG=$(echo "${CATEGORIES[@]}"     | grep -c -e "Song" )
           BESTDIR=$(echo "${CATEGORIES[@]}"      | grep -c -e "Director" -e "Directing" )
           BESTPLAY=$(echo "${CATEGORIES[@]}"     | grep -c -e "Screenplay" -e "Writing" )
