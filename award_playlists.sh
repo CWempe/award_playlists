@@ -711,10 +711,10 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       else
           FILENAME="not in Database"
           # Search series in Database using Title
-          SQLRESULT2=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") -separator ';;;' "$DBFILE" "SELECT c00, totalCount, watchedCount, '$NOMINATIONS' as nominations FROM tvshow_view WHERE c00 IS '$TITLESQL' GROUP BY c00 LIMIT 1")
+          SQLRESULT2=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") -separator ';;;' "$DBFILE" "SELECT c00, totalCount, watchedCount, '$NOMINATIONS' as nominations FROM tvshow_view WHERE c00 IS '$TITLESQL' COLLATE NOCASE GROUP BY c00 LIMIT 1")
           if [ "$VERBOSE" -eq 1 ]
             then
-              echo -e "  SQL series: sqlite3 -init <(echo .timeout $DBTIMEOUT) -separator ';;;' $DBFILE \"SELECT c00, totalCount, watchedCount, '\"$NOMINATIONS\"' as nominations FROM tvshow_view WHERE c00 IS '\"$TITLESQL\"' GROUP BY c00 LIMIT 1\""
+              echo -e "  SQL series: sqlite3 -init <(echo .timeout $DBTIMEOUT) -separator ';;;' $DBFILE \"SELECT c00, totalCount, watchedCount, '\"$NOMINATIONS\"' as nominations FROM tvshow_view WHERE c00 IS '\"$TITLESQL\"' COLLATE NOCASE GROUP BY c00 LIMIT 1\""
               echo -e "  SQLRESULT2: $SQLRESULT2"
           fi
 
