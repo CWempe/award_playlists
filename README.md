@@ -22,6 +22,15 @@ Even if this movie is now technically in your database and can be marked as `wat
    see: http://kodi.wiki/view/XBMC_databases#The_Video_Library
  - install "sqlite3"
 
+## Batch command
+
+If you want to create playlists for several previous years with one command you can use the `batch_create_award_playlists.sh` script.
+You can defibne a start and an end year and wich events wou want to generate.
+
+```sehll
+./batch_create_award_playlists.sh 1990 2023 "a b ca cri e g i r sag sun a"
+```
+
 ## Docker
 
 You can run this script in a Docker container.
