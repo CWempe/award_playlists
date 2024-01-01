@@ -639,6 +639,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           ISTV=$(echo "${CATEGORIES[@]}"         | grep -c "Television" )
           ISDOCU=$(echo "${CATEGORIES[@]}"       | grep -c "Documentary" )
           ISANIME=$(echo "${CATEGORIES[@]}"      | grep -c "Animated" )
+          ISBOXOFFICE=$(echo "${CATEGORIES[@]}"  | grep -c "Box Office Achievement" )
           BESTMOVIE=$(echo "${CATEGORIES[@]}"    | grep -c -e "Best Motion Picture of the Year" \
                                                            -e "Best Motion Picture - Comedy" \
                                                            -e "Best Motion Picture - Musical" \
@@ -659,11 +660,12 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
 
           if [ "$VERBOSE" -eq 1 ]
             then
-              echo "  ISSERIES: $ISSERIES"
-              echo "  ISSHORT:  $ISSHORT"
-              echo "  ISDOCU:   $ISDOCU"
-              echo "  ISANIME:  $ISANIME"
-              echo "  TITLESQL: $TITLESQL"
+              echo "  ISSERIES:    $ISSERIES"
+              echo "  ISSHORT:     $ISSHORT"
+              echo "  ISDOCU:      $ISDOCU"
+              echo "  ISANIME:     $ISANIME"
+              echo "  ISBOXOFFICE: $ISBOXOFFICE"
+              echo "  TITLESQL:    $TITLESQL"
           fi
 
       if [ "$SQLRESULT" != "" ]
@@ -902,6 +904,9 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           elif [ "$ISANIME" -gt 0 ]
           then
             echo -e  "11_${MOVIELENGHT}\"><i class=\"fas fa-paint-brush fa-sm\""
+          elif [ "$ISBOXOFFICE" -gt 0 ]
+          then
+            echo -e  "11_${MOVIELENGHT}\"><i class=\"fas fa-ticket-alt fa-sm\""
           elif [ "$ISSHORT" -gt 0 ]
           then
             echo -e  "10_${MOVIELENGHT}\"><i class=\"fas fa-star fa-sm\""
