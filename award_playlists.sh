@@ -254,7 +254,7 @@ GITCOMMIT=$(${GITBIN} log --date=format:'%F %R' --pretty=format:'%cd (Commit: %h
 #' fix wrong syntax highlighting in mcedit
 
 
-if [ "$YEAR" = "2017" ]
+if [ "$YEAR" = "2017" ] && [ "$EVENTSTRING" = "critics" ]
   then
     # The Critict Choice Awards 2017 show was moved forward to Dec 2016
     NOMINEEURL="http://www.imdb.com/event/$EVENTID/2016/2"
