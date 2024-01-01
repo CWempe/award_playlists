@@ -1249,9 +1249,11 @@ done
   echo -e  "    </br>"
 
   echo -e  "    <table class=\"meta\">"
-  echo -e  "      <tr><td><i class=\"fas fa-sync-alt\"></td>"
+  echo -e  "      <tr title=\"Last site update\"><td><i class=\"fas fa-sync-alt\"></td>"
   echo -e  "          <td></i>$DATETIME</td></tr>"
-  echo -e  "      <tr><td><i class=\"fas fa-code-branch\"></i></td>"
+  echo -e  "      <tr title=\"Last database update\"><td><i class=\"fas fa-database\"></td>"
+  echo -e  "          <td></i>$(date -r ${DBFILE} +"%Y-%m-%d %H:%M")</td></tr>"
+  echo -e  "      <tr title=\"Last repository commit\"><td><i class=\"fas fa-code-branch\"></i></td>"
   echo -e  "          <td>${GITCOMMIT}</td></tr>"
   echo -e  "     <table>"
   echo -e  "  </body>"
