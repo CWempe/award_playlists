@@ -591,8 +591,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
     do
       NOMINATIONS=$(echo "$LINE" | awk '{print $1}')
       ID=$(echo "$LINE" | awk '{print $2}')
-      TITLE=$(echo "$LINE" | cut -c 13-)
-      TITLE=$(trim "$TITLE")
+      TITLE=$(echo "$LINE" | cut -f 2)
       TITLESEARCH=$(echo "$TITLE" | sed -r "s/(\ |,|')/%20/g")
       TITLESEARCHG=$(echo "$TITLE" | sed -r "s/(\ |,|')/+/g")
 
