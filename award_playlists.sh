@@ -717,45 +717,53 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
 
       else
           FILENAME="not in Database"
-          # Search series in Database using Title
-          SQLRESULT2=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") -separator ';;;' "$DBFILE" "SELECT c00, totalCount, watchedCount, '$NOMINATIONS' as nominations FROM tvshow_view WHERE c00 IS '$TITLESQL' COLLATE NOCASE GROUP BY c00 LIMIT 1")
-          if [ "$VERBOSE" -eq 1 ]
+          if [ "$TV" == "yes" ]
             then
-              echo -e "  SQL series: sqlite3 -init <(echo .timeout $DBTIMEOUT) -separator ';;;' $DBFILE \"SELECT c00, totalCount, watchedCount, '\"$NOMINATIONS\"' as nominations FROM tvshow_view WHERE c00 IS '\"$TITLESQL\"' COLLATE NOCASE GROUP BY c00 LIMIT 1\""
-              echo -e "  SQLRESULT2: $SQLRESULT2"
-          fi
+              # Search in tvshow_view tabel using title if nothing was found in movie_view ans it is a series (tv show)
+              SQLRESULT2=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") -separator ';;;' "$DBFILE" "SELECT c00, totalCount, watchedCount, '$NOMINATIONS' as nominations FROM tvshow_view WHERE c00 IS '$TITLESQL' COLLATE NOCASE GROUP BY c00 LIMIT 1")
+              if [ "$VERBOSE" -eq 1 ]
+                then
+                  echo -e "  SQL series: sqlite3 -init <(echo .timeout $DBTIMEOUT) -separator ';;;' $DBFILE \"SELECT c00, totalCount, watchedCount, '\"$NOMINATIONS\"' as nominations FROM tvshow_view WHERE c00 IS '\"$TITLESQL\"' COLLATE NOCASE GROUP BY c00 LIMIT 1\""
+                  echo -e "  SQLRESULT2: $SQLRESULT2"
+              fi
 
-          if [ "$SQLRESULT2" != "" ]
-          then
-            TOTALCOUNT=$(echo "$SQLRESULT2" | awk -F ";;;" '{print $2}')
-            PLAYCOUNT=$(echo "$SQLRESULT2" | awk -F ";;;" '{print $3}')
-            INDATABASE="yes"
-            # replace certain characters in title to match sql syntax
-
-            # increment MOVIECOUNT
-            MOVIECOUNT=$((MOVIECOUNT+1))
-
-            if [ "$VERBOSE" -eq 1 ]
+              if [ "$SQLRESULT2" != "" ]
               then
-                echo -e "  TOTALCOUNT: $TOTALCOUNT"
-            fi
+                TOTALCOUNT=$(echo "$SQLRESULT2" | awk -F ";;;" '{print $2}')
+                PLAYCOUNT=$(echo "$SQLRESULT2" | awk -F ";;;" '{print $3}')
+                INDATABASE="yes"
+                # replace certain characters in title to match sql syntax
 
-            if [ "$PLAYCOUNT" = "" ]
-            then
-              PLAYCOUNT=0
-            else
-              # increment WATCHEDCOUNT
-              WATCHEDCOUNT=$((WATCHEDCOUNT+1))
-            fi
+                # increment MOVIECOUNT
+                MOVIECOUNT=$((MOVIECOUNT+1))
+
+                if [ "$VERBOSE" -eq 1 ]
+                  then
+                    echo -e "  TOTALCOUNT: $TOTALCOUNT"
+                fi
+
+                if [ "$PLAYCOUNT" = "" ]
+                then
+                  PLAYCOUNT=0
+                else
+                  # increment WATCHEDCOUNT
+                  WATCHEDCOUNT=$((WATCHEDCOUNT+1))
+                fi
+              else
+                PLAYCOUNT=0
+                INDATABASE="no"
+              fi
+
+
+              if [ "$TV" = "yes" ]
+                then
+                    # write in tv playlist
+                    echo -e "    <value>$TITLESQL</value>" \
+                    >> "$PLAYLISTFILETV"
+              fi
           else
-            PLAYCOUNT=0
-            INDATABASE="no"
-          fi
-          if [ "$TV" = "yes" ]
-            then
-                # write in tv playlist
-                echo -e "    <value>$TITLESQL</value>" \
-                >> "$PLAYLISTFILETV"
+              PLAYCOUNT=0
+              INDATABASE="no"
           fi
       fi
 
