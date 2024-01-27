@@ -417,10 +417,6 @@ fi
 declare -A FAVICONFILE
 declare -A FAVICONURL
 
-FAVICONFILE[awards]="awards.ico"
-FAVICONURL[awards]="https://www.oscarsdeathrace.com/favicon.ico"
-# The original favicon gets Error 403 when trying to download via wget
-#FAVICONURL[awards]="http://www.oscars.org/favicon.ico"
 
 FAVICONFILE[imdb]="imdb.ico"
 FAVICONURL[imdb]="https://www.imdb.com/favicon.ico"
@@ -447,24 +443,57 @@ FAVICONFILE[google]="google.ico"
 FAVICONURL[google]="https://www.google.com/favicon.ico"
 
 
-for WEBSITE in awards imdb themoviedb xrel thepiratebay limetorrents 1337x yts google
-do
+# Function to download favicon
+download_favicon() {
+  local sitename=$1
+
+  if [ "${sitename}" == "awards" ]
+    then
+      # This is for the faviocon of this script and not for a search site
+      local filename="awards.ico"
+      local url="https://www.oscarsdeathrace.com/favicon.ico"
+      # The original favicon gets Error 403 when trying to download via wget
+      #FAVICONURL[awards]="http://www.oscars.org/favicon.ico"
+    else
+      local filename="${sitename}.ico"
+      local url=${FAVICONURL[$sitename]}
+  fi
+
   # check if file exists
-  if [[ ! -f "${FAVICONPATH}/${FAVICONFILE[$WEBSITE]}" || "${FORCEICONS}" == "1" ]]
+  if [[ ! -f "${FAVICONPATH}/${filename}" || "${FORCEICONS}" == "1" ]]
     then
       if [ "$VERBOSE" -eq 1 ]
         then
-          echo -e "Downloading favicon from ${FAVICONURL[$WEBSITE]} to ${FAVICONPATH}/${FAVICONFILE[$WEBSITE]} ..."
+          echo -e "Downloading favicon from ${url} to ${FAVICONPATH}/${filename} ..."
       fi
-      wget -U "${FAVICONUSERAGENT}" "${FAVICONURL[$WEBSITE]}" -O "${FAVICONPATH}/${FAVICONFILE[$WEBSITE]}" -q
-      chown "$WWWUSER":"$WWWGROUP" "${FAVICONPATH}/${FAVICONFILE[$WEBSITE]}"
+      wget -U "${FAVICONUSERAGENT}" "${url}" -O "${FAVICONPATH}/${filename}" -q
+      chown "$WWWUSER":"$WWWGROUP" "${FAVICONPATH}/${filename}"
     else
       if [ "$VERBOSE" -eq 1 ]
         then
-          echo -e "Favicon: ${FAVICONPATH}/${FAVICONFILE[$WEBSITE]} already exists."
+          echo -e "Favicon: ${FAVICONPATH}/${filename} already exists."
       fi
   fi
+
+}
+
+if [ "$VERBOSE" -eq 1 ]
+  then
+    echo -e ""
+fi
+
+# Download main favicon
+download_favicon "awards"
+
+# download favicon for all defined websites
+for website in "${!FAVICONFILE[@]}"; do
+    download_favicon "${website}"
 done
+
+if [ "$VERBOSE" -eq 1 ]
+  then
+    echo -e ""
+fi
 
 ####
 # Generate Playlist
