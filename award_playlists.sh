@@ -414,23 +414,53 @@ fi
 # download favicons to improve side loading
 ####
 
+declare -A WEBSITENAME
 declare -A WEBSITEFAVICONURL
+declare -A WEBSITESEARCHURL
 
-WEBSITEFAVICONURL[imdb]="https://www.imdb.com/favicon.ico"
-
-WEBSITEFAVICONURL[themoviedb]="https://www.themoviedb.org/favicon.ico"
-
-WEBSITEFAVICONURL[xrel]="https://www.xrel.to/favicon.ico"
-
-WEBSITEFAVICONURL[thepiratebay]="https://thepiratebay.org/favicon.ico"
-
-WEBSITEFAVICONURL[limetorrents]="https://www.limetorrents.lol/favicon.ico"
-
-WEBSITEFAVICONURL[1337x]="https://1337x.to/favicon.ico"
-
-WEBSITEFAVICONURL[yts]="https://yts.lt/assets/images/website/favicon.ico"
-
+WEBSITENAME[google]="Google"
 WEBSITEFAVICONURL[google]="https://www.google.com/favicon.ico"
+WEBSITESEARCHURL[google]='https://www.google.com/search?safe=off\&site=webhp\&source=hp\&q=${TITLESEARCHG}'
+
+WEBSITENAME[imdb]="IMDB"
+WEBSITEFAVICONURL[imdb]="https://www.imdb.com/favicon.ico"
+WEBSITESEARCHURL[imdb]='https://www.imdb.com/title/${ID}/'
+
+WEBSITENAME[themoviedb]="The MovieDB"
+WEBSITEFAVICONURL[themoviedb]="https://www.themoviedb.org/favicon.ico"
+WEBSITESEARCHURL[themoviedb]='https://www.themoviedb.org/search?query=${TITLESEARCH}'
+
+WEBSITENAME[xrel]="xRel"
+WEBSITEFAVICONURL[xrel]="https://www.xrel.to/favicon.ico"
+WEBSITESEARCHURL[xrel]='https://www.xrel.to/search.html?xrel_search_query=${ID}'
+
+WEBSITENAME[thepiratebay]="The Pirate Bay"
+WEBSITEFAVICONURL[thepiratebay]="https://thepiratebay.org/favicon.ico"
+WEBSITESEARCHURL[thepiratebay]='https://thepiratebay.org/search/${TITLESEARCH}%20${RELEASEYEAR}/0/99/200'
+
+WEBSITENAME[limetorrents]="Limetorrents"
+WEBSITEFAVICONURL[limetorrents]="https://www.limetorrents.lol/favicon.ico"
+WEBSITESEARCHURL[limetorrents]='https://www.limetorrents.lol/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/'
+
+WEBSITENAME[1337]="1337x"
+WEBSITEFAVICONURL[1337]="https://1337x.to/favicon.ico"
+WEBSITESEARCHURL[1337]='https://1337x.to/sort-category-search/${TITLESEARCH}%20${RELEASEYEAR}/Movies/seeders/desc/1/'
+
+WEBSITENAME[yts]="YTS"
+WEBSITEFAVICONURL[yts]="https://yts.lt/assets/images/website/favicon.ico"
+WEBSITESEARCHURL[yts]='https://yts.lt/browse-movies/${TITLESEARCH}/all/all/0/seeds/${RELEASEYEAR}/all'
+
+if [ "$VERBOSE" -eq 1 ]
+  then
+    echo -e ""
+    echo -e "Defined websites: ${!WEBSITEFAVICONURL[@]}"
+    for website in "${!WEBSITEFAVICONURL[@]}"; do
+      echo -e "  ${WEBSITENAME[$website]}:"
+      echo -e "    WEBSITEFAVICONURL: ${WEBSITEFAVICONURL[$website]}"
+      echo -e "    WEBSITESEARCHURL:  ${WEBSITESEARCHURL[$website]}"
+    done
+    echo -e ""
+fi
 
 
 # Function to download favicon
@@ -874,32 +904,13 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
 
           # shellcheck disable=SC2291
           echo -e          "</td>"
+          echo -e  "          <td class=\"links\">"
 
-          echo -e  "          <td title=\"Links\" class=\"links\">"
-
-          echo -e  "             <a target=\"_blank\" href=\"https://www.imdb.com/title/$ID/\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/imdb.ico\" alt=\"The Movie DB\" height=16/></a>"
-
-          echo -e  "             <a target=\"_blank\" href=\"https://www.themoviedb.org/search?query=$TITLESEARCH\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/themoviedb.ico\" alt=\"The Movie DB\" height=16/></a>"
-
-          echo -e  "             <a target=\"_blank\" href=\"https://www.xrel.to/search.html?xrel_search_query=$ID\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/xrel.ico\" alt=\"xREL\"/></a>     "
-
-          echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/thepiratebay.ico\" alt=\"The Pirate Bay\"/></a>"
-
-          echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.lol/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/limetorrents.ico\" alt=\"LimeTorrents\"/></a>"
-
-          echo -e  "             <a target=\"_blank\" href=\"https://1337x.to/sort-category-search/${TITLESEARCH}%20${RELEASEYEAR}/Movies/seeders/desc/1/\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/1337x.ico\" alt=\"1337x\"/></a>"
-
-          echo -e  "             <a target=\"_blank\" href=\"https://yts.lt/browse-movies/${TITLESEARCH}%20${RELEASEYEAR}/all/all/0/seeds\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/yts.ico\" alt=\"YTS\"/></a>"
-
-          echo -e  "             <a target=\"_blank\" href=\"https://www.google.de/search?safe=off&site=webhp&source=hp&q=$TITLESEARCHG\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/google.ico\" alt=\"Google\" height=16/></a>"
+          # Create search links with icon for each defined website
+          for website in "${!WEBSITENAME[@]}"; do
+              echo -e  "             <a target=\"_blank\" title=\"$(eval echo ${WEBSITENAME[$website]})\" href=\"$(eval echo ${WEBSITESEARCHURL[$website]})\">"
+              echo -e  "               <img src=\"${FAVICONDIR}/$website.ico\" alt=\"$(eval echo ${WEBSITENAME[$website]})\" height=16/></a>"
+          done
 
           echo -e  "             </td>"
           echo -e  "          <td class=\"nomcount\">${NOMINATIONS}</td>"
