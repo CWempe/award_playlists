@@ -663,6 +663,9 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           BESTCAM=$(echo "${CATEGORIES[@]}"      | grep -c -e "Cinematography" )
           BESTEDIT=$(echo "${CATEGORIES[@]}"     | grep -v "Sound Editing" | grep -c -e "Editing" )
 
+          # increment NOMCOUNT
+          NOMCOUNT=$((NOMCOUNT+NOMINATIONS))
+
           if [ "$VERBOSE" -eq 1 ]
             then
               echo "  ISSERIES:    $ISSERIES"
@@ -671,10 +674,16 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
               echo "  ISANIME:     $ISANIME"
               echo "  ISBOXOFFICE: $ISBOXOFFICE"
               echo "  TITLESQL:    $TITLESQL"
+              echo "  NOMCOUNT:    $NOMCOUNT"
           fi
 
       if [ "$SQLRESULT" != "" ]
       then
+        # in movie_view ...
+
+        # increment MOVIECOUNT
+        MOVIECOUNT=$((MOVIECOUNT+1))
+
         PLAYCOUNT=$(echo "$SQLRESULT" | awk -F ";;;" '{print $2}')
         TITLE=$(echo "$SQLRESULT" | awk -F ";;;" '{print $1}')
         FILENAME=$(echo "$SQLRESULT" | awk -F ";;;" '{print $4}')
@@ -690,15 +699,6 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         fi
         ISSERIES=0
         #ISSHORT=0
-
-        # increment MOVIECOUNT
-        MOVIECOUNT=$((MOVIECOUNT+1))
-        # increment NOMCOUNT
-        NOMCOUNT=$((NOMCOUNT+NOMINATIONS))
-        if [ "$VERBOSE" -eq 1 ]
-          then
-            echo -e "  NOMCOUNT: $NOMCOUNT"
-        fi
 
 
         if [ "$PLAYCOUNT" = "" ]
@@ -729,6 +729,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
 
               if [ "$SQLRESULT2" != "" ]
               then
+                # In tvshow_view ...
                 TOTALCOUNT=$(echo "$SQLRESULT2" | awk -F ";;;" '{print $2}')
                 PLAYCOUNT=$(echo "$SQLRESULT2" | awk -F ";;;" '{print $3}')
                 INDATABASE="yes"
@@ -750,6 +751,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
                   WATCHEDCOUNT=$((WATCHEDCOUNT+1))
                 fi
               else
+                # not in tvshow_view ...
                 PLAYCOUNT=0
                 INDATABASE="no"
               fi
