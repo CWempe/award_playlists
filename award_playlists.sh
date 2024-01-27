@@ -49,6 +49,12 @@ STATS="1"
 # xRel (0/1)
 XREL="0"
 
+# define arrays
+declare -A WEBSITENAME
+declare -A WEBSITEFAVICONURL
+declare -A WEBSITESEARCHURL
+
+
 echo ""
 echo "####################### $DATETIME #######################"
 
@@ -447,42 +453,6 @@ fi
 ####
 # download favicons to improve side loading
 ####
-
-declare -A WEBSITENAME
-declare -A WEBSITEFAVICONURL
-declare -A WEBSITESEARCHURL
-
-WEBSITENAME[google]="Google"
-WEBSITEFAVICONURL[google]="https://www.google.com/favicon.ico"
-WEBSITESEARCHURL[google]='https://www.google.com/search?safe=off\&site=webhp\&source=hp\&q=${TITLESEARCHG}'
-
-WEBSITENAME[imdb]="IMDB"
-WEBSITEFAVICONURL[imdb]="https://www.imdb.com/favicon.ico"
-WEBSITESEARCHURL[imdb]='https://www.imdb.com/title/${ID}/'
-
-WEBSITENAME[themoviedb]="The MovieDB"
-WEBSITEFAVICONURL[themoviedb]="https://www.themoviedb.org/favicon.ico"
-WEBSITESEARCHURL[themoviedb]='https://www.themoviedb.org/search?query=${TITLESEARCH}'
-
-WEBSITENAME[xrel]="xRel"
-WEBSITEFAVICONURL[xrel]="https://www.xrel.to/favicon.ico"
-WEBSITESEARCHURL[xrel]='https://www.xrel.to/search.html?xrel_search_query=${ID}'
-
-WEBSITENAME[thepiratebay]="The Pirate Bay"
-WEBSITEFAVICONURL[thepiratebay]="https://thepiratebay.org/favicon.ico"
-WEBSITESEARCHURL[thepiratebay]='https://thepiratebay.org/search/${TITLESEARCH}%20${RELEASEYEAR}/0/99/200'
-
-WEBSITENAME[limetorrents]="Limetorrents"
-WEBSITEFAVICONURL[limetorrents]="https://www.limetorrents.lol/favicon.ico"
-WEBSITESEARCHURL[limetorrents]='https://www.limetorrents.lol/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/'
-
-WEBSITENAME[1337]="1337x"
-WEBSITEFAVICONURL[1337]="https://1337x.to/favicon.ico"
-WEBSITESEARCHURL[1337]='https://1337x.to/sort-category-search/${TITLESEARCH}%20${RELEASEYEAR}/Movies/seeders/desc/1/'
-
-WEBSITENAME[yts]="YTS"
-WEBSITEFAVICONURL[yts]="https://yts.lt/assets/images/website/favicon.ico"
-WEBSITESEARCHURL[yts]='https://yts.lt/browse-movies/${TITLESEARCH}/all/all/0/seeds/${RELEASEYEAR}/all'
 
 if [ "$VERBOSE" -eq 1 ]
   then
