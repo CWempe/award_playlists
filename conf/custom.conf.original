@@ -117,6 +117,10 @@ WEBSITENAME[yts]="YTS"
 WEBSITEFAVICONURL[yts]="https://yts.lt/assets/images/website/favicon.ico"
 WEBSITESEARCHURL[yts]='https://yts.lt/browse-movies/${TITLESEARCH}/all/all/0/seeds/${RELEASEYEAR}/all'
 
+WEBSITENAME[kickass]="Kickass Torrents"
+WEBSITEFAVICONURL[kickass]="https://katcr.to/favicon.ico"
+WEBSITESEARCHURL[kickass]='https://katcr.to/usearch/${TITLESEARCH}%20${RELEASEYEAR}/'
+
 WEBSITENAME[justwatch]="JustWatch"
 WEBSITEFAVICONURL[justwatch]="https://www.justwatch.com/favicon.ico"
 WEBSITESEARCHURL[justwatch]='https://www.justwatch.com/us/search?q=${TITLESEARCH}'
