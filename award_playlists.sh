@@ -225,6 +225,40 @@ trim() {
     echo -n "$var"
 }
 
+# Function to download favicon
+download_favicon() {
+  local sitename=$1
+
+  if [ "${sitename}" == "awards" ]
+    then
+      # This is for the faviocon of this script and not for a search site
+      local filename="awards.ico"
+      local url="https://www.oscarsdeathrace.com/favicon.ico"
+      # The original favicon gets Error 403 when trying to download via wget
+      #WEBSITEFAVICONURL[awards]="http://www.oscars.org/favicon.ico"
+    else
+      local filename="${sitename}.ico"
+      local url=${WEBSITEFAVICONURL[$sitename]}
+  fi
+
+  # check if file exists
+  if [[ ! -f "${FAVICONPATH}/${filename}" || "${FORCEICONS}" == "1" ]]
+    then
+      if [ "$VERBOSE" -eq 1 ]
+        then
+          echo -e "Downloading favicon from ${url} to ${FAVICONPATH}/${filename} ..."
+      fi
+      wget -U "${WEBSITEUSERAGENT}" "${url}" -O "${FAVICONPATH}/${filename}" -q
+      chown "$WWWUSER":"$WWWGROUP" "${FAVICONPATH}/${filename}"
+    else
+      if [ "$VERBOSE" -eq 1 ]
+        then
+          echo -e "Favicon: ${FAVICONPATH}/${filename} already exists."
+      fi
+  fi
+
+}
+
 echo "### $EVENT $YEAR"
 
 # Define files and directories
@@ -462,40 +496,6 @@ if [ "$VERBOSE" -eq 1 ]
     echo -e ""
 fi
 
-
-# Function to download favicon
-download_favicon() {
-  local sitename=$1
-
-  if [ "${sitename}" == "awards" ]
-    then
-      # This is for the faviocon of this script and not for a search site
-      local filename="awards.ico"
-      local url="https://www.oscarsdeathrace.com/favicon.ico"
-      # The original favicon gets Error 403 when trying to download via wget
-      #WEBSITEFAVICONURL[awards]="http://www.oscars.org/favicon.ico"
-    else
-      local filename="${sitename}.ico"
-      local url=${WEBSITEFAVICONURL[$sitename]}
-  fi
-
-  # check if file exists
-  if [[ ! -f "${FAVICONPATH}/${filename}" || "${FORCEICONS}" == "1" ]]
-    then
-      if [ "$VERBOSE" -eq 1 ]
-        then
-          echo -e "Downloading favicon from ${url} to ${FAVICONPATH}/${filename} ..."
-      fi
-      wget -U "${WEBSITEUSERAGENT}" "${url}" -O "${FAVICONPATH}/${filename}" -q
-      chown "$WWWUSER":"$WWWGROUP" "${FAVICONPATH}/${filename}"
-    else
-      if [ "$VERBOSE" -eq 1 ]
-        then
-          echo -e "Favicon: ${FAVICONPATH}/${filename} already exists."
-      fi
-  fi
-
-}
 
 if [ "$VERBOSE" -eq 1 ]
   then
