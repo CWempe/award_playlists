@@ -78,7 +78,13 @@ GROUP="kodi"
 WWWUSER="munin"
 WWWGROUP="munin"
 
-# define custom search websites
+### define custom search websites
+# Make sure you use single quotes (') for WEBSITESEARCHURL so the variables keep working.
+# You can use these variables inside the WEBSITESEARCHURL:
+#   ${TITLESEARCH}
+#   ${TITLESEARCHG}   uses '+' instead of '%20' for spaces in title
+#   ${RELEASEYEAR}
+
 WEBSITENAME[google]="Google"
 WEBSITEFAVICONURL[google]="https://www.google.com/favicon.ico"
 WEBSITESEARCHURL[google]='https://www.google.com/search?safe=off\&site=webhp\&source=hp\&q=${TITLESEARCHG}'
