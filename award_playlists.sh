@@ -1039,10 +1039,10 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       {
         echo -e  "      </tbody>"
         echo -e  "      <tfoot>"
-        echo -e  "        <tr>"
+        echo -e  "        <tr align=\"right\">"
         echo -en "          <td>$NOMINEESCOUNT</td><td>$MOVIECOUNT</td><td>$WATCHEDCOUNT"
         # shellcheck disable=SC2291
-        echo -en           "</td><td></td><td>$WATCHEDNOMCOUNT</td><td></td><td></td><td></td>"
+        echo -en           "</td><td></td><td colspan=\"3\">${WATCHEDNOMCOUNT}/${NOMCOUNT}</td><td></td>"
         echo -e  "        </tr>"
         echo -e  "      </tfoot>"
         echo -e  "    </table>"
