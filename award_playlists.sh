@@ -414,33 +414,23 @@ fi
 # download favicons to improve side loading
 ####
 
-declare -A FAVICONFILE
-declare -A FAVICONURL
+declare -A WEBSITEFAVICONURL
 
+WEBSITEFAVICONURL[imdb]="https://www.imdb.com/favicon.ico"
 
-FAVICONFILE[imdb]="imdb.ico"
-FAVICONURL[imdb]="https://www.imdb.com/favicon.ico"
+WEBSITEFAVICONURL[themoviedb]="https://www.themoviedb.org/favicon.ico"
 
-FAVICONFILE[themoviedb]="themoviedb.ico"
-FAVICONURL[themoviedb]="https://www.themoviedb.org/favicon.ico"
+WEBSITEFAVICONURL[xrel]="https://www.xrel.to/favicon.ico"
 
-FAVICONFILE[xrel]="xrel.ico"
-FAVICONURL[xrel]="https://www.xrel.to/favicon.ico"
+WEBSITEFAVICONURL[thepiratebay]="https://thepiratebay.org/favicon.ico"
 
-FAVICONFILE[thepiratebay]="thepiratebay.ico"
-FAVICONURL[thepiratebay]="https://thepiratebay.org/favicon.ico"
+WEBSITEFAVICONURL[limetorrents]="https://www.limetorrents.lol/favicon.ico"
 
-FAVICONFILE[limetorrents]="limetorrents.ico"
-FAVICONURL[limetorrents]="https://www.limetorrents.lol/favicon.ico"
+WEBSITEFAVICONURL[1337x]="https://1337x.to/favicon.ico"
 
-FAVICONFILE[1337x]="1337x.ico"
-FAVICONURL[1337x]="https://1337x.to/favicon.ico"
+WEBSITEFAVICONURL[yts]="https://yts.lt/assets/images/website/favicon.ico"
 
-FAVICONFILE[yts]="yts.ico"
-FAVICONURL[yts]="https://yts.lt/assets/images/website/favicon.ico"
-
-FAVICONFILE[google]="google.ico"
-FAVICONURL[google]="https://www.google.com/favicon.ico"
+WEBSITEFAVICONURL[google]="https://www.google.com/favicon.ico"
 
 
 # Function to download favicon
@@ -453,10 +443,10 @@ download_favicon() {
       local filename="awards.ico"
       local url="https://www.oscarsdeathrace.com/favicon.ico"
       # The original favicon gets Error 403 when trying to download via wget
-      #FAVICONURL[awards]="http://www.oscars.org/favicon.ico"
+      #WEBSITEFAVICONURL[awards]="http://www.oscars.org/favicon.ico"
     else
       local filename="${sitename}.ico"
-      local url=${FAVICONURL[$sitename]}
+      local url=${WEBSITEFAVICONURL[$sitename]}
   fi
 
   # check if file exists
@@ -466,7 +456,7 @@ download_favicon() {
         then
           echo -e "Downloading favicon from ${url} to ${FAVICONPATH}/${filename} ..."
       fi
-      wget -U "${FAVICONUSERAGENT}" "${url}" -O "${FAVICONPATH}/${filename}" -q
+      wget -U "${WEBSITEUSERAGENT}" "${url}" -O "${FAVICONPATH}/${filename}" -q
       chown "$WWWUSER":"$WWWGROUP" "${FAVICONPATH}/${filename}"
     else
       if [ "$VERBOSE" -eq 1 ]
@@ -486,7 +476,7 @@ fi
 download_favicon "awards"
 
 # download favicon for all defined websites
-for website in "${!FAVICONFILE[@]}"; do
+for website in "${!WEBSITEFAVICONURL[@]}"; do
     download_favicon "${website}"
 done
 
@@ -888,28 +878,28 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
           echo -e  "          <td title=\"Links\" class=\"links\">"
 
           echo -e  "             <a target=\"_blank\" href=\"https://www.imdb.com/title/$ID/\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[imdb]}\" alt=\"The Movie DB\" height=16/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/imdb.ico\" alt=\"The Movie DB\" height=16/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://www.themoviedb.org/search?query=$TITLESEARCH\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[themoviedb]}\" alt=\"The Movie DB\" height=16/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/themoviedb.ico\" alt=\"The Movie DB\" height=16/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://www.xrel.to/search.html?xrel_search_query=$ID\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[xrel]}\" alt=\"xREL\"/></a>     "
+          echo -e  "               <img src=\"${FAVICONDIR}/xrel.ico\" alt=\"xREL\"/></a>     "
 
           echo -e  "             <a target=\"_blank\" href=\"https://thepiratebay.org/search/$TITLESEARCH%20$RELEASEYEAR/0/99/200\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[thepiratebay]}\" alt=\"The Pirate Bay\"/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/thepiratebay.ico\" alt=\"The Pirate Bay\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://www.limetorrents.lol/search/all/${TITLESEARCH}-${RELEASEYEAR}/seeds/1/\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[limetorrents]}\" alt=\"LimeTorrents\"/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/limetorrents.ico\" alt=\"LimeTorrents\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://1337x.to/sort-category-search/${TITLESEARCH}%20${RELEASEYEAR}/Movies/seeders/desc/1/\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[1337x]}\" alt=\"1337x\"/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/1337x.ico\" alt=\"1337x\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://yts.lt/browse-movies/${TITLESEARCH}%20${RELEASEYEAR}/all/all/0/seeds\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[yts]}\" alt=\"YTS\"/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/yts.ico\" alt=\"YTS\"/></a>"
 
           echo -e  "             <a target=\"_blank\" href=\"https://www.google.de/search?safe=off&site=webhp&source=hp&q=$TITLESEARCHG\">"
-          echo -e  "               <img src=\"${FAVICONDIR}/${FAVICONFILE[google]}\" alt=\"Google\" height=16/></a>"
+          echo -e  "               <img src=\"${FAVICONDIR}/google.ico\" alt=\"Google\" height=16/></a>"
 
           echo -e  "             </td>"
           echo -e  "          <td class=\"nomcount\">${NOMINATIONS}</td>"

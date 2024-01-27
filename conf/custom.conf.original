@@ -55,7 +55,7 @@ JSSOURCE="http://www.kryogenix.org/code/browser/sorttable/sorttable.js"
 JSDEST="$HTMLDIR/$JSFILE"
 FAVICONDIR="favicons"
 FAVICONPATH="$HTMLDIR/${FAVICONDIR}"
-FAVICONUSERAGENT="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4"
+WEBSITEUSERAGENT="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4"
 XRELFILE="$HTMLDIR/"$FILENAMEPREFIX".html"
 
 # Timeout in ms to prevent "Database is locked" error
