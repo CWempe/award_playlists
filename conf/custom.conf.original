@@ -116,3 +116,7 @@ WEBSITESEARCHURL[1337]='https://1337x.to/sort-category-search/${TITLESEARCH}%20$
 WEBSITENAME[yts]="YTS"
 WEBSITEFAVICONURL[yts]="https://yts.lt/assets/images/website/favicon.ico"
 WEBSITESEARCHURL[yts]='https://yts.lt/browse-movies/${TITLESEARCH}/all/all/0/seeds/${RELEASEYEAR}/all'
+
+WEBSITENAME[justwatch]="JustWatch"
+WEBSITEFAVICONURL[justwatch]="https://www.justwatch.com/favicon.ico"
+WEBSITESEARCHURL[justwatch]='https://www.justwatch.com/us/search?q=${TITLESEARCH}'
