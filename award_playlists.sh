@@ -546,7 +546,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         fi
         echo -e "    <meta name=\"viewport\" content=\"width=device-width\">"
         echo -e "    <title>$EVENT $YEAR</title>"
-        echo -e "    <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"${FAVICONDIR}/${FAVICONFILE[awards]}\" />"
+        echo -e "    <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"${FAVICONDIR}/awards.ico\" />"
         echo -e "    <link rel=\"stylesheet\" type=\"text/css\" href=\"$CSSFILE\" />"
         echo -e "    <link rel=\"stylesheet\" href=\"https://use.fontawesome.com/releases/v5.7.2/css/all.css\" integrity=\"sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr\" crossorigin=\"anonymous\" />"
         echo -e "    <script src=\"sorttable.js\"></script>"
