@@ -5,7 +5,7 @@ COPY . .
 
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache bash sqlite jq git mc
+    apk add --no-cache bash sqlite jq git mc tidyhtml perl
 
 RUN echo ""                   >> /etc/crontabs/root
 RUN cat ./docker/cron.example >> /etc/crontabs/root
