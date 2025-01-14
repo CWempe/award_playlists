@@ -430,6 +430,8 @@ if [ ! -s "$NOMINEEJSON" ] || [ "$FORCE" -eq 1 ]
               -e "ipc-title-link-wrapper" \
               -e "ipc-link.*title" \
        | sed -z 's/\n[ ]*<h3 /<h3 /g'| tr -s " " \
+       | sed '/Cecil B. DeMille Award/d' \
+       | sed '/Carol Burnett Award/d' \
        | perl -pe 's|(^.*/title/)(.*?)(/\?ref_=ev_nom">)(.*)(<.*>)|{ "ID": "\2", "Title": "\4" },|' \
        | perl -pe 's|(^.*/title/)(.*?)(/\?ref_=ev_nom".*?ipc-title__text">)(.*?)(<.*>)|{ "ID": "\2", "Title": "\4" },|' \
        | perl -pe 's|(^.*<span\ id.*?>)(.*?)(<.*>)|{"Category": "\2", "Nominees": [|' \
