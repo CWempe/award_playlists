@@ -679,10 +679,10 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       fi
 
       # Search title in Database using IMDBid
-      SQLRESULT=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") -separator ';;;' "$DBFILE" "SELECT c00, playCount, '$NOMINATIONS' as nominations, strFileName FROM movie_view WHERE uniqueid_value IS '$ID' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1")
+      SQLRESULT=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") -separator ';;;' "$DBFILE" "SELECT c00, playCount, '$NOMINATIONS' as nominations, strFileName FROM movie_view INNER JOIN uniqueid ON media_id = idMovie WHERE uniqueid.value IS '$ID' AND type IS 'imdb' and media_type IS 'movie' GROUP BY c00 LIMIT 1")
       if [ "$VERBOSE" -eq 1 ]
         then
-          echo -e "  SQL movie: sqlite3 -init <(echo .timeout -separator ';;;' $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations, strFileName FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
+          echo -e "  SQL movie: sqlite3 -init <(echo .timeout -separator ';;;' $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations, strFileName FROM movie_view INNER JOIN uniqueid ON media_id = idMovie WHERE uniqueid.value IS '\"$ID\"' AND type IS 'imdb' and media_type IS 'movie' GROUP BY c00 LIMIT 1\""
       fi
       # replace certain characters in title to match sql syntax
       # shellcheck disable=SC2001
