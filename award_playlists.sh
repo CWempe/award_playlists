@@ -417,7 +417,7 @@ if [ ! -s "$NOMINEEJSON" ] || [ "$FORCE" -eq 1 ]
       then
         echo "Get content from html:"
     fi
-    grep "<\!-- Begin INLINE40 -->" "${NOMINEEHTML}" > "${NOMINEEHTMLCONTENT}"
+    grep "ipc-page-content-container" "${NOMINEEHTML}" | tail -n 1 >> "${NOMINEEHTMLCONTENT}"
     tidy -indent -quiet -wrap 0 -output "${NOMINEEHTMLTIDY}" "${NOMINEEHTMLCONTENT}" 2> /dev/null
 
     # Get JSON from HTML-file
@@ -432,6 +432,10 @@ if [ ! -s "$NOMINEEJSON" ] || [ "$FORCE" -eq 1 ]
        | sed -z 's/\n[ ]*<h3 /<h3 /g'| tr -s " " \
        | sed '/Cecil B. DeMille Award/d' \
        | sed '/Carol Burnett Award/d' \
+       | sed '/Honorary Award/d' \
+       | sed '/Irving G. Thalberg Memorial Award/d' \
+       | sed '/Jean Hersholt Humanitarian Award/d' \
+       | sed '/Auch bekannt als/d' \
        | perl -pe 's|(^.*/title/)(.*?)(/\?ref_=ev_nom">)(.*)(<.*>)|{ "ID": "\2", "Title": "\4" },|' \
        | perl -pe 's|(^.*/title/)(.*?)(/\?ref_=ev_nom".*?ipc-title__text">)(.*?)(<.*>)|{ "ID": "\2", "Title": "\4" },|' \
        | perl -pe 's|(^.*<span\ id.*?>)(.*?)(<.*>)|{"Category": "\2", "Nominees": [|' \
