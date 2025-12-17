@@ -401,6 +401,10 @@ if [ ! -s "$NOMINEEJSON" ] || [ "$FORCE" -eq 1 ]
         # Downloading list of nominees from imdb.com
         echo -e "Downloading list of nominees from imdb.com ..."
         wget -U "${FAVICONUSERAGENT}" "${NOMINEEURL}" -O "${NOMINEEHTML}" -q --header="Accept-Language: en"
+        if [ "$VERBOSE" -eq 1 ]
+          then
+            echo -e "Download-Command: wget -U \"${FAVICONUSERAGENT}\" \"${NOMINEEURL}\" -O \"${NOMINEEHTML}\" -q --header=\"Accept-Language: en\""
+        fi
         # Erfolgsprüfung nach dem zweiten Versuch
         if [ $? -ne 0 ]; then
           echo "wget failed. Append '/1' to URL"
