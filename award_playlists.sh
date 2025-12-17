@@ -400,17 +400,55 @@ if [ ! -s "$NOMINEEJSON" ] || [ "$FORCE" -eq 1 ]
       then
         # Downloading list of nominees from imdb.com
         echo -e "Downloading list of nominees from imdb.com ..."
-        wget "$NOMINEEURL" -O "$NOMINEEHTML" -q
+        wget -U "${FAVICONUSERAGENT}" "${NOMINEEURL}" -O "${NOMINEEHTML}" -q --header="Accept-Language: en"
+        if [ "$VERBOSE" -eq 1 ]
+          then
+            echo -e "Download-Command: wget -U \"${FAVICONUSERAGENT}\" \"${NOMINEEURL}\" -O \"${NOMINEEHTML}\" -q --header=\"Accept-Language: en\""
+        fi
+        # Erfolgsprüfung nach dem zweiten Versuch
+        if [ $? -ne 0 ]; then
+          echo "wget failed. Append '/1' to URL"
+          wget -U "${FAVICONUSERAGENT}" "${NOMINEEURL}/1" -O "${NOMINEEHTML}" -q --header="Accept-Language: en"
+        else
+          echo "wget succeeded with URL: $NEW_URL"
+        fi
       else
         echo -e "Using existing \$NOMINEEHTML."
     fi
 
+    # Get Content from HTML-file
+    if [ "$VERBOSE" -eq 1 ]
+      then
+        echo "Get content from html:"
+    fi
+    grep "ipc-page-content-container" "${NOMINEEHTML}" | tail -n 1 >> "${NOMINEEHTMLCONTENT}"
+    tidy -indent -quiet -wrap 0 -output "${NOMINEEHTMLTIDY}" "${NOMINEEHTMLCONTENT}" 2> /dev/null
+
     # Get JSON from HTML-file
-    grep "IMDbReactWidgets.NomineesWidget.push" "$NOMINEEHTML" \
-      | sed "s/IMDbReactWidgets.NomineesWidget.push(.'center-3-react',//" \
-      | sed "s/.);$//" \
-      | jq . \
-      > "$NOMINEEJSON"
+    if [ "$VERBOSE" -eq 1 ]
+      then
+        echo "Create JSON:"
+    fi
+    cat "${NOMINEEHTMLTIDY}" \
+       | grep -e "ipc-title__text" \
+              -e "ipc-title-link-wrapper" \
+              -e "ipc-link.*title" \
+       | sed -z 's/\n[ ]*<h3 /<h3 /g'| tr -s " " \
+       | sed '/Cecil B. DeMille Award/d' \
+       | sed '/Carol Burnett Award/d' \
+       | sed '/Honorary Award/d' \
+       | sed '/Irving G. Thalberg Memorial Award/d' \
+       | sed '/Jean Hersholt Humanitarian Award/d' \
+       | sed '/Auch bekannt als/d' \
+       | perl -pe 's|(^.*/title/)(.*?)(/\?ref_=ev_nom">)(.*)(<.*>)|{ "ID": "\2", "Title": "\4" },|' \
+       | perl -pe 's|(^.*/title/)(.*?)(/\?ref_=ev_nom".*?ipc-title__text">)(.*?)(<.*>)|{ "ID": "\2", "Title": "\4" },|' \
+       | perl -pe 's|(^.*<span\ id.*?>)(.*?)(<.*>)|{"Category": "\2", "Nominees": [|' \
+       | sed "1s/.*/{ \"Event\": \"${EVENT}\", \"Year\": ${YEAR}, \"Awards\": [/" \
+       | sed "$ s/.*/] } ] }/" \
+       | sed -z 's|},\n{\"Cat|}\n] }, { \"Cat|g' \
+       | sed -z 's|},\n] } ] }|}\n] } ] }|' \
+       | jq . \
+       > "$NOMINEEJSON"
 
   else
     # $NOMINEEJSON is present and not empty
@@ -433,9 +471,7 @@ if [ ! -s "$IDSFILE" ] || [ "$FORCE" -eq 1 ]
 
     # Get IMDB-IDs from nominee-list
     < "$NOMINEEJSON" \
-        jq '.nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[] | if (.primaryNominees[].const | startswith("tt") ) then .primaryNominees[] | [.const, .name] else .secondaryNominees[] | [.const, .name] end | @tsv' \
-      | awk '{print "echo  "$0}' | sh \
-      | sed 's/\\t/\t/g' \
+        jq -r '.. | objects | select(.ID? and .Title?) | "\(.ID)\t\(.Title)"' \
       | sort \
       | uniq -c \
       | sort -nr \
@@ -457,7 +493,7 @@ fi
 if [ "$VERBOSE" -eq 1 ]
   then
     echo -e ""
-    echo -e "Defined websites: ${!WEBSITEFAVICONURL[@]}"
+    echo -e "Defined websites:" "${!WEBSITEFAVICONURL[@]}"
     for website in "${!WEBSITEFAVICONURL[@]}"; do
       echo -e "  ${WEBSITENAME[$website]}:"
       echo -e "    WEBSITEFAVICONURL: ${WEBSITEFAVICONURL[$website]}"
@@ -611,6 +647,7 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       NOMINATIONS=$(echo "$LINE" | awk '{print $1}')
       ID=$(echo "$LINE" | awk '{print $2}')
       TITLE=$(echo "$LINE" | cut -f 2)
+      # TITLE=$(< "$NOMINEEJSON" jq -r --arg id "$ID" '.Awards[].Nominees[] | select(.ID == $id) | .Title' | head -1)
       TITLESEARCH=$(echo "$TITLE" | sed -r "s/(\ |,|')/%20/g")
       TITLESEARCHG=$(echo "$TITLE" | sed -r "s/(\ |,|')/+/g")
 
@@ -629,11 +666,12 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
         RELEASEYEAR="$YEAR"
       fi
 
+      # Title auslesen
+      # | jq -r --arg id "tt5348176" '.Awards[].Nominees[] | select(.ID == $id) | .Title' | head -1
+
+
       # get categories for nominations
-      readarray CATEGORIES < <(< "$NOMINEEJSON" \
-                                   jq --arg ID "$ID" ".nomineesWidgetModel.eventEditionSummary.awards[].categories[].nominations[]
-                                 | objects | select((.primaryNominees[]? | .const == \"$ID\") or (.secondaryNominees[]? | .const == \"$ID\"))
-                                 | .categoryName | @sh" )
+      readarray CATEGORIES < <(< "$NOMINEEJSON" jq -r --arg id "$ID" '.Awards[] | select(.Nominees[].ID == $id) | .Category' )
 
       if [ "$VERBOSE" -eq 1 ]
         then
@@ -641,10 +679,10 @@ if [ "$NOMINEESCOUNT" -eq 0 ]
       fi
 
       # Search title in Database using IMDBid
-      SQLRESULT=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") -separator ';;;' "$DBFILE" "SELECT c00, playCount, '$NOMINATIONS' as nominations, strFileName FROM movie_view WHERE uniqueid_value IS '$ID' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1")
+      SQLRESULT=$(sqlite3 -init <(echo .timeout "$DBTIMEOUT") -separator ';;;' "$DBFILE" "SELECT c00, playCount, '$NOMINATIONS' as nominations, strFileName FROM movie_view INNER JOIN uniqueid ON media_id = idMovie WHERE uniqueid.value IS '$ID' AND type IS 'imdb' and media_type IS 'movie' GROUP BY c00 LIMIT 1")
       if [ "$VERBOSE" -eq 1 ]
         then
-          echo -e "  SQL movie: sqlite3 -init <(echo .timeout -separator ';;;' $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations, strFileName FROM movie_view WHERE uniqueid_value IS '\"$ID\"' AND (uniqueid_type IS 'imdb' OR uniqueid_type IS 'unknown') GROUP BY c00 LIMIT 1\""
+          echo -e "  SQL movie: sqlite3 -init <(echo .timeout -separator ';;;' $DBTIMEOUT) $DBFILE \\ \n                \"SELECT c00, playCount, '\"$NOMINATIONS\"' as nominations, strFileName FROM movie_view INNER JOIN uniqueid ON media_id = idMovie WHERE uniqueid.value IS '\"$ID\"' AND type IS 'imdb' and media_type IS 'movie' GROUP BY c00 LIMIT 1\""
       fi
       # replace certain characters in title to match sql syntax
       # shellcheck disable=SC2001

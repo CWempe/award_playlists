@@ -4,6 +4,7 @@ award_playlists_create_specific.sh
 # Exclude files within these folders
 conf/**
 dat/**
+devel/**
 log/**
 tmp/**
 
