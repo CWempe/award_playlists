@@ -441,7 +441,9 @@ if [ ! -s "$NOMINEEJSON" ] || [ "$FORCE" -eq 1 ]
        | sed '/Jean Hersholt Humanitarian Award/d' \
        | sed '/Auch bekannt als/d' \
        | perl -pe 's|(^.*/title/)(.*?)(/\?ref_=ev_nom">)(.*)(<.*>)|{ "ID": "\2", "Title": "\4" },|' \
+       | perl -pe 's|(^.*/title/)(.*?)(/\?ref_=ev_csegosc_nom">)(.*)(<.*>)|{ "ID": "\2", "Title": "\4" },|' \
        | perl -pe 's|(^.*/title/)(.*?)(/\?ref_=ev_nom".*?ipc-title__text">)(.*?)(<.*>)|{ "ID": "\2", "Title": "\4" },|' \
+       | perl -pe 's|(^.*/title/)(.*?)(/\?ref_=ev_csegosc_nom".*?ipc-title__text">)(.*?)(<.*>)|{ "ID": "\2", "Title": "\4" },|' \
        | perl -pe 's|(^.*<span\ id.*?>)(.*?)(<.*>)|{"Category": "\2", "Nominees": [|' \
        | sed "1s/.*/{ \"Event\": \"${EVENT}\", \"Year\": ${YEAR}, \"Awards\": [/" \
        | sed "$ s/.*/] } ] }/" \
