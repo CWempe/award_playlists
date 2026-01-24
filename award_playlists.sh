@@ -421,7 +421,7 @@ if [ ! -s "$NOMINEEJSON" ] || [ "$FORCE" -eq 1 ]
       then
         echo "Get content from html:"
     fi
-    grep "ipc-page-content-container" "${NOMINEEHTML}" | tail -n 1 >> "${NOMINEEHTMLCONTENT}"
+    grep "ipc-page-content-container" "${NOMINEEHTML}" | tail -n 1 > "${NOMINEEHTMLCONTENT}"
     tidy -indent -quiet -wrap 0 -output "${NOMINEEHTMLTIDY}" "${NOMINEEHTMLCONTENT}" 2> /dev/null
 
     # Get JSON from HTML-file
